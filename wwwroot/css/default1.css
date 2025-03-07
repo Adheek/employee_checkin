@@ -1,0 +1,673 @@
+/* Accessibility Improvements */
+@media (prefers-reduced-motion: reduce) {
+    * {
+        animation-duration: 0.01ms !important;
+        animation-iteration-count: 1 !important;
+        transition-duration: 0.01ms !important;
+        scroll-behavior: auto !important;
+    }
+ }
+ 
+ .tab-button:focus,
+ .action-btn:focus,
+ .btn-primary:focus,
+ .btn-secondary:focus,
+ .btn-danger:focus {
+    outline: 2px solid #0d0063;
+    outline-offset: 2px;
+ }
+ 
+ /* High Contrast Mode Support */
+ @media (forced-colors: active) {
+    .action-btn,
+    .btn-primary,
+    .btn-secondary,
+    .btn-danger {
+        border: 1px solid ButtonText;
+    }
+ }
+ 
+ .modal-sm {
+    max-width: 400px;
+ }
+ 
+ .warning-text {
+    color: #dc3545;
+    margin-top: 0.5rem;
+    font-size: 0.9rem;
+ }
+ 
+ .modal-footer {
+    display: flex;
+    justify-content: flex-end;
+    gap: 1rem;
+    margin-top: 1.5rem;
+ }
+ 
+ .btn-danger {
+    background: #dc3545;
+ }
+ 
+ .btn-danger:hover {
+    background: #bb2d3b;
+ }
+ 
+ .modal-content {
+    background: #f4f1ea;
+    margin: 0;
+    padding: 2rem;
+    border-radius: 12px;
+    width: 100%;
+    height: calc(100vh - 4rem);
+    max-height: none;
+    overflow-y: auto;
+ }
+ 
+ .logs-content {
+    height: calc(100% - 4rem);
+    display: flex;
+    flex-direction: column;
+ }
+ 
+ .date-filter {
+    display: flex;
+    gap: 1rem;
+    margin-bottom: 1.5rem;
+    align-items: center;
+    flex-wrap: wrap;
+ }
+ 
+ .date-filter .form-group {
+    flex: 1;
+    min-width: 200px;
+ }
+ 
+ .date-filter input[type="date"] {
+    width: 100%;
+    padding: 0.8rem;
+    background: #faf9f6;
+    border: 1px solid #e0dcd3;
+    border-radius: 6px;
+    color: #333333;
+ }
+ 
+ .table-container {
+    flex: 1;
+    overflow-y: auto;
+    background: #faf9f6;
+    border-radius: 8px;
+    margin-top: 1rem;
+ }
+ 
+ .table-container table {
+    width: 100%;
+    border-collapse: collapse;
+ }
+ 
+ .table-container th,
+ .table-container td {
+    padding: 1rem;
+    text-align: left;
+    border-bottom: 1px solid #e0dcd3;
+ }
+ 
+ .table-container th {
+    background: #0d0063;
+    position: sticky;
+    top: 0;
+    z-index: 1;
+    color: #ffffff;
+ }
+ 
+ .status-badge {
+    padding: 0.3rem 0.8rem;
+    border-radius: 1rem;
+    font-size: 0.9rem;
+    font-weight: 500;
+ }
+ 
+ .status-badge.completed {
+    background: #28a745;
+    color: white;
+ }
+ 
+ .status-badge.pending {
+    background: #ffc107;
+    color: black;
+ }
+ 
+ .status-badge.failed {
+    background: #dc3545;
+    color: white;
+ }
+ 
+ /* Button styles */
+ .filter-btn,
+ .download-btn {
+    padding: 0.8rem 1.5rem;
+    border: none;
+    border-radius: 6px;
+    color: white;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+    font-size: 0.9rem;
+    transition: all 0.3s ease;
+ }
+ 
+ .filter-btn {
+    background: #0d0063;
+ }
+ 
+ .filter-btn:hover {
+    background: #0a004d;
+ }
+ 
+ .download-btn {
+    background: #28a745;
+ }
+ 
+ .download-btn:hover {
+    background: #218838;
+ }
+ 
+ .modal-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding-bottom: 1.5rem;
+    margin-bottom: 1.5rem;
+    border-bottom: 1px solid #e0dcd3;
+ }
+ 
+ .header-left {
+    display: flex;
+    align-items: center;
+    gap: 2rem;
+ }
+ 
+ .back-to-dash {
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+    padding: 0.5rem 1rem;
+    background: transparent;
+    border: 1px solid rgba(224, 220, 211, 0.2);
+    color: #333333;
+    border-radius: 4px;
+    cursor: pointer;
+    transition: all 0.3s ease;
+    font-size: 0.9rem;
+ }
+ 
+ .back-to-dash:hover {
+    background: rgba(244, 241, 234, 0.1);
+    border-color: rgba(224, 220, 211, 0.4);
+ }
+ 
+ .modal-content {
+    background: #f4f1ea;
+    margin: 2rem auto;
+    padding: 2rem;
+    border-radius: 12px;
+    width: 95%;
+    max-width: 1200px;
+    height: calc(100vh - 4rem);
+    max-height: none;
+    overflow-y: auto;
+    position: relative;
+ }
+ 
+ .logs-content {
+    height: calc(100vh - 150px);
+    display: flex;
+    flex-direction: column;
+ }
+ 
+ .table-container {
+    flex: 1;
+    overflow-y: auto;
+    background: #faf9f6;
+    border-radius: 8px;
+    margin-top: 1rem;
+ }
+ 
+ /* Responsive adjustments */
+ @media (max-width: 768px) {
+    .header-left {
+        flex-direction: column;
+        align-items: flex-start;
+        gap: 1rem;
+    }
+ 
+    .back-to-dash {
+        width: 100%;
+        justify-content: center;
+    }
+ 
+    .modal-header {
+        flex-direction: column;
+        align-items: stretch;
+        gap: 1rem;
+    }
+ 
+    .close-btn {
+        align-self: flex-end;
+    }
+ }
+ 
+ .back-btn {
+    padding: 8px 16px;
+    background: #f4f1ea;
+    border: none;
+    border-radius: 4px;
+    color: #333333;
+    cursor: pointer;
+    margin-bottom: 20px;
+ }
+ 
+ .scanner-modal {
+    display: none;
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background-color: rgba(244, 241, 234, 0.9);
+    z-index: 1000;
+ }
+ 
+ .scanner-content {
+    background-color: #f4f1ea;
+    margin: 2rem auto;
+    padding: 1.5rem;
+    border-radius: 12px;
+    max-width: 500px;
+    width: 90%;
+ }
+ 
+ .scanner-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 1rem;
+ }
+ 
+ .scanner-header h2 {
+    color: #333333;
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+ }
+ 
+ .scanner-close {
+    background: none;
+    border: none;
+    color: #333333;
+    font-size: 1.5rem;
+    cursor: pointer;
+    padding: 0.5rem;
+ }
+ 
+ .qr-reader-container {
+    width: 100%;
+    height: 400px;
+    border-radius: 8px;
+    overflow: hidden;
+    background: #faf9f6;
+ }
+ 
+ #qrReader {
+    width: 100% !important;
+    height: 100% !important;
+ }
+ 
+ #qrReader video {
+    border-radius: 8px;
+    max-height: 400px;
+ }
+ 
+ /* Adding section tab styles to your existing CSS */
+ 
+ /* Section Tabs Navigation */
+ .section-tabs {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.5rem;
+    margin-bottom: 2rem;
+    border-bottom: 1px solid #e0dcd3;
+    padding-bottom: 0.5rem;
+ }
+ 
+ .section-tab {
+    background: none;
+    border: none;
+    color: #666666;
+    padding: 0.75rem 1.5rem;
+    cursor: pointer;
+    font-size: 0.9rem;
+    border-bottom: 2px solid transparent;
+    transition: all 0.3s;
+ }
+ 
+ .section-tab:hover {
+    color: #0d0063;
+ }
+ 
+ .section-tab.active {
+    color: #0d0063;
+    border-bottom-color: #0d0063;
+ }
+ 
+ /* Section Content */
+ .section-content {
+    display: none;
+    padding: 1.5rem;
+    border-radius: 8px;
+    margin-bottom: 1.5rem;
+ }
+ 
+ .section-content.active {
+    display: block;
+ }
+ 
+ /* Form Grid for Sections */
+ .form-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+    gap: 1.5rem;
+ }
+ 
+ /* Enhanced Form Group Styles */
+ .form-group {
+    margin-bottom: 1.5rem;
+ }
+ 
+ .form-group label {
+    display: block;
+    margin-bottom: 0.5rem;
+    color: #666666;
+    font-size: 0.9rem;
+ }
+ 
+ .form-group input,
+ .form-group select,
+ .form-group textarea {
+    width: 200%;
+    padding: 0.8rem;
+    background: #faf9f6;
+    border: 1px solid #e0dcd3;
+    border-radius: 6px;
+    color: #333333;
+    font-size: 0.9rem;
+    transition: all 0.3s ease;
+ }
+ 
+ .form-group input:focus,
+ .form-group select:focus,
+ .form-group textarea:focus {
+    border-color: #0d0063;
+    box-shadow: 0 0 0 2px rgba(13, 0, 99, 0.2);
+    outline: none;
+ }
+ 
+ .form-group.full-width {
+    grid-column: 1 / -1;
+ }
+ 
+ /* Required Field Indicator */
+ label[for*="required"]::after,
+ label[for$="*"]::after {
+    content: '*';
+    color: #dc3545;
+    margin-left: 4px;
+ }
+ 
+ /* Section Title */
+ .section-title {
+    color: #0d0063;
+    font-size: 1.1rem;
+    margin-bottom: 1.5rem;
+    font-weight: 500;
+ }
+ 
+ /* Form Actions in Sections */
+ .form-actions {
+    display: flex;
+    justify-content: flex-end;
+    gap: 1rem;
+    margin-top: 2rem;
+    padding-top: 1rem;
+    border-top: 1px solid #e0dcd3;
+ }
+ 
+ /* Responsive Adjustments for Section Tabs */
+ @media (max-width: 768px) {
+    .section-tabs {
+        flex-direction: column;
+        gap: 0.25rem;
+    }
+ 
+    .section-tab {
+        width: 100%;
+        text-align: left;
+        padding: 1rem;
+    }
+ 
+    .section-content {
+        padding: 1rem;
+    }
+ 
+    .form-grid {
+        grid-template-columns: 1fr;
+    }
+ }
+ 
+ /* Animation for Section Switching */
+ @keyframes fadeIn {
+    from {
+        opacity: 0;
+        transform: translateY(10px);
+    }
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+ }
+ 
+ .section-content.active {
+    animation: fadeIn 0.3s ease-out;
+ }
+ 
+ /* Section Navigation Buttons */
+ .section-navigation {
+    display: flex;
+    justify-content: space-between;
+    margin-top: 1rem;
+ }
+ 
+ .nav-button {
+    background: none;
+    border: 1px solid #e0dcd3;
+    color: #666666;
+    padding: 0.5rem 1rem;
+    border-radius: 4px;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+    transition: all 0.3s;
+ }
+ 
+ .nav-button:hover {
+    background: #faf9f6;
+    color: #333333;
+ }
+ 
+ /* Keep all your existing CSS styles... */
+ /* [Your existing CSS code remains unchanged] */
+ 
+ 
+ /* MAP ASSET CSS*/
+ /* Asset Mapping Modal Specific Styles */
+ .qr-scanner-container {
+   margin: 20px 0;
+   padding: 20px;
+   background: #faf9f6;
+   border-radius: 8px;
+   display: flex;
+   flex-direction: column;
+   align-items: center;
+}
+
+#qr-reader {
+   width: 500px !important;
+   height: 500px !important;
+   border: none !important;
+   border-radius: 8px;
+   overflow: hidden;
+}
+
+.scanner-status {
+   margin-top: 15px;
+   text-align: center;
+   color: #666666;
+}
+
+.scan-btn {
+   margin-bottom: 20px;
+}
+
+/* Hide default QR scanner UI elements we don't need */
+#qr-reader__dashboard_section_swaplink {
+   display: none !important;
+}
+
+#qr-reader__dashboard_section_csr button {
+   padding: 8px 15px !important;
+   border: none !important;
+   border-radius: 4px !important;
+   background: #0d0063 !important;
+   color: white !important;
+   cursor: pointer !important;
+}
+
+
+.scan-controls {
+   display: flex;
+   gap: 1rem;
+   margin-bottom: 1rem;
+}
+
+.upload-control {
+   display: inline-block;
+}
+
+.close-scanner-btn {
+   position: absolute;
+   top: 10px;
+   right: 10px;
+   background: rgba(0, 0, 0, 0.5);
+   color: white;
+   border: none;
+   border-radius: 50%;
+   width: 30px;
+   height: 30px;
+   display: flex;
+   align-items: center;
+   justify-content: center;
+   cursor: pointer;
+   transition: background-color 0.3s;
+}
+
+.close-scanner-btn:hover {
+   background: rgba(0, 0, 0, 0.7);
+}
+
+.qr-scanner-container {
+   position: relative;
+}
+
+
+ .mapping-options {
+    padding: 2rem;
+ }
+ 
+ .option-container {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 2rem;
+    max-width: 600px;
+    margin: 0 auto;
+ }
+ 
+ .mapping-btn {
+    width: 100%;
+    padding: 2rem;
+    background: #faf9f6;
+    border: 1px solid #e0dcd3;
+    border-radius: 12px;
+    color: #333333;
+    cursor: pointer;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 1rem;
+    transition: all 0.3s ease;
+ }
+ 
+ .mapping-btn:hover {
+    background: #0d0063;
+    transform: translateY(-2px);
+    border-color: #0d0063;
+    color: #ffffff;
+ }
+ 
+ .option-icon {
+    width: 60px;
+    height: 60px;
+    background: rgba(13, 0, 99, 0.1);
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+ }
+ 
+ .option-icon i {
+    font-size: 1.8rem;
+    color: #0d0063;
+ }
+ 
+ .mapping-btn:hover .option-icon {
+    background: rgba(255,255,255,0.2);
+ }
+ 
+ .mapping-btn:hover .option-icon i {
+    color: white;
+ }
+ 
+ .option-text h3 {
+    font-size: 1.2rem;
+    margin-bottom: 0.5rem;
+    color: #333333;
+ }
+ 
+ .option-text p {
+    color: #666666;
+    font-size: 0.9rem;
+ }
+ 
+ .mapping-btn:hover .option-text p {
+    color: rgba(255,255,255,0.8);
+ }
+ 
+ .option-divider {
+    color: #666666;
+    font-size: 1rem;
+    position: relative;
+    width: 100%;
+    text-align: center;
+    padding: 1rem 0;
+ }
