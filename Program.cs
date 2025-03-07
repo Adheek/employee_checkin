@@ -29,6 +29,7 @@ builder.Services.AddDbContext<ApplicationDbContext>(options =>
 
 // Register your custom SQL test service.
 builder.Services.AddSingleton<Sql>();
+builder.Services.AddScoped<AEET.Code.UserManager>();
 
 // Add CORS policy for development. (Tighten this for production.)
 builder.Services.AddCors(options =>

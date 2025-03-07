@@ -3,49 +3,27 @@ using AEET.Models;
 using System;
 using System.Linq;
 using Microsoft.EntityFrameworkCore;
+using AEET.Code;
 
 namespace AEET.Controllers
 {
     public class ManageUsersController : Controller
     {
-        private readonly ApplicationDbContext _context;
 
-        public ManageUsersController(ApplicationDbContext context)
+        public ManageUsersController()
         {
-            _context = context;
         }
 
         // GET: ManageUsers/Index
-        public IActionResult Index()
+        public async Task<IActionResult> Index([FromServices] AEET.Code.UserManager user)
         {
             // Optionally, load a list of existing users to display
-            var users = _context.UserMasters.ToList();
-            return View(users);
-        }
-
-
- [HttpGet]
-        public IActionResult GetUserList()
-        {
-            // Query the UserMaster table and select only the columns you need
-            var userList = _context.UserMasters
-                .Select(u => new 
-                {
-                    u.Username,
-                    u.EmployeeName,
-                    Email = u.EmailID,
-                    RoleName = u.Role.RoleName, // using the navigation property for Role
-                    u.Location
-                })
-                .ToList();
-
-            // Return the result as JSON
-            return Json(userList);
+            return View(await user.GetUsers());
         }
 
         // POST: ManageUsers/AddUser
         [HttpPost]
-        public IActionResult AddUser(UserMaster model)
+        public async Task<IActionResult> AddUser([FromServices] RoleManager role, [FromServices] AEET.Code.UserManager user, UserMaster model)
         {
             if (ModelState.IsValid)
             {
@@ -57,13 +35,13 @@ namespace AEET.Controllers
                 switch (roleDropdown)
                 {
                     case "SA":
-                        roleId = _context.RoleMasters.FirstOrDefault(r => r.RoleName == "Super Admin")?.RoleID ?? Guid.Empty;
+                        roleId = (await role.GetRoleByName("Super Admin"))?.RoleID ?? Guid.Empty;
                         break;
                     case "AA Team":
-                        roleId = _context.RoleMasters.FirstOrDefault(r => r.RoleName == "Asset Administrator")?.RoleID ?? Guid.Empty;
+                        roleId = (await role.GetRoleByName("Asset Administrator"))?.RoleID ?? Guid.Empty;
                         break;
                     case "TO":
-                        roleId = _context.RoleMasters.FirstOrDefault(r => r.RoleName == "Transaction Manager")?.RoleID ?? Guid.Empty;
+                        roleId = (await role.GetRoleByName("Transaction Manager"))?.RoleID ?? Guid.Empty;
                         break;
                     default:
                         roleId = Guid.Empty;
@@ -72,7 +50,7 @@ namespace AEET.Controllers
                 if (roleId == Guid.Empty)
                 {
                     ModelState.AddModelError("role", "Invalid role selected.");
-                    return View("Index", _context.UserMasters.ToList());
+                    return View("Index", await user.GetUsers());
                 }
                 model.RoleID = roleId;
 
@@ -84,14 +62,13 @@ namespace AEET.Controllers
                 // Optionally, you could hash the password here before saving
 
                 // Add the new user to the database
-                _context.UserMasters.Add(model);
-                _context.SaveChanges();
+                await user.AddUser(model);
 
                 // Redirect back to the index view after success
                 return RedirectToAction("Index");
             }
             // If model validation fails, redisplay the view with errors
-            return View("Index", _context.UserMasters.ToList());
+            return View("Index", await user.GetUsers());
         }
     }
 }
