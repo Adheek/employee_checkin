@@ -1,0 +1,440 @@
+@{
+    ViewData["Title"] = "Manage Users";
+    
+}
+
+<!-- User Management Modal -->
+<div id="userManagementModal" class="modal show">
+    <div class="modal-content">
+        <div class="modal-header">
+            <h2>
+                <i class="fas fa-users"></i>
+                User Management
+            </h2>
+            <button class="close-btn">&times;</button>
+        </div>
+
+        <div class="tabs">
+            <button class="tab-button active" data-tab="userList">
+                <i class="fas fa-list"></i> User List
+            </button>
+            <button class="tab-button" data-tab="addUser">
+                <i class="fas fa-user-plus"></i> Add New User
+            </button>
+        </div>
+
+        <!-- User List Tab -->
+        <div id="userList" class="tab-content active">
+            <div class="search-box">
+                <i class="fas fa-search"></i>
+                <input type="text" id="searchUser" placeholder="Search users...">
+            </div>
+            <div class="table-container">
+                <table class="user-table">
+                    <thead>
+                        <tr>
+                            <th>Username</th>
+                            <th>EmployeeName</th>
+                            <th>Email</th>
+                            <th>RoleName</th>
+                            <th>Location</th>
+                            
+                        </tr>
+                    </thead>
+                    <tbody id="userTableBody"></tbody>
+                </table>
+            </div>
+        </div>
+
+        <!-- Add User Tab -->
+        <div id="addUser" class="tab-content">
+            <form id="addUserForm" method="post" asp-action="AddUser" asp-controller="ManageUsers">
+    <div class="form-section">
+        <h3>User Information</h3>
+        <div class="form-row">
+            <div class="form-group">
+                <label for="Newusername">Username*</label>
+                <input type="text" id="Newusername" name="Username" required>
+            </div>
+            <div class="form-group">
+                <label for="password">Password*</label>
+                <div class="password-input">
+                    <input type="password" id="password" name="PasswordHash" required>
+                    <button type="button" class="toggle-password">
+                        <i class="fas fa-eye"></i>
+                    </button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="form-section">
+        <h3>Personal Information</h3>
+        <div class="form-row">
+            <div class="form-group">
+                <label for="EmployeeName">Employee Name*</label>
+                <input type="text" id="EmployeeName" name="EmployeeName" required>
+            </div>
+            <div class="form-group">
+                <label for="EmployeeID">EmployeeID*</label>
+                <input type="text" id="EmployeeID" name="EmployeeID" required>
+            </div>
+            <div class="form-group">
+                <label for="email">Email*</label>
+                <input type="email" id="email" name="EmailID" required>
+            </div>
+        </div>
+    </div>
+
+    <div class="form-section">
+        <h3>Role & Location</h3>
+        <div class="form-row">
+            <div class="form-group">
+                <label for="role">Role*</label>
+                <select id="role" name="role" required>
+                    <option value="SA">Super Admin User</option>
+                    <option value="AA Team">Asset Admin</option>
+                    <option value="TO">Transaction Manager</option>
+                </select>
+            </div>
+            <div class="form-group">
+                <label for="Location">Location*</label>
+                <input type="text" id="Location" name="Location" required>
+            </div>
+        </div>
+    </div>
+
+    <div class="form-actions">
+        <a asp-controller="Home" asp-action="Landing" class="btn-secondary">Cancel</a>
+        <button type="submit" class="btn-primary">
+            <i class="fas fa-user-plus"></i> Add User
+        </button>
+    </div>
+</form>
+
+<style>
+   
+/* Modal Base Styles */
+.modal {
+    display: none;
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background: rgba(244, 241, 234, 0.95);
+    z-index: 1000;
+    padding: 0 1rem;
+    
+}
+
+.modal.show {
+    display: block;
+}
+
+.modal-content {
+    background: #faf9f6;
+    margin: 2rem auto;
+    padding: 2rem;
+    border: 1px solid #e0dcd3;
+    border-radius: 12px;
+    width: 95%;
+    max-width: 1200px;
+    height: calc(100vh - 4rem);
+    overflow-y: auto;
+    position: relative;
+    color: #333333;
+}
+
+/* Modal Header */
+.modal-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 2rem;
+    padding-bottom: 1rem;
+    border-bottom: 1px solid #e0dcd3;
+}
+
+.modal-header h2 {
+    color: #0d0063;
+    font-size: 1.5rem;
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+}
+
+.close-btn {
+    background: none;
+    border: none;
+    color: #666666;
+    font-size: 1.5rem;
+    cursor: pointer;
+    transition: color 0.3s;
+}
+
+/* Tabs */
+.tabs {
+    display: flex;
+    gap: 1rem;
+    margin-bottom: 2rem;
+    border-bottom: 1px solid #e0dcd3;
+    padding-bottom: 0.5rem;
+}
+
+.tab-button {
+    background: none;
+    border: none;
+    color: #666666;
+    padding: 0.75rem 1.5rem;
+    cursor: pointer;
+    font-size: 1rem;
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+    border-bottom: 2px solid transparent;
+    transition: all 0.3s;
+}
+
+.tab-button.active {
+    color: #0d0063;
+    border-bottom-color: #0d0063;
+}
+
+.tab-content {
+    display: none;
+}
+
+.tab-content.active {
+    display: block;
+}
+
+/* Search Box */
+.search-box {
+    position: relative;
+    max-width: 500px;
+    margin-bottom: 1.5rem;
+}
+
+.search-box i {
+    position: absolute;
+    left: 1rem;
+    top: 50%;
+    transform: translateY(-50%);
+    color: #666666;
+}
+
+.search-box input {
+    width: 100%;
+    padding: 0.8rem 1rem 0.8rem 2.5rem;
+    background: #ffffff;
+    border: 1px solid #e0dcd3;
+    border-radius: 6px;
+    color: #333333;
+}
+
+/* Table Styles */
+.table-container {
+    overflow-x: auto;
+    background: #ffffff;
+    border: 1px solid #e0dcd3;
+}
+
+.user-table {
+    width: 100%;
+    border-collapse: collapse;
+}
+
+.user-table th,
+.user-table td {
+    padding: 1rem;
+    text-align: left;
+    border-bottom: 1px solid #e0dcd3;
+}
+
+.user-table th {
+    background: #0d0063;
+    color: #ffffff;
+    font-weight: 500;
+    white-space: nowrap;
+}
+
+/* Form Styles */
+.form-section {
+    margin-bottom: 2rem;
+}
+
+.form-section h3 {
+    color: #0d0063;
+    margin-bottom: 1rem;
+    font-size: 1.1rem;
+}
+
+.form-row {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+    gap: 1rem;
+}
+
+.form-group {
+    margin-bottom: 1rem;
+}
+
+.form-group label {
+    display: block;
+    margin-bottom: 0.5rem;
+    color: #333333;
+}
+
+.form-group input,
+.form-group select {
+    width: 100%;
+    padding: 0.8rem;
+    background: #ffffff;
+    border: 1px solid #e0dcd3;
+    border-radius: 6px;
+    color: #333333;
+}
+
+/* Button Styles */
+.btn-primary,
+.btn-secondary {
+    padding: 0.8rem 1.5rem;
+    border: none;
+    border-radius: 6px;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+    font-size: 0.9rem;
+    transition: all 0.3s;
+}
+
+.btn-primary {
+    background: #0d0063;
+    color: white;
+}
+
+.btn-secondary {
+    background: #f4f1ea;
+    color: #333333;
+    border: 1px solid #e0dcd3;
+}
+
+.form-actions {
+    display: flex;
+    justify-content: flex-end;
+    gap: 1rem;
+    margin-top: 2rem;
+    padding-top: 1rem;
+    border-top: 1px solid #e0dcd3;
+}
+
+/* Responsive Styles */
+@@media (max-width: 768px) {
+    .tabs {
+        flex-direction: column;
+    }
+    
+    .tab-button {
+        width: 100%;
+        justify-content: center;
+    }
+    
+    .form-row {
+        grid-template-columns: 1fr;
+    }
+    
+    .form-actions {
+        flex-direction: column;
+    }
+    
+    .modal-content {
+        margin: 1rem;
+        padding: 1rem;
+    }
+}
+
+</style>
+
+
+
+<!-- JavaScript Code Inside the Page -->
+<script>
+
+ 
+    document.addEventListener("DOMContentLoaded", function () {
+        const closeModalButton = document.querySelector(".close-btn");
+        const tabButtons = document.querySelectorAll(".tab-button");
+        const tabContents = document.querySelectorAll(".tab-content");
+         const modal = document.getElementById("userManagementModal");
+
+         if (modal) {
+            modal.style.display = "block";  // ✅ Ensure modal is visible
+        }
+
+        /** Close Modal (Redirects to Landing.cshtml) */
+        if (closeModalButton) {
+            closeModalButton.addEventListener("click", function () {
+                window.location.href = "/Home/Landing"; // Redirect back to Landing.cshtml
+            });
+        }
+
+        /** Switch Tabs */
+        tabButtons.forEach(button => {
+            button.addEventListener("click", function () {
+                const targetTab = this.getAttribute("data-tab");
+
+                tabButtons.forEach(btn => btn.classList.remove("active"));
+                tabContents.forEach(content => content.classList.remove("active"));
+
+                this.classList.add("active");
+                document.getElementById(targetTab).classList.add("active");
+            });
+        });
+    });
+
+
+   document.addEventListener("DOMContentLoaded", function() {
+    loadUserList();
+});
+
+function loadUserList() {
+    fetch('/ManageUsers/GetUserList') // Calls the controller action
+        .then(response => response.json())
+        .then(data => {
+            const tableBody = document.getElementById('userTableBody');
+            tableBody.innerHTML = ''; // Clear existing rows
+
+            data.forEach(user => {
+                const row = document.createElement('tr');
+                row.innerHTML = `
+                    <td>${user.username}</td>
+                    <td>${user.employeeName}</td>
+                    <td>${user.email}</td>
+                    <td>${user.roleName}</td>
+                    <td>${user.location}</td>
+                `;
+                tableBody.appendChild(row);
+            });
+        })
+        .catch(error => console.error('Error fetching user list:', error));
+}
+
+document.getElementById('searchUser').addEventListener('input', function() {
+    const searchTerm = this.value.toLowerCase();
+    const rows = document.querySelectorAll('#userTableBody tr');
+
+    rows.forEach(row => {
+        const username = row.cells[0].textContent.toLowerCase();
+        const employeeName = row.cells[1].textContent.toLowerCase();
+        // ... other columns if needed
+
+        if (username.includes(searchTerm) || employeeName.includes(searchTerm)) {
+            row.style.display = '';
+        } else {
+            row.style.display = 'none';
+        }
+    });
+});
+</script>

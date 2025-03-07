@@ -1,0 +1,285 @@
+@{
+    ViewData["Title"] = "QR Generator";
+    Layout = null;
+}
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>QR Generator</title>
+         <link rel="stylesheet" href="~/css/default.css">
+    <link rel="stylesheet" href="~/css/default1.css">
+    <link rel="stylesheet" href="~/css/default2.css"> 
+    <link rel="stylesheet" href="~/css/site.css">
+    <link rel="stylesheet" href="~/css/style.css">   
+  <!-- Google Fonts -->
+  <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600&display=swap" rel="stylesheet">
+  <!-- Font Awesome -->
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+
+  <!-- QRCode.js library -->
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/qrcodejs/1.0.0/qrcode.min.js"></script>
+  <style>
+    /* Modal styling */
+.modal {
+    display: block;
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background: rgba(244, 241, 234, 0.95);
+    z-index: 1000;
+    padding: 0 1rem;
+}
+   
+/* Overall container responsiveness */
+.qr-generator-content {
+  max-width: 700px; /* Keep the form from stretching too wide on desktop */
+  margin: 0 auto;
+  padding: 2rem;
+}
+
+/* Ensure the QR form rows wrap properly */
+.qr-form .form-row {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+  gap: 1.5rem;
+  margin-bottom: 1.5rem;
+}
+
+/* Make the modal/container narrower on smaller screens */
+@@media (max-width: 768px) {
+  .qr-generator-content {
+    width: 90%;
+    padding: 1rem;
+  }
+
+  /* Switch the form to a single-column layout */
+  .qr-form .form-row {
+    grid-template-columns: 1fr;
+    gap: 1rem;
+  }
+
+  /* Make action buttons stack and fill the width */
+  .qr-actions {
+    flex-direction: column;
+    gap: 0.75rem;
+    width: 100%;
+  }
+  .qr-action-btn {
+    width: 100%;
+    justify-content: center;
+  }
+
+  /* Adjust the container and preview size */
+  .qr-container {
+    padding: 1rem;
+    margin: 1rem 0;
+  }
+  .qr-preview {
+    width: 100%;
+    max-width: 250px;
+    height: auto;
+    margin: 0 auto;
+  }
+}
+
+/* For very small screens (phones, 480px and below) */
+@@media (max-width: 480px) {
+  /* Make tab navigation stack vertically if you have tabs */
+  .qr-tabs {
+    flex-direction: column;
+    gap: 0.5rem;
+  }
+  
+  /* Further reduce spacing if needed */
+  .qr-generator-content {
+    padding: 0.75rem;
+  }
+  
+  /* Example for smaller headings or text if desired
+     .qr-generator-content h1, .qr-generator-content h2 {
+        font-size: 1.25rem;
+     }
+  */
+}
+  
+  </style>
+</head>
+<body>
+  <!-- QR Generator Modal -->
+  <div id="qrGeneratorModal" class="modal">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h2><i class="fas fa-qrcode"></i> QR Code Generator</h2>
+        <button class="close-btn" id="closeQrModal">&times;</button>
+      </div>
+
+      <!-- Tab Buttons -->
+      <div class="tabs">
+        <button class="tab-button active" data-tab="singleQR">Single QR Generator</button>
+        <button class="tab-button" data-tab="multipleQR">Multiple QR Generator</button>
+      </div>
+
+      <!-- Single QR Generator Tab -->
+      <div id="singleQR" class="tab-content active">
+        <div class="form-section">
+          <form id="qrGeneratorForm">
+            <div class="form-row">
+              <div class="form-group">
+                <label for="qrAssetId">Asset ID*</label>
+                <input type="text" id="qrAssetId" name="qrAssetId" required>
+              </div>
+              <div class="form-group">
+                <label for="qrAssetName">Asset Name*</label>
+                <input type="text" id="qrAssetName" name="qrAssetName" required>
+              </div>
+              <div class="form-group">
+                <label for="qrEmployeeId">Employee ID*</label>
+                <input type="text" id="qrEmployeeId" name="qrEmployeeId" required>
+              </div>
+            </div>
+
+            <div class="qr-container">
+              <div id="qrPreview" class="qr-preview"></div>
+              <div class="qr-actions">
+                <button type="button" class="qr-action-btn generate" id="generateQr">
+                  <i class="fas fa-qrcode"></i> Generate
+                </button>
+                <button type="button" class="qr-action-btn download" id="downloadQr">
+                  <i class="fas fa-download"></i> Download
+                </button>
+                <button type="button" class="qr-action-btn print" id="printQr">
+                  <i class="fas fa-print"></i> Print
+                </button>
+              </div>
+            </div>
+          </form>
+        </div>
+      </div>
+
+      <!-- Multiple QR Generator Tab -->
+      <div id="multipleQR" class="tab-content">
+        <div class="table-actions">
+          <div class="select-all-container">
+            <input type="checkbox" id="selectAllAssets" class="select-checkbox">
+            <label for="selectAllAssets">Select All</label>
+          </div>
+          <div class="bulk-actions">
+            <button type="button" class="action-btn generate" id="generateSelected">
+              <i class="fas fa-qrcode"></i> Generate Selected
+            </button>
+            <button type="button" class="action-btn download" id="downloadSelected">
+              <i class="fas fa-download"></i> Download Selected
+            </button>
+            <button type="button" class="action-btn print" id="printSelected">
+              <i class="fas fa-print"></i> Print Selected
+            </button>
+          </div>
+        </div>
+        <div class="qr-table-container">
+          <table class="qr-table">
+            <thead>
+              <tr>
+                <th width="50px">
+                  <input type="checkbox" class="select-all-checkbox">
+                </th>
+                <th>Asset ID</th>
+                <th>Asset Name</th>
+                <th>Status</th>
+                <th>Employee ID</th>
+              </tr>
+            </thead>
+            <tbody id="assetTableBody">
+              <!-- Populate table rows dynamically -->
+            </tbody>
+          </table>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- JavaScript -->
+  <script>
+    // Close modal: redirect to Landing page (or hide modal if preferred)
+    document.getElementById("closeQrModal").addEventListener("click", function(){
+      window.location.href = "/Home/Landing";
+    });
+
+    // Tab switching functionality
+    const tabButtons = document.querySelectorAll(".tab-button");
+    const tabContents = document.querySelectorAll(".tab-content");
+
+    tabButtons.forEach(button => {
+      button.addEventListener("click", function() {
+        // Remove active class from all tabs and buttons
+        tabButtons.forEach(btn => btn.classList.remove("active"));
+        tabContents.forEach(content => content.classList.remove("active"));
+        // Add active class to the clicked button and its corresponding content
+        button.classList.add("active");
+        document.getElementById(button.getAttribute("data-tab")).classList.add("active");
+      });
+    });
+
+    // QR Code Generation for Single QR Generator
+    document.getElementById("generateQr").addEventListener("click", function(){
+      const assetId = document.getElementById("qrAssetId").value;
+      const assetName = document.getElementById("qrAssetName").value;
+      const employeeId = document.getElementById("qrEmployeeId").value;
+      const qrText = `Asset ID: ${assetId}\nAsset Name: ${assetName}\nEmployee ID: ${employeeId}`;
+      
+      // Clear any previous QR code
+      document.getElementById("qrPreview").innerHTML = "";
+
+      // Generate the QR code
+      new QRCode(document.getElementById("qrPreview"), {
+        text: qrText,
+        width: 200,
+        height: 200
+      });
+    });
+
+    // Download the generated QR Code as an image
+    document.getElementById("downloadQr").addEventListener("click", function(){
+      const qrContainer = document.getElementById("qrPreview");
+      let canvas = qrContainer.querySelector("canvas");
+      if (!canvas) {
+        // If QRCode.js rendered an image instead
+        const img = qrContainer.querySelector("img");
+        if (img) {
+          canvas = document.createElement("canvas");
+          canvas.width = img.width;
+          canvas.height = img.height;
+          const ctx = canvas.getContext("2d");
+          ctx.drawImage(img, 0, 0);
+        }
+      }
+      if (canvas) {
+        const dataURL = canvas.toDataURL("image/png");
+        const link = document.createElement("a");
+        link.href = dataURL;
+        link.download = "qrcode.png";
+        document.body.appendChild(link);
+        link.click();
+        document.body.removeChild(link);
+      } else {
+        alert("Please generate a QR code first.");
+      }
+    });
+
+    // Print the QR Code
+    document.getElementById("printQr").addEventListener("click", function(){
+      const printContent = document.getElementById("qrPreview").innerHTML;
+      const originalContent = document.body.innerHTML;
+      document.body.innerHTML = printContent;
+      window.print();
+      document.body.innerHTML = originalContent;
+      location.reload();
+    });
+
+    // Optional: Add functionality for the Multiple QR Generator tab as needed.
+  </script>
+</body>
+</html>
