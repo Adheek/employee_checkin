@@ -48,7 +48,7 @@
 
         <!-- Add User Tab -->
         <div id="addUser" class="tab-content">
-            <form id="addUserForm" method="post" asp-action="AddUser" asp-controller="ManageUsers">
+            <form id="addUserForm">
     <div class="form-section">
         <h3>User Information</h3>
         <div class="form-row">
@@ -395,12 +395,39 @@
     });
 
 
+document.getElementById('addUserForm').addEventListener('submit', async (e) => {
+    e.preventDefault();
+
+    const userData = {
+        Username: document.getElementById('Newusername').value,
+        PasswordHash: document.getElementById('password').value,
+        EmployeeName: document.getElementById('EmployeeName').value,
+        EmployeeID: document.getElementById('EmployeeID').value,
+        EmailID: document.getElementById('email').value,
+        Role: document.getElementById('role').value,
+        Location: document.getElementById('Location').value
+    };
+
+    const response = await fetch('/api/access/users/add', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify(userData)
+    });
+
+    if (response.ok) {
+        alert('User added successfully!');
+    } else {
+        alert('Failed to add user.');
+    }
+});
+
+
    document.addEventListener("DOMContentLoaded", function() {
     loadUserList();
 });
 
 function loadUserList() {
-    fetch('/ManageUsers/GetUserList') // Calls the controller action
+    fetch('/api/access/users/list') // Calls the controller action
         .then(response => response.json())
         .then(data => {
             const tableBody = document.getElementById('userTableBody');

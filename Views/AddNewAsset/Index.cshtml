@@ -5,631 +5,692 @@
 <html lang="en">
 
 <head>
-    
+
     <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
-    
+
 </head>
+
 <body>
- <!--Add New Device-->
-            <div id="deviceModal" class="modal">
-                <div class="modal-content">
-                    <div class="modal-header">
-                        <h2>
-                            <i class="fas fa-laptop"></i>
-                            Asset Management
-                        </h2>
-                        <button class="close-btn" id="closeDeviceModal">&times;</button>
-                    </div>
+    <!--Add New Device-->
+    <div id="deviceModal" class="modal">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h2>
+                    <i class="fas fa-laptop"></i>
+                    Asset Management
+                </h2>
+                <button class="close-btn" id="closeDeviceModal">&times;</button>
+            </div>
 
-                    <!-- Main Tabs -->
-                    <div class="tabs">
-                        <button class="tab-button" data-tab="assetList">
-                            <i class="fas fa-list"></i> Asset List
-                        </button>
-                        <button class="tab-button active" data-tab="addAsset">
-                            <i class="fas fa-plus"></i> Add New Asset
-                        </button>
-                    </div>
+            <!-- Main Tabs -->
+            <div class="tabs">
+                <button class="tab-button" data-tab="assetList">
+                    <i class="fas fa-list"></i> Asset List
+                </button>
+                <button class="tab-button active" data-tab="addAsset">
+                    <i class="fas fa-plus"></i> Add New Asset
+                </button>
+            </div>
 
-                    <!-- Asset List Tab Content -->
-                    <div id="assetList" class="tab-content">
-                        <div class="search-box">
-                            <i class="fas fa-search"></i>
-                            <input type="text" id="searchAsset" placeholder="Search assets~.">
-                        </div>
-                        <div class="table-container">
-                            <table class="asset-table">
-                                <thead>
-                                    <tr>
-                                        <th>Asset ID</th>
-                                        <th>Asset Name</th>
-                                        <th>Category</th>
-                                        <th>Status</th>
-                                        <th>Location</th>
-                                        <th>Actions</th>
-                                    </tr>
-                                </thead>
-                                <tbody id="assetTableBody"></tbody>
-                            </table>
-                        </div>
-                    </div>
-
-                    <!-- Add Asset Tab Content -->
-                    <div id="addAsset" class="tab-content active">
-                        <!-- Section Tabs -->
-                        <div class="section-tabs">
-                            <button class="section-tab active" data-section="basicInfo">Basic Information</button>
-                            <button class="section-tab" data-section="deviceDetails">Device Details</button>
-                            <button class="section-tab" data-section="purchaseInfo">Purchase Information</button>
-                            <button class="section-tab" data-section="locationInfo">Location Information</button>
-                            <button class="section-tab" data-section="userInfo">User Information</button>
-                            <button class="section-tab" data-section="statusInfo">Status and Warranty</button>
-                            <button class="section-tab" data-section="additionalInfo">Additional Information</button>
-                        </div>
-
-                        <form id="deviceForm" class="device-form">
-                            <!-- Basic Information Section -->
-                            <div id="basicInfo" class="section-content active">
-                                <div class="form-grid">
-                                    <div class="form-group">
-                                        <label for="assetId">Asset ID*</label>
-                                        <input type="text" id="assetId" name="assetId" required>
-                                    </div>
-                                    <div class="form-group">
-                                        <label for="company">Company</label>
-                                        <input type="text" id="company" name="company">
-                                    </div>
-                                    <div class="form-group">
-                                        <label for="assetName">Asset Name*</label>
-                                        <input type="text" id="assetName" name="assetName" required>
-                                    </div>
-                                    <div class="form-group">
-                                        <label for="assetTag">Asset Tag</label>
-                                        <input type="text" id="assetTag" name="assetTag">
-                                    </div>
-                                </div>
-                            </div>
-
-                            <!-- Device Details Section -->
-                            <div id="deviceDetails" class="section-content">
-                                <div class="form-grid">
-                                    <div class="form-group">
-                                        <label for="category">Category</label>
-                                        <select id="category" name="category">
-                                            <option value="">Select Category</option>
-                                            <option value="Laptop">Hardware</option>
-                                            <option value="Desktop Monitor">Software</option>
-                                            <option value="Headphone">Network Equipment</option>
-                                            <option value="Additional Keyboard">Peripheral</option>
-                                        </select>
-                                    </div>
-                                    <div class="form-group">
-                                        <label for="manufacturer">Manufacturer</label>
-                                        <input type="text" id="manufacturer" name="manufacturer">
-                                    </div>
-                                    <div class="form-group">
-                                        <label for="model">Model</label>
-                                        <input type="text" id="model" name="model">
-                                    </div>
-                                    <div class="form-group">
-                                        <label for="modelNo">Model Number</label>
-                                        <input type="text" id="modelNo" name="modelNo">
-                                    </div>
-                                    <div class="form-group">
-                                        <label for="serial">Serial Number</label>
-                                        <input type="text" id="serial" name="serial">
-                                    </div>
-                                    <div class="form-group">
-                                        <label for="macAddress">MAC Address</label>
-                                        <input type="text" id="macAddress" name="macAddress">
-                                    </div>
-                                </div>
-                            </div>
-
-                            <!-- Purchase Information Section -->
-                            <div id="purchaseInfo" class="section-content">
-                                <div class="form-grid">
-                                    <div class="form-group">
-                                        <label for="purchased">Purchase Date</label>
-                                        <input type="date" id="purchased" name="purchased">
-                                    </div>
-                                    <div class="form-group">
-                                        <label for="cost">Cost</label>
-                                        <input type="number" id="cost" name="cost" step="0.01">
-                                    </div>
-                                    <div class="form-group">
-                                        <label for="orderNumber">Order Number</label>
-                                        <input type="text" id="orderNumber" name="orderNumber">
-                                    </div>
-                                    <div class="form-group">
-                                        <label for="supplier">Supplier</label>
-                                        <input type="text" id="supplier" name="supplier">
-                                    </div>
-                                </div>
-                            </div>
-
-                            <!-- Location Information Section -->
-                            <div id="locationInfo" class="section-content">
-                                <div class="form-grid">
-                                    <div class="form-group">
-                                        <label for="location">Current Location</label>
-                                        <input type="text" id="location" name="location">
-                                    </div>
-                                    <div class="form-group">
-                                        <label for="address1">Address Line 1</label>
-                                        <input type="text" id="address1" name="address1">
-                                    </div>
-                                    <div class="form-group">
-                                        <label for="address2">Address Line 2</label>
-                                        <input type="text" id="address2" name="address2">
-                                    </div>
-                                    <div class="form-group">
-                                        <label for="city">City</label>
-                                        <input type="text" id="city" name="city">
-                                    </div>
-                                    <div class="form-group">
-                                        <label for="state">State</label>
-                                        <input type="text" id="state" name="state">
-                                    </div>
-                                    <div class="form-group">
-                                        <label for="country">Country</label>
-                                        <input type="text" id="country" name="country">
-                                    </div>
-                                    <div class="form-group">
-                                        <label for="zip">ZIP Code</label>
-                                        <input type="text" id="zip" name="zip">
-                                    </div>
-                                </div>
-                            </div>
-
-                            <!-- User Information Section -->
-                            <div id="userInfo" class="section-content">
-                                <div class="form-grid">
-                                    <div class="form-group">
-                                        <label for="username">Username</label>
-                                        <input type="text" id="username" name="username">
-                                    </div>
-                                    <div class="form-group">
-                                        <label for="employeeNo">Employee Number</label>
-                                        <input type="text" id="employeeNo" name="employeeNo">
-                                    </div>
-                                    <div class="form-group">
-                                        <label for="Udepartment">Department</label>
-                                        <input type="text" id="Udepartment" name="department">
-                                    </div>
-                                    <div class="form-group">
-                                        <label for="manager">Manager</label>
-                                        <input type="text" id="manager" name="manager">
-                                    </div>
-                                </div>
-                            </div>
-
-                            <!-- Status and Warranty Section -->
-                            <div id="statusInfo" class="section-content">
-                                <div class="form-grid">
-                                    <div class="form-group">
-                                        <label for="status">Status</label>
-                                        <select id="status" name="status" required>
-                                            <option value="Available">Available</option>
-                                            <option value="In Use">In Use</option>
-                                            <option value="Maintenance">Maintenance</option>
-                                            <option value="Retired">Retired</option>
-                                        </select>
-                                    </div>
-                                    <div class="form-group">
-                                        <label for="warranty">Warranty</label>
-                                        <input type="text" id="warranty" name="warranty">
-                                    </div>
-                                    <div class="form-group">
-                                        <label for="warrantyExpires">Warranty Expiration</label>
-                                        <input type="date" id="warrantyExpires" name="warrantyExpires">
-                                    </div>
-                                    <div class="form-group">
-                                        <label for="eol">End of Life Date</label>
-                                        <input type="date" id="eol" name="eol">
-                                    </div>
-                                </div>
-                            </div>
-
-                            <!-- Additional Information Section -->
-                            <div id="additionalInfo" class="section-content">
-                                <div class="form-grid">
-                                    <div class="form-group full-width">
-                                        <label for="configuration">Configuration</label>
-                                        <textarea id="configuration" name="configuration" rows="4"></textarea>
-                                    </div>
-                                    <div class="form-group full-width">
-                                        <label for="notes">Notes</label>
-                                        <textarea id="notes" name="notes" rows="4"></textarea>
-                                    </div>
-                                    <div class="form-group">
-                                        <label for="url">URL</label>
-                                        <input type="url" id="url" name="url">
-                                    </div>
-                                </div>
-                            </div>
-
-                            <!-- Form Actions -->
-                            <div class="form-actions">
-                                <button type="button" class="btn-secondary"
-                                    onclick="switchTab('assetList')">Cancel</button>
-                                <button type="submit" class="btn-primary">
-                                    <i class="fas fa-plus"></i> Add Asset
-                                </button>
-                            </div>
-                        </form>
-                    </div>
+            <!-- Asset List Tab Content -->
+            <div id="assetList" class="tab-content">
+                <div class="search-box">
+                    <i class="fas fa-search"></i>
+                    <input type="text" id="searchAsset" placeholder="Search assets~.">
+                </div>
+                <div class="table-container">
+                    <table class="asset-table">
+                        <thead>
+                            <tr>
+                                <th>Asset ID</th>
+                                <th>Asset Name</th>
+                                <th>Category</th>
+                                <th>Status</th>
+                                <th>Location</th>
+                                <th>Actions</th>
+                            </tr>
+                        </thead>
+                        <tbody id="assetTableBody"></tbody>
+                    </table>
                 </div>
             </div>
- <style>
-/* Modal Styles */
-.modal {
-    display: none;
-    position: fixed;
-    top: 0;
-    left: 0;
-    width: 100%;
-    height: 100%;
-    background: rgba(244, 241, 234, 0.95);
-    z-index: 1000;
-    padding: 0 1rem;
-}
 
-.modal-content {
-    background: #faf9f6;
-    margin: 2rem auto;
-    padding: 2rem;
-    border: 1px solid #e0dcd3;
-    border-radius: 12px;
-    width: 95%;
-    max-width: 1200px;
-    height: calc(100vh - 4rem);
-    max-height: none;
-    overflow-y: auto;
-    position: relative;
-    color: #333333;
-}
+            <!-- Add Asset Tab Content -->
+            <div id="addAsset" class="tab-content active">
+                <!-- Section Tabs -->
+                <div class="section-tabs">
+                    <button class="section-tab active" data-section="basicInfo">Basic Information</button>
+                    <button class="section-tab" data-section="deviceDetails">Device Details</button>
+                    <button class="section-tab" data-section="purchaseInfo">Purchase Information</button>
+                    <button class="section-tab" data-section="locationInfo">Location Information</button>
+                    <button class="section-tab" data-section="userInfo">User Information</button>
+                    <button class="section-tab" data-section="statusInfo">Status and Warranty</button>
+                    <button class="section-tab" data-section="additionalInfo">Additional Information</button>
+                </div>
 
-/* Modal Header */
-.modal-header {
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-    margin-bottom: 2rem;
-    padding-bottom: 1rem;
-    border-bottom: 1px solid #e0dcd3;
-}
+              <form id="deviceForm" class="device-form">
+    <!-- Basic Information Section -->
+    <div id="basicInfo" class="section-content active">
+        <div class="form-grid">
+            <div class="form-group">
+                <label for="companyName">Company</label>
+                <input type="text" id="companyName" name="companyName" autocomplete="off">
+            </div>
+            <div class="form-group">
+                <label for="assetName">Asset Name*</label>
+                <input type="text" id="assetName" name="assetName" required autocomplete="off">
+            </div>
+            <div class="form-group">
+                <label for="assetTag">Asset Tag</label>
+                <input type="text" id="assetTag" name="assetTag" autocomplete="off">
+            </div>
+        </div>
+    </div>
 
-.modal-header h2 {
-    color: #0d0063;
-    font-size: 1.5rem;
-    display: flex;
-    align-items: center;
-    gap: 0.5rem;
-}
+    <!-- Device Details Section -->
+    <div id="deviceDetails" class="section-content">
+        <div class="form-grid">
+            <div class="form-group">
+                <label for="categoryID">Category</label>
+                <select id="categoryID" name="categoryID" autocomplete="off">
+                    <option value="">Select Category</option>
+                    <option value="Laptop">Hardware</option>
+                    <option value="Desktop Monitor">Software</option>
+                    <option value="Headphone">Network Equipment</option>
+                    <option value="Additional Keyboard">Peripheral</option>
+                </select>
+            </div>
+            <div class="form-group">
+                <label for="manufacturerID">Manufacturer</label>
+                <input type="text" id="manufacturerID" name="manufacturerID" autocomplete="off">
+            </div>
+            <div class="form-group">
+                <label for="model">Model</label>
+                <input type="text" id="model" name="model" autocomplete="off">
+            </div>
+            <div class="form-group">
+                <label for="modelNo">Model Number</label>
+                <input type="text" id="modelNo" name="modelNo" autocomplete="off">
+            </div>
+            <div class="form-group">
+                <label for="serialNumber">Serial Number</label>
+                <input type="text" id="serialNumber" name="serialNumber" autocomplete="off">
+            </div>
+            <div class="form-group">
+                <label for="macAddress">MAC Address</label>
+                <input type="text" id="macAddress" name="macAddress" autocomplete="off">
+            </div>
+        </div>
+    </div>
 
-.close-btn {
-    background: none;
-    border: none;
-    color: #666666;
-    font-size: 1.5rem;
-    cursor: pointer;
-    transition: color 0.3s;
-}
+    <!-- Purchase Information Section -->
+    <div id="purchaseInfo" class="section-content">
+        <div class="form-grid">
+            <div class="form-group">
+                <label for="purchasedDate">Purchase Date</label>
+                <input type="date" id="purchasedDate" name="purchasedDate" autocomplete="off">
+            </div>
+            <div class="form-group">
+                <label for="cost">Cost</label>
+                <input type="number" id="cost" name="cost" step="0.01" autocomplete="off">
+            </div>
+            <div class="form-group">
+                <label for="orderNumber">Order Number</label>
+                <input type="text" id="orderNumber" name="orderNumber" autocomplete="off">
+            </div>
+            <div class="form-group">
+                <label for="supplierID">Supplier</label>
+                <input type="text" id="supplierID" name="supplierID" autocomplete="off">
+            </div>
+        </div>
+    </div>
 
-/* Tabs Styles */
-.tabs {
-    display: flex;
-    gap: 1rem;
-    margin-bottom: 2rem;
-    border-bottom: 1px solid #e0dcd3;
-    padding-bottom: 0.5rem;
-}
+    <!-- Location Information Section -->
+    <div id="locationInfo" class="section-content">
+        <div class="form-grid">
+            <div class="form-group">
+                <label for="defaultLocationID">Current Location</label>
+                <input type="text" id="defaultLocationID" name="defaultLocationID" autocomplete="off">
+            </div>
+            <!-- Extra fields for style (do not map to DB columns) -->
+            <div class="form-group">
+                <label for="address1">Address Line 1</label>
+                <!-- recognized token: "address-line1" -->
+                <input type="text" id="address1" name="address1" autocomplete="address-line1">
+            </div>
+            <div class="form-group">
+                <label for="address2">Address Line 2</label>
+                <!-- recognized token: "address-line2" -->
+                <input type="text" id="address2" name="address2" autocomplete="address-line2">
+            </div>
+            <div class="form-group">
+                <label for="city">City</label>
+                <!-- recognized token: "address-level2" -->
+                <input type="text" id="city" name="city" autocomplete="address-level2">
+            </div>
+            <div class="form-group">
+                <label for="state">State</label>
+                <!-- recognized token: "address-level1" -->
+                <input type="text" id="state" name="state" autocomplete="address-level1">
+            </div>
+            <div class="form-group">
+                <label for="country">Country</label>
+                <!-- recognized token: "country" -->
+                <input type="text" id="country" name="country" autocomplete="country">
+            </div>
+            <div class="form-group">
+                <label for="zip">ZIP Code</label>
+                <!-- recognized token: "postal-code" -->
+                <input type="text" id="zip" name="zip" autocomplete="postal-code">
+            </div>
+        </div>
+    </div>
 
-.tab-button {
-    background: none;
-    border: none;
-    color: #666666;
-    padding: 0.75rem 1.5rem;
-    cursor: pointer;
-    font-size: 1rem;
-    display: flex;
-    align-items: center;
-    gap: 0.5rem;
-    border-bottom: 2px solid transparent;
-    transition: all 0.3s;
-}
+    <!-- User Information Section -->
+    <div id="userInfo" class="section-content">
+        <div class="form-grid">
+            <!-- Extra fields for style only; not mapped to AssetMaster -->
+            <div class="form-group">
+                <label for="username">Username</label>
+                <input type="text" id="username" name="username" autocomplete="off">
+            </div>
+            <div class="form-group">
+                <label for="employeeNo">Employee Number</label>
+                <input type="text" id="employeeNo" name="employeeNo" autocomplete="off">
+            </div>
+            <div class="form-group">
+                <label for="Udepartment">Department</label>
+                <input type="text" id="Udepartment" name="department" autocomplete="off">
+            </div>
+            <div class="form-group">
+                <label for="manager">Manager</label>
+                <input type="text" id="manager" name="manager" autocomplete="off">
+            </div>
+        </div>
+    </div>
 
-.tab-button.active {
-    color: #0d0063;
-    border-bottom-color: #0d0063;
-}
+    <!-- Status and Warranty Section -->
+    <div id="statusInfo" class="section-content">
+        <div class="form-grid">
+            <div class="form-group">
+                <label for="status">Status</label>
+                <select id="status" name="status" required autocomplete="off">
+                    <option value="Available">Available</option>
+                    <option value="In Use">In Use</option>
+                    <option value="Maintenance">Maintenance</option>
+                    <option value="Retired">Retired</option>
+                </select>
+            </div>
+            <div class="form-group">
+                <label for="warrantyPeriod">Warranty</label>
+                <input type="text" id="warrantyPeriod" name="warrantyPeriod" autocomplete="off">
+            </div>
+            <div class="form-group">
+                <label for="warrantyExpires">Warranty Expiration</label>
+                <input type="date" id="warrantyExpires" name="warrantyExpires" autocomplete="off">
+            </div>
+            <div class="form-group">
+                <label for="eol">End of Life Date</label>
+                <input type="date" id="eol" name="eol" autocomplete="off">
+            </div>
+        </div>
+    </div>
 
-.tab-content {
-    display: none;
-}
+    <!-- Additional Information Section -->
+    <div id="additionalInfo" class="section-content">
+        <div class="form-grid">
+            <div class="form-group full-width">
+                <label for="configuration">Configuration</label>
+                <textarea id="configuration" name="configuration" rows="4" autocomplete="off"></textarea>
+            </div>
+            <div class="form-group full-width">
+                <label for="notes">Notes</label>
+                <textarea id="notes" name="notes" rows="4" autocomplete="off"></textarea>
+            </div>
+            <div class="form-group">
+                <label for="url">URL</label>
+                <input type="url" id="url" name="url" autocomplete="url">
+            </div>
+        </div>
+    </div>
 
-.tab-content.active {
-    display: block;
-}
+    <div class="form-actions">
+        <button type="button" class="btn-secondary" onclick="switchTab('assetList')">Cancel</button>
+        <button type="submit" class="btn-primary">
+            <i class="fas fa-plus"></i> Add Asset
+        </button>
+    </div>
+</form>
 
-/* Section Tabs */
-.section-tabs {
-    display: flex;
-    flex-wrap: wrap;
-    gap: 0.5rem;
-    margin-bottom: 2rem;
-    border-bottom: 1px solid #e0dcd3;
-    padding-bottom: 0.5rem;
-}
 
-.section-tab {
-    background: none;
-    border: none;
-    color: #666666;
-    padding: 0.75rem 1.5rem;
-    cursor: pointer;
-    font-size: 0.9rem;
-    border-bottom: 2px solid transparent;
-    transition: all 0.3s;
-}
+            </div>
+        </div>
+    </div>
+    <style>
+        /* Modal Styles */
+        .modal {
+            display: none;
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(244, 241, 234, 0.95);
+            z-index: 1000;
+            padding: 0 1rem;
+        }
 
-.section-tab:hover {
-    color: #0d0063;
-}
+        .modal-content {
+            background: #faf9f6;
+            margin: 2rem auto;
+            padding: 2rem;
+            border: 1px solid #e0dcd3;
+            border-radius: 12px;
+            width: 95%;
+            max-width: 1200px;
+            height: calc(100vh - 4rem);
+            max-height: none;
+            overflow-y: auto;
+            position: relative;
+            color: #333333;
+        }
 
-.section-tab.active {
-    color: #0d0063;
-    border-bottom-color: #0d0063;
-}
+        /* Modal Header */
+        .modal-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 2rem;
+            padding-bottom: 1rem;
+            border-bottom: 1px solid #e0dcd3;
+        }
 
-.section-content {
-    display: none;
-    padding: 1.5rem;
-    border-radius: 8px;
-    margin-bottom: 1.5rem;
-}
+        .modal-header h2 {
+            color: #0d0063;
+            font-size: 1.5rem;
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+        }
 
-.section-content.active {
-    display: block;
-}
+        .close-btn {
+            background: none;
+            border: none;
+            color: #666666;
+            font-size: 1.5rem;
+            cursor: pointer;
+            transition: color 0.3s;
+        }
 
-/* Form Styles */
-.form-grid {
-    display: grid;
-    grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
-    gap: 1.5rem;
-}
+        /* Tabs Styles */
+        .tabs {
+            display: flex;
+            gap: 1rem;
+            margin-bottom: 2rem;
+            border-bottom: 1px solid #e0dcd3;
+            padding-bottom: 0.5rem;
+        }
 
-.form-group {
-    margin-bottom: 1.5rem;
-}
+        .tab-button {
+            background: none;
+            border: none;
+            color: #666666;
+            padding: 0.75rem 1.5rem;
+            cursor: pointer;
+            font-size: 1rem;
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+            border-bottom: 2px solid transparent;
+            transition: all 0.3s;
+        }
 
-.form-group label {
-    display: block;
-    margin-bottom: 0.5rem;
-    color: #666666;
-    font-size: 0.9rem;
-}
+        .tab-button.active {
+            color: #0d0063;
+            border-bottom-color: #0d0063;
+        }
 
-.form-group input,
-.form-group select,
-.form-group textarea {
-    width: 100%;
-    padding: 0.8rem;
-    background: #faf9f6;
-    border: 1px solid #e0dcd3;
-    border-radius: 6px;
-    color: #333333;
-    font-size: 0.9rem;
-    transition: all 0.3s ease;
-}
+        .tab-content {
+            display: none;
+        }
 
-.form-group input:focus,
-.form-group select:focus,
-.form-group textarea:focus {
-    border-color: #0d0063;
-    box-shadow: 0 0 0 2px rgba(13, 0, 99, 0.2);
-    outline: none;
-}
+        .tab-content.active {
+            display: block;
+        }
 
-.form-group.full-width {
-    grid-column: 1 / -1;
-}
+        /* Section Tabs */
+        .section-tabs {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 0.5rem;
+            margin-bottom: 2rem;
+            border-bottom: 1px solid #e0dcd3;
+            padding-bottom: 0.5rem;
+        }
 
-/* Button Styles */
-.btn-primary,
-.btn-secondary {
-    padding: 0.8rem 1.5rem;
-    border: none;
-    border-radius: 6px;
-    cursor: pointer;
-    display: flex;
-    align-items: center;
-    gap: 0.5rem;
-    font-size: 0.9rem;
-    transition: all 0.3s;
-}
+        .section-tab {
+            background: none;
+            border: none;
+            color: #666666;
+            padding: 0.75rem 1.5rem;
+            cursor: pointer;
+            font-size: 0.9rem;
+            border-bottom: 2px solid transparent;
+            transition: all 0.3s;
+        }
 
-.btn-primary {
-    background: #0d0063;
-    color: white;
-}
+        .section-tab:hover {
+            color: #0d0063;
+        }
 
-.btn-secondary {
-    background: #f4f1ea;
-    color: #333333;
-    border: 1px solid #e0dcd3;
-}
+        .section-tab.active {
+            color: #0d0063;
+            border-bottom-color: #0d0063;
+        }
 
-.btn-danger {
-    background: #dc3545;
-    color: white;
-}
+        .section-content {
+            display: none;
+            padding: 1.5rem;
+            border-radius: 8px;
+            margin-bottom: 1.5rem;
+        }
 
-.btn-primary:hover {
-    background: #0a004d;
-}
+        .section-content.active {
+            display: block;
+        }
 
-.btn-secondary:hover {
-    background: #e0dcd3;
-}
+        /* Form Styles */
+        .form-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+            gap: 1.5rem;
+        }
 
-.btn-danger:hover {
-    background: #bb2d3b;
-}
+        .form-group {
+            margin-bottom: 1.5rem;
+        }
 
-/* Table Styles */
-.table-container {
-    overflow-x: auto;
-    background: #ffffff;
-    border: 1px solid #e0dcd3;
-}
+        .form-group label {
+            display: block;
+            margin-bottom: 0.5rem;
+            color: #666666;
+            font-size: 0.9rem;
+        }
 
-.asset-table {
-    width: 100%;
-    border-collapse: collapse;
-}
+        .form-group input,
+        .form-group select,
+        .form-group textarea {
+            width: 100%;
+            padding: 0.8rem;
+            background: #faf9f6;
+            border: 1px solid #e0dcd3;
+            border-radius: 6px;
+            color: #333333;
+            font-size: 0.9rem;
+            transition: all 0.3s ease;
+        }
 
-.asset-table th,
-.asset-table td {
-    padding: 1rem;
-    text-align: left;
-    border-bottom: 1px solid #e0dcd3;
-}
+        .form-group input:focus,
+        .form-group select:focus,
+        .form-group textarea:focus {
+            border-color: #0d0063;
+            box-shadow: 0 0 0 2px rgba(13, 0, 99, 0.2);
+            outline: none;
+        }
 
-.asset-table th {
-    background: #0d0063;
-    color: #ffffff;
-    font-weight: 500;
-    white-space: nowrap;
-}
+        .form-group.full-width {
+            grid-column: 1 / -1;
+        }
 
-.asset-table tr:hover {
-    background: #f4f1ea;
-}
+        /* Button Styles */
+        .btn-primary,
+        .btn-secondary {
+            padding: 0.8rem 1.5rem;
+            border: none;
+            border-radius: 6px;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+            font-size: 0.9rem;
+            transition: all 0.3s;
+        }
 
-/* Search Box Styles */
-.search-box {
-    position: relative;
-    max-width: 500px;
-    margin-bottom: 1.5rem;
-}
+        .btn-primary {
+            background: #0d0063;
+            color: white;
+        }
 
-.search-box i {
-    position: absolute;
-    left: 1rem;
-    top: 50%;
-    transform: translateY(-50%);
-    color: #666666;
-}
+        .btn-secondary {
+            background: #f4f1ea;
+            color: #333333;
+            border: 1px solid #e0dcd3;
+        }
 
-.search-box input {
-    width: 100%;
-    padding: 0.8rem 1rem 0.8rem 2.5rem;
-    background: #ffffff;
-    border: 1px solid #e0dcd3;
-    border-radius: 6px;
-    color: #333333;
-}
+        .btn-danger {
+            background: #dc3545;
+            color: white;
+        }
 
-/* Responsive Design */
-@@media (max-width: 768px) {
-    .modal-content {
-        margin: 1rem;
-        padding: 1.5rem;
-    }
+        .btn-primary:hover {
+            background: #0a004d;
+        }
 
-    .form-grid {
-        grid-template-columns: 1fr;
-    }
+        .btn-secondary:hover {
+            background: #e0dcd3;
+        }
 
-    .form-actions {
-        flex-direction: column;
-    }
+        .btn-danger:hover {
+            background: #bb2d3b;
+        }
 
-    .form-actions button {
-        width: 100%;
-    }
+        /* Table Styles */
+        .table-container {
+            overflow-x: auto;
+            background: #ffffff;
+            border: 1px solid #e0dcd3;
+        }
 
-    .tabs {
-        flex-direction: column;
-    }
+        .asset-table {
+            width: 100%;
+            border-collapse: collapse;
+        }
 
-    .tab-button {
-        width: 100%;
-        justify-content: center;
-    }
-}
+        .asset-table th,
+        .asset-table td {
+            padding: 1rem;
+            text-align: left;
+            border-bottom: 1px solid #e0dcd3;
+        }
 
-@@media (max-width: 480px) {
-    .table-container {
-        font-size: 0.9rem;
-    }
+        .asset-table th {
+            background: #0d0063;
+            color: #ffffff;
+            font-weight: 500;
+            white-space: nowrap;
+        }
 
-    .tab-button {
-        padding: 1rem;
-    }
-}
+        .asset-table tr:hover {
+            background: #f4f1ea;
+        }
 
-/* Animation */
-@@keyframes fadeIn {
-    from {
-        opacity: 0;
-        transform: translateY(10px);
-    }
-    to {
-        opacity: 1;
-        transform: translateY(0);
-    }
-}
+        /* Search Box Styles */
+        .search-box {
+            position: relative;
+            max-width: 500px;
+            margin-bottom: 1.5rem;
+        }
 
-.section-content.active {
-    animation: fadeIn 0.3s ease-out;
-}
-</style>
+        .search-box i {
+            position: absolute;
+            left: 1rem;
+            top: 50%;
+            transform: translateY(-50%);
+            color: #666666;
+        }
 
-<script>
-document.addEventListener("DOMContentLoaded", function () {
-    // Ensure modal opens automatically on page load
-    document.getElementById("deviceModal").style.display = "block";
+        .search-box input {
+            width: 100%;
+            padding: 0.8rem 1rem 0.8rem 2.5rem;
+            background: #ffffff;
+            border: 1px solid #e0dcd3;
+            border-radius: 6px;
+            color: #333333;
+        }
 
-    const tabs = document.querySelectorAll(".tab-button");
-    const contents = document.querySelectorAll(".tab-content");
-    const sectionTabs = document.querySelectorAll(".section-tab");
-    const sectionContents = document.querySelectorAll(".section-content");
+        /* Responsive Design */
+        @@media(max - width: 768px) {
+                .modal-content {
+                    margin: 1rem;
+                    padding: 1.5rem;
+                }
 
-    // Updated function to accept the data attribute type (either "tab" or "section")
-    function activateTab(elements, contents, target, dataAttr) {
-        elements.forEach(tab => tab.classList.remove("active"));
-        contents.forEach(content => content.classList.remove("active"));
-        // Use the appropriate data attribute for selection
-        document.querySelector(`[data-${dataAttr}="${target}"]`).classList.add("active");
-        document.getElementById(target).classList.add("active");
-    }
+                .form-grid {
+                    grid-template-columns: 1fr;
+                }
 
-    // Main tabs event listeners use data-tab
-    tabs.forEach(tab => {
-        tab.addEventListener("click", function () {
-            activateTab(tabs, contents, this.dataset.tab, "tab");
+                .form-actions {
+                    flex-direction: column;
+                }
+
+                .form-actions button {
+                    width: 100%;
+                }
+
+                .tabs {
+                    flex-direction: column;
+                }
+
+                .tab-button {
+                    width: 100%;
+                    justify-content: center;
+                }
+            }
+
+            @@media(max - width: 480px) {
+                    .table-container {
+                        font-size: 0.9rem;
+                    }
+
+                    .tab-button {
+                        padding: 1rem;
+                    }
+                }
+
+                /* Animation */
+                @@keyframes fadeIn {
+            from {
+                opacity: 0;
+                transform: translateY(10px);
+            }
+
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        .section-content.active {
+            animation: fadeIn 0.3s ease-out;
+        }
+    </style>
+
+    <script>
+        document.addEventListener("DOMContentLoaded", function () {
+            // Ensure modal opens automatically on page load
+            document.getElementById("deviceModal").style.display = "block";
+
+            const tabs = document.querySelectorAll(".tab-button");
+            const contents = document.querySelectorAll(".tab-content");
+            const sectionTabs = document.querySelectorAll(".section-tab");
+            const sectionContents = document.querySelectorAll(".section-content");
+
+            // Updated function to accept the data attribute type (either "tab" or "section")
+            function activateTab(elements, contents, target, dataAttr) {
+                elements.forEach(tab => tab.classList.remove("active"));
+                contents.forEach(content => content.classList.remove("active"));
+                // Use the appropriate data attribute for selection
+                document.querySelector(`[data-${dataAttr}="${target}"]`).classList.add("active");
+                document.getElementById(target).classList.add("active");
+            }
+
+            // Main tabs event listeners use data-tab
+            tabs.forEach(tab => {
+                tab.addEventListener("click", function () {
+                    activateTab(tabs, contents, this.dataset.tab, "tab");
+                });
+            });
+
+            // Section tabs event listeners use data-section
+            sectionTabs.forEach(tab => {
+                tab.addEventListener("click", function () {
+                    activateTab(sectionTabs, sectionContents, this.dataset.section, "section");
+                });
+            });
         });
-    });
 
-    // Section tabs event listeners use data-section
-    sectionTabs.forEach(tab => {
-        tab.addEventListener("click", function () {
-            activateTab(sectionTabs, sectionContents, this.dataset.section, "section");
-        });
+        document.getElementById("closeDeviceModal").onclick = () => {
+            window.location.href = "/Home/Landing";
+        };
+
+       document.addEventListener("DOMContentLoaded", function () {
+    const deviceForm = document.getElementById("deviceForm");
+    deviceForm.addEventListener("submit", async function (e) {
+        e.preventDefault();
+
+        // Gather form data using keys that match AssetMasterDto
+        const assetData = {
+            // Omit AssetId to let the DB auto-generate it.
+            CompanyName: document.getElementById('companyName').value,
+            AssetName: document.getElementById('assetName').value,
+            AssetTag: document.getElementById('assetTag').value,
+            Model: document.getElementById('model').value,
+            ModelNo: document.getElementById('modelNo').value,
+            SerialNumber: document.getElementById('serialNumber').value,
+            CategoryID: document.getElementById('categoryID').value,
+            ManufacturerID: document.getElementById('manufacturerID').value,
+            SupplierID: document.getElementById('supplierID').value,
+            DefaultLocationID: document.getElementById('defaultLocationID').value,
+            PurchasedDate: document.getElementById('purchasedDate').value,
+            Cost: document.getElementById('cost').value,
+            OrderNumber: document.getElementById('orderNumber').value,
+            Status: document.getElementById('status').value,
+            WarrantyPeriod: document.getElementById('warrantyPeriod').value,
+            WarrantyExpires: document.getElementById('warrantyExpires').value,
+            EOL: document.getElementById('eol').value,
+            CurrentValue: document.getElementById('currentValue') ? document.getElementById('currentValue').value : null,
+            LastAudit: document.getElementById('lastAudit') ? document.getElementById('lastAudit').value : null,
+            NextAuditDate: document.getElementById('nextAuditDate') ? document.getElementById('nextAuditDate').value : null,
+            Notes: document.getElementById('notes').value
+        };
+
+        try {
+            const response = await fetch('/api/asset/add', {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify(assetData)
+            });
+
+            if (response.ok) {
+                alert('Asset added successfully!');
+                deviceForm.reset();
+                // Optionally refresh the asset list.
+            } else {
+                alert('Failed to add asset.');
+            }
+        } catch (error) {
+            console.error('Error adding asset:', error);
+            alert('An error occurred while adding the asset.');
+        }
     });
 });
 
-document.getElementById("closeDeviceModal").onclick = () => {
-  window.location.href = "/Home/Landing";
-};
 
 
-</script>
+
+
+    </script>
 
 </body>
 

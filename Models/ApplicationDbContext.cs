@@ -12,5 +12,7 @@ namespace AEET.Models
         // Add the DbSet properties using plural names
         public DbSet<RoleMaster> RoleMasters { get; set; } = default!;
         public DbSet<UserMaster> UserMasters { get; set; } = default!;
+       public DbSet<AssetMaster> AssetMasters { get; set; }
+
     }
 }

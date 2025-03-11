@@ -1,6 +1,10 @@
 ﻿using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
-using Microsoft.EntityFrameworkCore;
+using AEET.Code;
+using AEET.Models;
+using AEET.Models.DTOs;
+using System;
+using System.Threading.Tasks;
 
 namespace AEET.Api
 {
@@ -8,21 +12,38 @@ namespace AEET.Api
     [ApiController]
     public class UserRoleController : ControllerBase
     {
-        [HttpGet]
-        [Route("users/list")]
-        public async Task<dynamic> GetUserList([FromServices] AEET.Code.UserManager user)
+        [HttpGet("users/list")]
+        public async Task<IActionResult> GetUserList([FromServices] UserManager user)
         {
-            // Query the UserMaster table and select only the columns you need
-            // Return the result as JSON
-            return await user.GetUserList();
+            var result = await user.GetUserList();
+            return Ok(result);
         }
-        [HttpGet]
-        [Route("roles/list")]
-        public async Task<dynamic> GetRoleList([FromServices] AEET.Code.RoleManager role)
+
+        [HttpGet("roles/list")]
+        public async Task<IActionResult> GetRoleList([FromServices] RoleManager role)
         {
-            // Query the UserMaster table and select only the columns you need
-            // Return the result as JSON
-            return await role.GetRoles();
+            var result = await role.GetRoles();
+            return Ok(result);
         }
+
+        [HttpPost("users/add")]
+        public async Task<IActionResult> AddUser(
+    [FromServices] UserManager user,
+    [FromBody] UserMasterDto model)
+        {
+            if (!ModelState.IsValid)
+                return BadRequest(ModelState);
+
+            try
+            {
+                var addedUser = await user.AddUser(model);
+                return Ok(addedUser);
+            }
+            catch (ArgumentException ex)
+            {
+                return BadRequest(ex.Message);
+            }
+        }
+
     }
 }

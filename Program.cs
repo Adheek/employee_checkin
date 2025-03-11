@@ -5,12 +5,9 @@ using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
 using Microsoft.EntityFrameworkCore;
 using System;
-using AEET.Models;
+using AEET.Models;  // Contains ApplicationDbContext, Sql, etc.
 
 var builder = WebApplication.CreateBuilder(args);
-
-// Configure logging (builder.Logging is available by default)
-// You can add additional logging providers here if needed
 
 // Add services to the container.
 builder.Services.AddControllersWithViews();
@@ -27,11 +24,15 @@ builder.Services.AddSession(options =>
 builder.Services.AddDbContext<ApplicationDbContext>(options =>
     options.UseSqlServer(builder.Configuration.GetConnectionString("DefaultConnection")));
 
-// Register your custom SQL test service.
+// Register your custom SQL test service as a Singleton.
 builder.Services.AddSingleton<Sql>();
-builder.Services.AddScoped<AEET.Code.UserManager>();
 
-// Add CORS policy for development. (Tighten this for production.)
+// Register your custom classes for Dependency Injection (DI).
+builder.Services.AddScoped<AEET.Code.UserManager>();
+builder.Services.AddScoped<AEET.Code.RoleManager>();
+builder.Services.AddScoped<AEET.Code.AssetManager>(); // Register AssetManager for asset operations
+
+// Add CORS policy for development (tighten for production).
 builder.Services.AddCors(options =>
 {
     options.AddPolicy("AllowAllOrigins",
@@ -40,10 +41,8 @@ builder.Services.AddCors(options =>
                         .AllowAnyHeader());
 });
 
-// (Optional) Add authentication and authorization services here if needed in the future.
-// For example:
-// builder.Services.AddAuthentication(/* options */)
-//         .AddCookie(/* options */);
+// (Optional) Add authentication and authorization services if needed in the future.
+// builder.Services.AddAuthentication(/* options */).AddCookie(/* options */);
 // builder.Services.AddAuthorization();
 
 var app = builder.Build();
@@ -51,11 +50,9 @@ var app = builder.Build();
 // Test the database connection using dependency injection.
 try
 {
-    using (var scope = app.Services.CreateScope())
-    {
-        var sqlTest = scope.ServiceProvider.GetRequiredService<Sql>();
-        sqlTest.TestConnection(); // This prints success/failure in the terminal.
-    }
+    using var scope = app.Services.CreateScope();
+    var sqlTest = scope.ServiceProvider.GetRequiredService<Sql>();
+    sqlTest.TestConnection(); // Prints success/failure in the terminal.
 }
 catch (Exception ex)
 {
@@ -90,7 +87,10 @@ app.UseSession();
 // Enable authorization middleware.
 app.UseAuthorization();
 
-// Define the default route (starting at the login page).
+// Map attribute-routed controllers (for API endpoints).
+app.MapControllers();
+
+// Define the default MVC route (starting at the login page).
 app.MapControllerRoute(
     name: "default",
     pattern: "{controller=Account}/{action=Login}/{id?}");
