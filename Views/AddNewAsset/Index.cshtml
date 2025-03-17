@@ -3,18 +3,16 @@
 }
 <!DOCTYPE html>
 <html lang="en">
-
 <head>
-
     <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
-
 </head>
 
 <body>
-    <!--Add New Device-->
+    <!-- Modal Container -->
     <div id="deviceModal" class="modal">
         <div class="modal-content">
+            <!-- Header -->
             <div class="modal-header">
                 <h2>
                     <i class="fas fa-laptop"></i>
@@ -25,16 +23,16 @@
 
             <!-- Main Tabs -->
             <div class="tabs">
-                <button class="tab-button" data-tab="assetList">
+                <button class="tab-button active" data-tab="assetList">
                     <i class="fas fa-list"></i> Asset List
                 </button>
-                <button class="tab-button active" data-tab="addAsset">
+                <button class="tab-button" data-tab="addAsset">
                     <i class="fas fa-plus"></i> Add New Asset
                 </button>
             </div>
 
             <!-- Asset List Tab Content -->
-            <div id="assetList" class="tab-content">
+            <div id="assetList" class="tab-content active">
                 <div class="search-box">
                     <i class="fas fa-search"></i>
                     <input type="text" id="searchAsset" placeholder="Search assets~.">
@@ -57,218 +55,161 @@
             </div>
 
             <!-- Add Asset Tab Content -->
-            <div id="addAsset" class="tab-content active">
-                <!-- Section Tabs -->
-                <div class="section-tabs">
-                    <button class="section-tab active" data-section="basicInfo">Basic Information</button>
-                    <button class="section-tab" data-section="deviceDetails">Device Details</button>
-                    <button class="section-tab" data-section="purchaseInfo">Purchase Information</button>
-                    <button class="section-tab" data-section="locationInfo">Location Information</button>
-                    <button class="section-tab" data-section="userInfo">User Information</button>
-                    <button class="section-tab" data-section="statusInfo">Status and Warranty</button>
-                    <button class="section-tab" data-section="additionalInfo">Additional Information</button>
-                </div>
+            <div id="addAsset" class="tab-content">
+                <!-- Button to fill sample data (optional for testing) -->
+                <button type="button" id="fillSampleDataBtn" class="btn-secondary" style="margin-bottom:1rem;">
+                    Fill Sample Data
+                </button>
 
-              <form id="deviceForm" class="device-form">
-    <!-- Basic Information Section -->
-    <div id="basicInfo" class="section-content active">
-        <div class="form-grid">
-            <div class="form-group">
-                <label for="companyName">Company</label>
-                <input type="text" id="companyName" name="companyName" autocomplete="off">
-            </div>
-            <div class="form-group">
-                <label for="assetName">Asset Name*</label>
-                <input type="text" id="assetName" name="assetName" required autocomplete="off">
-            </div>
-            <div class="form-group">
-                <label for="assetTag">Asset Tag</label>
-                <input type="text" id="assetTag" name="assetTag" autocomplete="off">
-            </div>
-        </div>
-    </div>
+                <form id="fullDataForm" class="full-data-form">
+                    <!-- Category Details Section -->
+                    <h2>Category Details</h2>
+                    <div class="form-grid">
+                        <div class="form-group">
+                            <label for="categoryName">Category Name*</label>
+                            <input type="text" id="categoryName" name="categoryName" required autocomplete="off">
+                        </div>
+                    </div>
 
-    <!-- Device Details Section -->
-    <div id="deviceDetails" class="section-content">
-        <div class="form-grid">
-            <div class="form-group">
-                <label for="categoryID">Category</label>
-                <select id="categoryID" name="categoryID" autocomplete="off">
-                    <option value="">Select Category</option>
-                    <option value="Laptop">Hardware</option>
-                    <option value="Desktop Monitor">Software</option>
-                    <option value="Headphone">Network Equipment</option>
-                    <option value="Additional Keyboard">Peripheral</option>
-                </select>
-            </div>
-            <div class="form-group">
-                <label for="manufacturerID">Manufacturer</label>
-                <input type="text" id="manufacturerID" name="manufacturerID" autocomplete="off">
-            </div>
-            <div class="form-group">
-                <label for="model">Model</label>
-                <input type="text" id="model" name="model" autocomplete="off">
-            </div>
-            <div class="form-group">
-                <label for="modelNo">Model Number</label>
-                <input type="text" id="modelNo" name="modelNo" autocomplete="off">
-            </div>
-            <div class="form-group">
-                <label for="serialNumber">Serial Number</label>
-                <input type="text" id="serialNumber" name="serialNumber" autocomplete="off">
-            </div>
-            <div class="form-group">
-                <label for="macAddress">MAC Address</label>
-                <input type="text" id="macAddress" name="macAddress" autocomplete="off">
-            </div>
-        </div>
-    </div>
+                    <!-- Vendor Details Section -->
+                    <h2>Vendor Details</h2>
+                    <div class="form-grid">
+                        <div class="form-group">
+                            <label for="vendorName">Vendor Name*</label>
+                            <input type="text" id="vendorName" name="vendorName" required autocomplete="off">
+                        </div>
+                        <div class="form-group">
+                            <label for="vendorType">Vendor Type (e.g., Manufacturer, Supplier)*</label>
+                            <input type="text" id="vendorType" name="vendorType" required autocomplete="off">
+                        </div>
+                    </div>
 
-    <!-- Purchase Information Section -->
-    <div id="purchaseInfo" class="section-content">
-        <div class="form-grid">
-            <div class="form-group">
-                <label for="purchasedDate">Purchase Date</label>
-                <input type="date" id="purchasedDate" name="purchasedDate" autocomplete="off">
-            </div>
-            <div class="form-group">
-                <label for="cost">Cost</label>
-                <input type="number" id="cost" name="cost" step="0.01" autocomplete="off">
-            </div>
-            <div class="form-group">
-                <label for="orderNumber">Order Number</label>
-                <input type="text" id="orderNumber" name="orderNumber" autocomplete="off">
-            </div>
-            <div class="form-group">
-                <label for="supplierID">Supplier</label>
-                <input type="text" id="supplierID" name="supplierID" autocomplete="off">
-            </div>
-        </div>
-    </div>
+                    <!-- Location Details Section -->
+                    <h2>Location Details</h2>
+                    <div class="form-grid">
+                        <div class="form-group">
+                            <label for="country">Country*</label>
+                            <input type="text" id="country" name="country" required autocomplete="off">
+                        </div>
+                        <div class="form-group">
+                            <label for="state">State*</label>
+                            <input type="text" id="state" name="state" required autocomplete="off">
+                        </div>
+                        <div class="form-group">
+                            <label for="city">City*</label>
+                            <input type="text" id="city" name="city" required autocomplete="off">
+                        </div>
+                        <div class="form-group">
+                            <label for="address">Address*</label>
+                            <input type="text" id="address" name="address" required autocomplete="off">
+                        </div>
+                        <div class="form-group">
+                            <label for="zipCode">ZIP Code</label>
+                            <input type="text" id="zipCode" name="zipCode" autocomplete="off">
+                        </div>
+                        <div class="form-group">
+                            <label for="locationType">Location Type</label>
+                            <input type="number" id="locationType" name="locationType" autocomplete="off">
+                        </div>
+                    </div>
 
-    <!-- Location Information Section -->
-    <div id="locationInfo" class="section-content">
-        <div class="form-grid">
-            <div class="form-group">
-                <label for="defaultLocationID">Current Location</label>
-                <input type="text" id="defaultLocationID" name="defaultLocationID" autocomplete="off">
-            </div>
-            <!-- Extra fields for style (do not map to DB columns) -->
-            <div class="form-group">
-                <label for="address1">Address Line 1</label>
-                <!-- recognized token: "address-line1" -->
-                <input type="text" id="address1" name="address1" autocomplete="address-line1">
-            </div>
-            <div class="form-group">
-                <label for="address2">Address Line 2</label>
-                <!-- recognized token: "address-line2" -->
-                <input type="text" id="address2" name="address2" autocomplete="address-line2">
-            </div>
-            <div class="form-group">
-                <label for="city">City</label>
-                <!-- recognized token: "address-level2" -->
-                <input type="text" id="city" name="city" autocomplete="address-level2">
-            </div>
-            <div class="form-group">
-                <label for="state">State</label>
-                <!-- recognized token: "address-level1" -->
-                <input type="text" id="state" name="state" autocomplete="address-level1">
-            </div>
-            <div class="form-group">
-                <label for="country">Country</label>
-                <!-- recognized token: "country" -->
-                <input type="text" id="country" name="country" autocomplete="country">
-            </div>
-            <div class="form-group">
-                <label for="zip">ZIP Code</label>
-                <!-- recognized token: "postal-code" -->
-                <input type="text" id="zip" name="zip" autocomplete="postal-code">
-            </div>
-        </div>
-    </div>
+                    <!-- Asset Details Section -->
+                    <h2>Asset Details</h2>
+                    <div class="form-grid">
+                        <!-- Basic Asset Information -->
+                        <div class="form-group">
+                            <label for="companyName">Company Name</label>
+                            <input type="text" id="companyName" name="companyName" autocomplete="off">
+                        </div>
+                        <div class="form-group">
+                            <label for="assetName">Asset Name*</label>
+                            <input type="text" id="assetName" name="assetName" required autocomplete="off">
+                        </div>
+                        <div class="form-group">
+                            <label for="assetTag">Asset Tag</label>
+                            <input type="text" id="assetTag" name="assetTag" autocomplete="off">
+                        </div>
+                        <!-- Device Details -->
+                        <div class="form-group">
+                            <label for="model">Model</label>
+                            <input type="text" id="model" name="model" autocomplete="off">
+                        </div>
+                        <div class="form-group">
+                            <label for="modelNo">Model Number</label>
+                            <input type="text" id="modelNo" name="modelNo" autocomplete="off">
+                        </div>
+                        <div class="form-group">
+                            <label for="serialNumber">Serial Number</label>
+                            <input type="text" id="serialNumber" name="serialNumber" autocomplete="off">
+                        </div>
+                        <!-- Purchase & Status Details -->
+                        <div class="form-group">
+                            <label for="purchasedDate">Purchased Date</label>
+                            <input type="date" id="purchasedDate" name="purchasedDate">
+                        </div>
+                        <div class="form-group">
+                            <label for="cost">Cost</label>
+                            <input type="number" id="cost" name="cost" step="0.01">
+                        </div>
+                        <div class="form-group">
+                            <label for="eol">End of Life (EOL)</label>
+                            <input type="date" id="eol" name="eol">
+                        </div>
+                        <div class="form-group">
+                            <label for="orderNumber">Order Number</label>
+                            <input type="text" id="orderNumber" name="orderNumber" autocomplete="off">
+                        </div>
+                        <div class="form-group">
+                            <label for="status">Status*</label>
+                            <select id="status" name="status" required>
+                                <option value="Available">Available</option>
+                                <option value="In Use">In Use</option>
+                                <option value="Maintenance">Maintenance</option>
+                            </select>
+                        </div>
+                        <div class="form-group">
+                            <label for="warrantyPeriod">Warranty Period (months)</label>
+                            <input type="number" id="warrantyPeriod" name="warrantyPeriod" autocomplete="off">
+                        </div>
+                        <div class="form-group">
+                            <label for="warrantyExpires">Warranty Expires</label>
+                            <input type="date" id="warrantyExpires" name="warrantyExpires">
+                        </div>
+                        <div class="form-group">
+                            <label for="currentValue">Current Value</label>
+                            <input type="number" id="currentValue" name="currentValue" step="0.01">
+                        </div>
+                        <div class="form-group">
+                            <label for="fullyDepreciated">Fully Depreciated</label>
+                            <input type="checkbox" id="fullyDepreciated" name="fullyDepreciated">
+                        </div>
+                        <div class="form-group">
+                            <label for="lastAudit">Last Audit Date</label>
+                            <input type="date" id="lastAudit" name="lastAudit">
+                        </div>
+                        <div class="form-group">
+                            <label for="nextAuditDate">Next Audit Date</label>
+                            <input type="date" id="nextAuditDate" name="nextAuditDate">
+                        </div>
+                        <div class="form-group full-width">
+                            <label for="notes">Notes</label>
+                            <textarea id="notes" name="notes" rows="4"></textarea>
+                        </div>
+                    </div>
 
-    <!-- User Information Section -->
-    <div id="userInfo" class="section-content">
-        <div class="form-grid">
-            <!-- Extra fields for style only; not mapped to AssetMaster -->
-            <div class="form-group">
-                <label for="username">Username</label>
-                <input type="text" id="username" name="username" autocomplete="off">
-            </div>
-            <div class="form-group">
-                <label for="employeeNo">Employee Number</label>
-                <input type="text" id="employeeNo" name="employeeNo" autocomplete="off">
-            </div>
-            <div class="form-group">
-                <label for="Udepartment">Department</label>
-                <input type="text" id="Udepartment" name="department" autocomplete="off">
-            </div>
-            <div class="form-group">
-                <label for="manager">Manager</label>
-                <input type="text" id="manager" name="manager" autocomplete="off">
-            </div>
-        </div>
-    </div>
-
-    <!-- Status and Warranty Section -->
-    <div id="statusInfo" class="section-content">
-        <div class="form-grid">
-            <div class="form-group">
-                <label for="status">Status</label>
-                <select id="status" name="status" required autocomplete="off">
-                    <option value="Available">Available</option>
-                    <option value="In Use">In Use</option>
-                    <option value="Maintenance">Maintenance</option>
-                    <option value="Retired">Retired</option>
-                </select>
-            </div>
-            <div class="form-group">
-                <label for="warrantyPeriod">Warranty</label>
-                <input type="text" id="warrantyPeriod" name="warrantyPeriod" autocomplete="off">
-            </div>
-            <div class="form-group">
-                <label for="warrantyExpires">Warranty Expiration</label>
-                <input type="date" id="warrantyExpires" name="warrantyExpires" autocomplete="off">
-            </div>
-            <div class="form-group">
-                <label for="eol">End of Life Date</label>
-                <input type="date" id="eol" name="eol" autocomplete="off">
-            </div>
-        </div>
-    </div>
-
-    <!-- Additional Information Section -->
-    <div id="additionalInfo" class="section-content">
-        <div class="form-grid">
-            <div class="form-group full-width">
-                <label for="configuration">Configuration</label>
-                <textarea id="configuration" name="configuration" rows="4" autocomplete="off"></textarea>
-            </div>
-            <div class="form-group full-width">
-                <label for="notes">Notes</label>
-                <textarea id="notes" name="notes" rows="4" autocomplete="off"></textarea>
-            </div>
-            <div class="form-group">
-                <label for="url">URL</label>
-                <input type="url" id="url" name="url" autocomplete="url">
-            </div>
-        </div>
-    </div>
-
-    <div class="form-actions">
-        <button type="button" class="btn-secondary" onclick="switchTab('assetList')">Cancel</button>
-        <button type="submit" class="btn-primary">
-            <i class="fas fa-plus"></i> Add Asset
-        </button>
-    </div>
-</form>
-
-
+                    <!-- Form Actions -->
+                    <div class="form-actions">
+                        <button type="button" class="btn-secondary" onclick="switchTab('assetList')">Cancel</button>
+                        <button type="submit" class="btn-primary">
+                            <i class="fas fa-plus"></i> Submit
+                        </button>
+                    </div>
+                </form>
             </div>
         </div>
     </div>
     <style>
-        /* Modal Styles */
+         /* Modal Styles */
         .modal {
             display: none;
             position: fixed;
@@ -535,7 +476,7 @@
             padding: 0.8rem 1rem 0.8rem 2.5rem;
             background: #ffffff;
             border: 1px solid #e0dcd3;
-            border-radius: 6px;
+            border-radius: 6px; 
             color: #333333;
         }
 
@@ -597,101 +538,224 @@
     </style>
 
     <script>
-        document.addEventListener("DOMContentLoaded", function () {
-            // Ensure modal opens automatically on page load
-            document.getElementById("deviceModal").style.display = "block";
-
+        // -------------------------------------------
+        // 1) TABBED NAVIGATION & UI
+        // -------------------------------------------
+        function switchTab(tabId) {
             const tabs = document.querySelectorAll(".tab-button");
             const contents = document.querySelectorAll(".tab-content");
-            const sectionTabs = document.querySelectorAll(".section-tab");
-            const sectionContents = document.querySelectorAll(".section-content");
 
-            // Updated function to accept the data attribute type (either "tab" or "section")
-            function activateTab(elements, contents, target, dataAttr) {
-                elements.forEach(tab => tab.classList.remove("active"));
-                contents.forEach(content => content.classList.remove("active"));
-                // Use the appropriate data attribute for selection
-                document.querySelector(`[data-${dataAttr}="${target}"]`).classList.add("active");
-                document.getElementById(target).classList.add("active");
+            // Remove 'active' from all tabs and contents
+            tabs.forEach(t => t.classList.remove("active"));
+            contents.forEach(c => c.classList.remove("active"));
+
+            // Activate the target tab button
+            const targetTabBtn = document.querySelector(`[data-tab="${tabId}"]`);
+            if (targetTabBtn) targetTabBtn.classList.add("active");
+
+            // Activate the target tab content
+            const targetContent = document.getElementById(tabId);
+            if (targetContent) targetContent.classList.add("active");
+        }
+
+        // Called when "Asset List" tab is clicked to load assets
+        async function loadAssetList() {
+            try {
+                const response = await fetch('/api/fullData/getAll');
+                if (response.ok) {
+                    const assets = await response.json();
+                    const tbody = document.getElementById("assetTableBody");
+                    tbody.innerHTML = ""; // Clear existing rows
+
+                    assets.forEach(asset => {
+                        const tr = document.createElement("tr");
+                        tr.innerHTML = `
+                            <td>${asset.assetID || asset.AssetID}</td>
+                            <td>${asset.assetName || asset.AssetName}</td>
+                            <td>${asset.categoryName || asset.CategoryName || "N/A"}</td>
+                            <td>${asset.status || asset.Status}</td>
+                            <td>${asset.location || asset.Location || "N/A"}</td>
+                            <td>
+                                <button class="btn-secondary">Edit</button>
+                                <button class="btn-danger">Delete</button>
+                            </td>
+                        `;
+                        tbody.appendChild(tr);
+                    });
+                } else {
+                    console.error("Failed to load asset list");
+                }
+            } catch (error) {
+                console.error("Error loading asset list", error);
+            }
+        }
+
+        // Search Filter
+        function filterAssetTable() {
+            const searchValue = document.getElementById("searchAsset").value.toLowerCase();
+            const rows = document.querySelectorAll("#assetTableBody tr");
+
+            rows.forEach(row => {
+                if (row.innerText.toLowerCase().includes(searchValue)) {
+                    row.style.display = "";
+                } else {
+                    row.style.display = "none";
+                }
+            });
+        }
+
+        document.addEventListener("DOMContentLoaded", function () {
+            // Attach search filter
+            const searchInput = document.getElementById("searchAsset");
+            if (searchInput) {
+                searchInput.addEventListener("input", filterAssetTable);
             }
 
-            // Main tabs event listeners use data-tab
-            tabs.forEach(tab => {
-                tab.addEventListener("click", function () {
-                    activateTab(tabs, contents, this.dataset.tab, "tab");
+            // Show modal on page load
+            document.getElementById("deviceModal").style.display = "block";
+
+            // Tab Buttons
+            const tabButtons = document.querySelectorAll(".tab-button");
+            tabButtons.forEach(btn => {
+                btn.addEventListener("click", () => {
+                    switchTab(btn.dataset.tab);
+                    if (btn.dataset.tab === "assetList") {
+                        // Load the asset list whenever we switch to the "assetList" tab
+                        loadAssetList();
+                    }
                 });
             });
 
-            // Section tabs event listeners use data-section
-            sectionTabs.forEach(tab => {
-                tab.addEventListener("click", function () {
-                    activateTab(sectionTabs, sectionContents, this.dataset.section, "section");
-                });
+            // If the active tab is assetList, load assets immediately
+            const activeTab = document.querySelector(".tab-button.active");
+            if (activeTab && activeTab.dataset.tab === "assetList") {
+                loadAssetList();
+            }
+
+            // Close modal button
+            document.getElementById("closeDeviceModal").onclick = () => {
+                window.location.href = "/Home/Landing";
+            };
+
+            // Fill Sample Data button
+            const fillBtn = document.getElementById("fillSampleDataBtn");
+            fillBtn.addEventListener("click", function () {
+                const uniqueSuffix = Date.now();
+
+                // Category
+                document.getElementById("categoryName").value = "Desktop " + uniqueSuffix;
+
+                // Vendor
+                document.getElementById("vendorName").value = "HP Inc. " + uniqueSuffix;
+                document.getElementById("vendorType").value = "Supplier";
+
+                // Location
+                document.getElementById("country").value = "USA";
+                document.getElementById("state").value = "New York";
+                document.getElementById("city").value = "New York";
+                document.getElementById("address").value = "4321 Broadway Ave " + uniqueSuffix;
+                document.getElementById("zipCode").value = "10018";
+                document.getElementById("locationType").value = 2;
+
+                // Asset
+                document.getElementById("companyName").value = "XYZ Solutions " + uniqueSuffix;
+                document.getElementById("assetName").value = "Office Desktop " + uniqueSuffix;
+                document.getElementById("assetTag").value = "OD-" + uniqueSuffix;
+                document.getElementById("model").value = "EliteDesk";
+                document.getElementById("modelNo").value = "800";
+                document.getElementById("serialNumber").value = "SN654321" + uniqueSuffix;
+                document.getElementById("purchasedDate").value = "2022-05-20";
+                document.getElementById("cost").value = "850.75";
+                document.getElementById("eol").value = "2026-05-20";
+                document.getElementById("orderNumber").value = "ORD4321" + uniqueSuffix;
+                document.getElementById("status").value = "Available";
+                document.getElementById("warrantyPeriod").value = "36";
+                document.getElementById("warrantyExpires").value = "2025-05-20";
+                document.getElementById("currentValue").value = "600.00";
+                document.getElementById("fullyDepreciated").checked = false;
+                document.getElementById("lastAudit").value = "2023-08-15";
+                document.getElementById("nextAuditDate").value = "2024-08-15";
+                document.getElementById("notes").value = "Recently serviced.";
+            });
+
+            // Form submission logic
+            const fullDataForm = document.getElementById("fullDataForm");
+            fullDataForm.addEventListener("submit", async function (e) {
+                e.preventDefault();
+
+                // Collect Category Data
+                const categoryData = {
+                    CategoryName: document.getElementById("categoryName").value.trim()
+                };
+
+                // Collect Vendor Data
+                const vendorData = {
+                    VendorName: document.getElementById("vendorName").value.trim(),
+                    VendorType: document.getElementById("vendorType").value.trim()
+                };
+
+                // Collect Location Data
+                const locationData = {
+                    Country: document.getElementById("country").value.trim(),
+                    State: document.getElementById("state").value.trim(),
+                    City: document.getElementById("city").value.trim(),
+                    Address: document.getElementById("address").value.trim(),
+                    ZipCode: document.getElementById("zipCode").value.trim(),
+                    LocationType: document.getElementById("locationType").value.trim()
+                };
+
+                // Collect Asset Data
+                const assetData = {
+                    CompanyName: document.getElementById("companyName").value.trim(),
+                    AssetName: document.getElementById("assetName").value.trim(),
+                    AssetTag: document.getElementById("assetTag").value.trim(),
+                    Model: document.getElementById("model").value.trim(),
+                    ModelNo: document.getElementById("modelNo").value.trim(),
+                    SerialNumber: document.getElementById("serialNumber").value.trim(),
+                    PurchasedDate: document.getElementById("purchasedDate").value,
+                    Cost: document.getElementById("cost").value,
+                    EOL: document.getElementById("eol").value,
+                    OrderNumber: document.getElementById("orderNumber").value.trim(),
+                    Status: document.getElementById("status").value,
+                    WarrantyPeriod: document.getElementById("warrantyPeriod").value,
+                    WarrantyExpires: document.getElementById("warrantyExpires").value,
+                    CurrentValue: document.getElementById("currentValue").value,
+                    FullyDepreciated: document.getElementById("fullyDepreciated").checked,
+                    LastAudit: document.getElementById("lastAudit").value,
+                    NextAuditDate: document.getElementById("nextAuditDate").value,
+                    Notes: document.getElementById("notes").value.trim()
+                };
+
+                // Combine everything for the /api/fullData/add endpoint
+                const combinedData = {
+                    category: categoryData,
+                    vendor: vendorData,
+                    location: locationData,
+                    asset: assetData
+                };
+
+                try {
+                    const response = await fetch('/api/fullData/add', {
+                        method: 'POST',
+                        headers: { 'Content-Type': 'application/json' },
+                        body: JSON.stringify(combinedData)
+                    });
+
+                    if (response.ok) {
+                        alert('Data added successfully!');
+                        fullDataForm.reset();
+                        // Load updated asset list and switch to the "Asset List" tab
+                        loadAssetList();
+                        switchTab('assetList');
+                    } else {
+                        alert('Failed to add data.');
+                    }
+                } catch (error) {
+                    console.error('Error adding data:', error);
+                    alert('An error occurred while adding the data.');
+                }
             });
         });
-
-        document.getElementById("closeDeviceModal").onclick = () => {
-            window.location.href = "/Home/Landing";
-        };
-
-       document.addEventListener("DOMContentLoaded", function () {
-    const deviceForm = document.getElementById("deviceForm");
-    deviceForm.addEventListener("submit", async function (e) {
-        e.preventDefault();
-
-        // Gather form data using keys that match AssetMasterDto
-        const assetData = {
-            // Omit AssetId to let the DB auto-generate it.
-            CompanyName: document.getElementById('companyName').value,
-            AssetName: document.getElementById('assetName').value,
-            AssetTag: document.getElementById('assetTag').value,
-            Model: document.getElementById('model').value,
-            ModelNo: document.getElementById('modelNo').value,
-            SerialNumber: document.getElementById('serialNumber').value,
-            CategoryID: document.getElementById('categoryID').value,
-            ManufacturerID: document.getElementById('manufacturerID').value,
-            SupplierID: document.getElementById('supplierID').value,
-            DefaultLocationID: document.getElementById('defaultLocationID').value,
-            PurchasedDate: document.getElementById('purchasedDate').value,
-            Cost: document.getElementById('cost').value,
-            OrderNumber: document.getElementById('orderNumber').value,
-            Status: document.getElementById('status').value,
-            WarrantyPeriod: document.getElementById('warrantyPeriod').value,
-            WarrantyExpires: document.getElementById('warrantyExpires').value,
-            EOL: document.getElementById('eol').value,
-            CurrentValue: document.getElementById('currentValue') ? document.getElementById('currentValue').value : null,
-            LastAudit: document.getElementById('lastAudit') ? document.getElementById('lastAudit').value : null,
-            NextAuditDate: document.getElementById('nextAuditDate') ? document.getElementById('nextAuditDate').value : null,
-            Notes: document.getElementById('notes').value
-        };
-
-        try {
-            const response = await fetch('/api/asset/add', {
-                method: 'POST',
-                headers: { 'Content-Type': 'application/json' },
-                body: JSON.stringify(assetData)
-            });
-
-            if (response.ok) {
-                alert('Asset added successfully!');
-                deviceForm.reset();
-                // Optionally refresh the asset list.
-            } else {
-                alert('Failed to add asset.');
-            }
-        } catch (error) {
-            console.error('Error adding asset:', error);
-            alert('An error occurred while adding the asset.');
-        }
-    });
-});
-
-
-
-
-
     </script>
-
 </body>
-
 </html>

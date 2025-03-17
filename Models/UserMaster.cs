@@ -8,49 +8,63 @@ namespace AEET.Models
     public class UserMaster
     {
         [Key]
-        public Guid UserID { get; set; } = Guid.NewGuid(); // Primary key, generated automatically
+        public Guid UserID { get; set; } = Guid.NewGuid();
 
+        // EmailID: NVARCHAR(255) UNIQUE NOT NULL
         [Required]
         [StringLength(255)]
-        public string? Username { get; set; }  // For login; this could be the same as EmailID if desired
+        public string EmailID { get; set; } = string.Empty;
 
+        // PasswordHash: NVARCHAR(255) NOT NULL
         [Required]
         [StringLength(255)]
-        public string? PasswordHash { get; set; }  // Ideally store a hashed password
+        public string PasswordHash { get; set; } = string.Empty;
 
+        // EmployeeName: NVARCHAR(255) NOT NULL
         [Required]
         [StringLength(255)]
-        public string? EmployeeName { get; set; }  // Replaces FullName
+        public string EmployeeName { get; set; } = string.Empty;
 
-        [Required]
-        [StringLength(100)]
-        public string? EmployeeID { get; set; }    // New column for employee id
-
-        [Required]
+        // Username: NVARCHAR(255) NULL
         [StringLength(255)]
-        public string? EmailID { get; set; }
+        public string? Username { get; set; }
 
-        [Required]
-        public Guid RoleID { get; set; }          // Foreign key to RoleMaster
+        // EmployeeID: NVARCHAR(50) NULL
+        [StringLength(50)]
+        public string? EmployeeID { get; set; }
 
-        [Required]
+        // Location: NVARCHAR(255) NULL
         [StringLength(255)]
-        public string? Location { get; set; }      // New column for Location
+        public string? Location { get; set; }
 
+        // RoleID: UNIQUEIDENTIFIER NOT NULL
+        [Required]
+        public Guid RoleID { get; set; }
+
+        // IsActive: BIT DEFAULT 1
         public bool IsActive { get; set; } = true;
 
+        // CreatedOn: DATETIME DEFAULT GETDATE()
         public DateTime CreatedOn { get; set; } = DateTime.Now;
 
-        [StringLength(255)]
-        public string? CreatedBy { get; set; }
+        // CreatedBy: UNIQUEIDENTIFIER NULL
+        public Guid? CreatedBy { get; set; }
 
+        // ModifiedOn: DATETIME NULL
         public DateTime? ModifiedOn { get; set; }
 
-        [StringLength(255)]
-        public string? ModifiedBy { get; set; }
+        // ModifiedBy: UNIQUEIDENTIFIER NULL
+        public Guid? ModifiedBy { get; set; }
 
-        // Navigation property
+        // Navigation property for RoleMaster
         [ForeignKey("RoleID")]
         public virtual RoleMaster? Role { get; set; }
+
+        // Optionally, you can add navigation properties for CreatedBy and ModifiedBy if needed:
+        // [ForeignKey("CreatedBy")]
+        // public virtual UserMaster? CreatedByUser { get; set; }
+        //
+        // [ForeignKey("ModifiedBy")]
+        // public virtual UserMaster? ModifiedByUser { get; set; }
     }
 }

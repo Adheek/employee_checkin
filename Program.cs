@@ -5,7 +5,8 @@ using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
 using Microsoft.EntityFrameworkCore;
 using System;
-using AEET.Models;  // Contains ApplicationDbContext, Sql, etc.
+using AEET.Models;      // Contains ApplicationDbContext, Model classes
+using AEET.Code;       // Contains FullDataManager, UserManager, RoleManager, EmployeeManager, etc.
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -28,9 +29,17 @@ builder.Services.AddDbContext<ApplicationDbContext>(options =>
 builder.Services.AddSingleton<Sql>();
 
 // Register your custom classes for Dependency Injection (DI).
-builder.Services.AddScoped<AEET.Code.UserManager>();
-builder.Services.AddScoped<AEET.Code.RoleManager>();
-builder.Services.AddScoped<AEET.Code.AssetManager>(); // Register AssetManager for asset operations
+builder.Services.AddScoped<UserManager>();
+builder.Services.AddScoped<RoleManager>();
+// builder.Services.AddScoped<AssetManager>(); // If you no longer need AssetManager, you can remove/comment it.
+
+// Add the new FullDataManager.
+builder.Services.AddScoped<FullDataManager>();
+
+// NEW: Add the EmployeeManager for handling Employee table operations.
+builder.Services.AddScoped<EmployeeManager>();
+
+builder.Services.AddScoped<EmployeeAssetMappingManager>();
 
 // Add CORS policy for development (tighten for production).
 builder.Services.AddCors(options =>
