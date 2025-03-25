@@ -28,8 +28,8 @@ namespace AEET.Api
 
         [HttpPost("users/add")]
         public async Task<IActionResult> AddUser(
-    [FromServices] UserManager user,
-    [FromBody] UserMasterDto model)
+            [FromServices] UserManager user,
+            [FromBody] UserMasterDto model)
         {
             if (!ModelState.IsValid)
                 return BadRequest(ModelState);
@@ -45,5 +45,24 @@ namespace AEET.Api
             }
         }
 
+        // NEW ENDPOINT for updating a user
+        [HttpPut("users/update")]
+        public async Task<IActionResult> UpdateUser(
+            [FromServices] UserManager user,
+            [FromBody] UserMasterDto model)
+        {
+            if (!ModelState.IsValid)
+                return BadRequest(ModelState);
+
+            try
+            {
+                var updatedUser = await user.UpdateUser(model);
+                return Ok(updatedUser);
+            }
+            catch (ArgumentException ex)
+            {
+                return BadRequest(ex.Message);
+            }
+        }
     }
 }

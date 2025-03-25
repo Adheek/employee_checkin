@@ -19,11 +19,6 @@
 
     <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
-    <!-- Add QR Code library -->
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/qrcodejs/1.0.0/qrcode.min.js"></script>
-
-
-    <script src="https://unpkg.com/html5-qrcode" type="text/javascript"></script>
 </head>
 
 <body>
@@ -48,8 +43,7 @@
     <div class="SplashHeader_root__JxGNa" title="">
         <div class="placeholderShimmer"></div>
         <picture data-testid="picture">
-            <img alt="" src="~/images/splashHeader.min.jpg" class="SplashHeader_image__eCNQN" decoding="async"
-                loading="lazy">
+            <img alt="" src="~/images/splashHeader.min.jpg" class="SplashHeader_image__eCNQN" decoding="async" loading="lazy">
         </picture>
         <div class="SplashHeader_content__QLLrO">
             <h1 class="SplashHeader_text__Gd7fp globalGreetingText" id="greetingText"></h1>
@@ -60,9 +54,7 @@
     <div class="dashboard">
         <div class="dashboard-container">
             <div class="dashboard-grid">
-
-
-                <!-- Scanner Button -->
+                <!-- Scanner Button (Updated: only the button shown; all scanning logic is moved to Scanner/Index) -->
                 <button class="rolebased-action-btn" id="scanner-SA-AA-TO-Btn">
                     <div class="rolebased-action-icon">
                         <i class="fas fa-qrcode"></i>
@@ -72,103 +64,6 @@
                         <p>Scan QR codes to log check-in/check-out</p>
                     </div>
                 </button>
-
-                <!-- The Scanner Modal -->
-                <div id="scannerModal"
-                    style="display: none; position: fixed; z-index: 999; top: 0; left: 0; width:100%; height:100%; background:rgba(0,0,0,0.5);">
-                    <div
-                        style="background:#fff; margin:50px auto; max-width:600px; border-radius:4px; padding:20px; position:relative;">
-                        <h2><i class="fas fa-qrcode"></i> Scan QR Code</h2>
-                        <button style="position:absolute; top:10px; right:10px;" onclick="stopScanner()">X</button>
-                        <div style="border:1px solid #ccc; min-height:300px; margin-top:10px;" id="qrReader"></div>
-                    </div>
-                </div>
-
-                <script>
-                    // Global reference so we can pause/stop from onScanSuccess
-                    let html5QrcodeScanner;
-
-                    // Attach click event to the button
-                    document.getElementById('scanner-SA-AA-TO-Btn')?.addEventListener('click', startScanner);
-
-                    // Start the scanner: show the modal and render HTML5QrcodeScanner
-                    function startScanner() {
-                        try {
-                            const modal = document.getElementById('scannerModal');
-                            if (!modal) throw new Error('Scanner modal not found');
-
-                            // Show the modal
-                            modal.style.display = 'block';
-
-                            // Create the scanner instance
-                            html5QrcodeScanner = new Html5QrcodeScanner("qrReader", {
-                                fps: 10,
-                                qrbox: { width: 250, height: 250 },
-                                aspectRatio: 1.0
-                            });
-
-                            // Render the scanner with callbacks
-                            html5QrcodeScanner.render(onScanSuccess, onScanFailure);
-
-                            console.log('Scanner started');
-                        } catch (error) {
-                            console.error('Failed to start scanner:', error);
-                            alert('Failed to start scanner: ' + error.message);
-                        }
-                    }
-
-                    // Stop scanning and hide the modal
-                    function stopScanner() {
-                        if (html5QrcodeScanner) {
-                            html5QrcodeScanner.clear(); // or .pause(true) if you prefer
-                        }
-                        const modal = document.getElementById('scannerModal');
-                        if (modal) {
-                            modal.style.display = 'none';
-                        }
-                    }
-
-                    // Called when a QR code is successfully decoded
-                    async function onScanSuccess(decodedText, decodedResult) {
-                        console.log("QR Code scanned successfully:", decodedText);
-                        try {
-                            // Optionally pause or stop scanning so it doesn't keep reading
-                            if (html5QrcodeScanner) {
-                                html5QrcodeScanner.pause(true);
-                            }
-
-                            // POST the scanned data to /Scanner/ProcessScan
-                            const response = await fetch('/Scanner/ProcessScan', {
-                                method: 'POST',
-                                headers: { 'Content-Type': 'application/json' },
-                                body: JSON.stringify({ ScannedData: decodedText })
-                            });
-
-                            if (!response.ok) {
-                                throw new Error('Failed to send scan data to the server');
-                            }
-
-                            // Stop scanning & hide modal
-                            stopScanner();
-
-                            // Now redirect to /Scanner/Index so the user can see the scanned data
-                            window.location.href = '/Scanner/Index';
-                        } catch (error) {
-                            console.error('Scan processing failed:', error);
-                            alert('Failed to process scan: ' + error.message);
-                        }
-                    }
-
-                    // Called on scan errors (fires often when scanning blank area)
-                    function onScanFailure(error) {
-                        // Filter out "No QR code found" if you don't want it in console
-                        if (error && !error.includes("No QR code found")) {
-                            console.warn('Scan error:', error);
-                        }
-                    }
-                </script>
-
-
 
                 <!-- Asset Logs Button -->
                 <form asp-action="Index" asp-controller="AssetLogs" method="get">
@@ -235,86 +130,84 @@
                     </button>
                 </form>
 
-
-
                 <!-- Notification Container -->
                 <div id="notificationContainer"></div>
+            </div>
+        </div>
+    </div>
 
+    <script>
+        // When the Scanner button is clicked, redirect to the Scanner page (Scanner/Index)
+        document.getElementById('scanner-SA-AA-TO-Btn').addEventListener('click', function () {
+            window.location.href = '/Scanner/Index';
+        });
 
-                <script>
-                    document.addEventListener("DOMContentLoaded", function () {
-                        // Fetch user role from sessionStorage or API
-                        fetchUserRole();
-                    });
+        document.addEventListener("DOMContentLoaded", function () {
+            // Fetch user role from sessionStorage or API
+            fetchUserRole();
+        });
 
-                    function fetchUserRole() {
-                        fetch("/Dashboard/GetUserRole") // Call API to get user role
-                            .then(response => response.json())
-                            .then(data => {
-                                if (data.role) {
-                                    configureDashboard(data.role);
-                                } else {
-                                    console.error("Role not found");
-                                }
-                            })
-                            .catch(error => console.error("Error fetching role:", error));
+        function fetchUserRole() {
+            fetch("/Dashboard/GetUserRole") // Call API to get user role
+                .then(response => response.json())
+                .then(data => {
+                    if (data.role) {
+                        configureDashboard(data.role);
+                    } else {
+                        console.error("Role not found");
                     }
+                })
+                .catch(error => console.error("Error fetching role:", error));
+        }
 
-                    function configureDashboard(role) {
-                        console.log("User Role:", role);
+        function configureDashboard(role) {
+            console.log("User Role:", role);
 
-                        // Hide all icons by default
-                        document.querySelectorAll(".rolebased-action-btn")
-                            .forEach(btn => btn.style.display = "none");
+            // Hide all icons by default
+            document.querySelectorAll(".rolebased-action-btn")
+                .forEach(btn => btn.style.display = "none");
 
-                        if (role === "Super Admin") {
-                            // Show all icons for Super Admin
-                            document.querySelectorAll(".rolebased-action-btn")
-                                .forEach(btn => btn.style.display = "flex");
-                        }
-                        else if (role === "Transaction Manager") {
-                            // Show icons for the Transaction Manager
-                            document.getElementById("scanner-SA-AA-TO-Btn").style.display = "flex";
-                            document.getElementById("assetlog-SA-AA-TO-Btn").style.display = "flex";
-                            // Add or remove any other buttons as needed
-                        }
-                        else if (role === "Asset Administrator") {
-                            // Show icons for the Asset Administrator
-                            document.getElementById("scanner-SA-AA-TO-Btn").style.display = "flex";
-                            document.getElementById("assetlog-SA-AA-TO-Btn").style.display = "flex";
-                            document.getElementById("addnewasset-SA-Btn").style.display = "flex";
-                            document.getElementById("qrgenerator-SA-AA-Btn").style.display = "flex";
-                            document.getElementById("mapasset-SA-AA-Btn").style.display = "flex";
-                        }
-                    }
+            if (role === "Super Admin") {
+                // Show all icons for Super Admin
+                document.querySelectorAll(".rolebased-action-btn")
+                    .forEach(btn => btn.style.display = "flex");
+            }
+            else if (role === "Transaction Manager") {
+                // Show icons for the Transaction Manager
+                document.getElementById("scanner-SA-AA-TO-Btn").style.display = "flex";
+                document.getElementById("assetlog-SA-AA-TO-Btn").style.display = "flex";
+            }
+            else if (role === "Asset Administrator") {
+                // Show icons for the Asset Administrator
+                document.getElementById("scanner-SA-AA-TO-Btn").style.display = "flex";
+                document.getElementById("assetlog-SA-AA-TO-Btn").style.display = "flex";
+                document.getElementById("addnewasset-SA-Btn").style.display = "flex";
+                document.getElementById("qrgenerator-SA-AA-Btn").style.display = "flex";
+                document.getElementById("mapasset-SA-AA-Btn").style.display = "flex";
+            }
+        }
 
+        document.addEventListener("DOMContentLoaded", function () {
+            const logoutBtn = document.querySelector(".logout-btn");
+            if (logoutBtn) {
+                logoutBtn.addEventListener("click", function () {
+                    // Redirect to the logout action
+                    window.location.href = "/Account/Logout";
+                });
+            }
+        });
 
-                    document.addEventListener("DOMContentLoaded", function () {
-                        const logoutBtn = document.querySelector(".logout-btn");
-                        if (logoutBtn) {
-                            logoutBtn.addEventListener("click", function () {
-                                // Redirect to the logout action
-                                window.location.href = "/Account/Logout";
-                            });
-                        }
-                    });
+        function updateTime() {
+            document.getElementById("currentTime").textContent = new Date().toLocaleTimeString();
+        }
+        setInterval(updateTime, 1000);
 
-                    function updateTime() {
-                        document.getElementById("currentTime").textContent = new Date().toLocaleTimeString();
-                    }
-                    setInterval(updateTime, 1000);
-
-                    function updateGreeting() {
-                        let h = new Date().getHours();
-                        document.getElementById("greetingText").textContent = h < 12 ? "Good Morning" : h < 18 ? "Good Afternoon" : "Good Evening";
-                    }
-                    updateGreeting();
-
-
-                </script>
-
-
-
+        function updateGreeting() {
+            let h = new Date().getHours();
+            document.getElementById("greetingText").textContent = h < 12 ? "Good Morning" : h < 18 ? "Good Afternoon" : "Good Evening";
+        }
+        updateGreeting();
+    </script>
 </body>
 
 </html>

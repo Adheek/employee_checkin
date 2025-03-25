@@ -8,34 +8,34 @@ namespace AEET.Models
     public class EmployeeAssetMapping
     {
         [Key]
+        [DatabaseGenerated(DatabaseGeneratedOption.Identity)]
         public int MappedId { get; set; }
-        
-        [Required]
+
+        // FK to Employee(EmployeeId)
         public int EmployeeId { get; set; }
-        
-        [Required]
+
+        // FK to AssetMaster(AssetID)
         [StringLength(10)]
         public string AssetId { get; set; }
-        
+
+        // Audit fields
         public DateTime CreatedOn { get; set; } = DateTime.Now;
-        
         [Required]
         [StringLength(255)]
         public string CreatedBy { get; set; } = string.Empty;
-        
+
         public DateTime ModifiedOn { get; set; } = DateTime.Now;
-        
         [Required]
         [StringLength(255)]
         public string ModifiedBy { get; set; } = string.Empty;
-        
+
         public int? UnmappedID { get; set; }
 
         // Navigation properties
-        [ForeignKey("EmployeeId")]
+        [ForeignKey(nameof(EmployeeId))]
         public virtual Employee Employee { get; set; }
 
-        [ForeignKey("AssetId")]
+        [ForeignKey(nameof(AssetId))]
         public virtual AssetMaster Asset { get; set; }
     }
 }

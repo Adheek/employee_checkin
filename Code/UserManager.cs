@@ -11,7 +11,7 @@ namespace AEET.Code
     public class UserManager
     {
         private readonly ApplicationDbContext _context;
-        private readonly RoleManager _roleManager; // We'll inject RoleManager here
+        private readonly RoleManager _roleManager;
 
         public UserManager(ApplicationDbContext context, RoleManager roleManager)
         {
@@ -31,32 +31,24 @@ namespace AEET.Code
 
         /// <summary>
         /// Adds a user from a DTO, including mapping the role string to a RoleID.
+        /// Throws an ArgumentException if the role or EmployeeID is invalid.
         /// </summary>
         public async Task<UserMaster> AddUser(UserMasterDto model)
         {
-            // 1. Map the 'Role' string (e.g., "SA", "AA Team", "TO") to the actual RoleID
-            string roleDropdown = model.Role;
-            Guid roleId;
-
-            switch (roleDropdown)
+            if (string.IsNullOrWhiteSpace(model.EmployeeID))
             {
-                case "SA":
-                    roleId = (await _roleManager.GetRoleByName("Super Admin"))?.RoleID ?? Guid.Empty;
-                    break;
-                case "AA Team":
-                    roleId = (await _roleManager.GetRoleByName("Asset Administrator"))?.RoleID ?? Guid.Empty;
-                    break;
-                case "TO":
-                    roleId = (await _roleManager.GetRoleByName("Transaction Manager"))?.RoleID ?? Guid.Empty;
-                    break;
-                default:
-                    roleId = Guid.Empty;
-                    break;
+                throw new ArgumentException("Employee ID cannot be empty.");
             }
 
+            if (string.IsNullOrWhiteSpace(model.Username))
+            {
+                throw new ArgumentException("Username cannot be empty.");
+            }
+
+            // 1. Map the 'Role' string (e.g., "SA", "AA Team", "TO") to the actual RoleID
+            Guid roleId = await GetRoleIdFromDropdownValue(model.Role);
             if (roleId == Guid.Empty)
             {
-                // Throw an exception so the caller (controller) can return 400 or handle it as needed
                 throw new ArgumentException("Invalid role selected.");
             }
 
@@ -83,28 +75,102 @@ namespace AEET.Code
             return newUser;
         }
 
+        /// <summary>
+        /// Updates an existing user based on the given DTO.
+        /// Throws an ArgumentException if the user is not found or invalid data is supplied.
+        /// </summary>
+        public async Task<UserMaster> UpdateUser(UserMasterDto model)
+        {
+            if (string.IsNullOrWhiteSpace(model.Username))
+            {
+                throw new ArgumentException("Username cannot be empty.");
+            }
+
+            // Find the existing user by username (or however you identify them)
+            var existingUser = await _context.UserMasters
+                .FirstOrDefaultAsync(u => u.Username == model.Username);
+
+            if (existingUser == null)
+            {
+                throw new ArgumentException("User not found.");
+            }
+
+            if (string.IsNullOrWhiteSpace(model.EmployeeID))
+            {
+                throw new ArgumentException("Employee ID cannot be empty.");
+            }
+
+            // Map role the same way as in AddUser
+            Guid roleId = await GetRoleIdFromDropdownValue(model.Role);
+            if (roleId == Guid.Empty)
+            {
+                throw new ArgumentException("Invalid role selected.");
+            }
+
+            // Update fields
+            existingUser.PasswordHash  = model.PasswordHash;
+            existingUser.EmployeeName  = model.EmployeeName;
+            existingUser.EmployeeID    = model.EmployeeID;
+            existingUser.EmailID       = model.EmailID;
+            existingUser.RoleID        = roleId;
+            existingUser.Location      = model.Location;
+            existingUser.ModifiedOn    = DateTime.Now;
+            existingUser.ModifiedBy    = null;
+
+            // Save changes
+            await _context.SaveChangesAsync();
+            return existingUser;
+        }
+
+        /// <summary>
+        /// Retrieves all users, including Role entity.
+        /// </summary>
         public async Task<IEnumerable<UserMaster>> GetUsers()
         {
-            // Eager-load the Role entity so you can display RoleName if needed
             return await _context.UserMasters
                 .Include(u => u.Role)
                 .ToListAsync();
         }
 
+        /// <summary>
+        /// Returns a user list with selected fields, including RoleName.
+        /// </summary>
         public async Task<IEnumerable<dynamic>> GetUserList()
         {
-            // Eager load the Role so you can reference RoleName
             return await _context.UserMasters
                 .Include(u => u.Role)
                 .Select(u => new
                 {
-                    Username = u.Username,
+                    Username     = u.Username,
                     EmployeeName = u.EmployeeName,
-                    Email = u.EmailID,
-                    RoleName = u.Role.RoleName,
-                    Location = u.Location
+                    Email        = u.EmailID,
+                    RoleName     = u.Role.RoleName,
+                    Location     = u.Location,
+                    // If you want EmployeeID in the list:
+                    EmployeeID   = u.EmployeeID,
+                    // If you want to return the password hash for editing (NOT recommended in production):
+                    PasswordHash = u.PasswordHash
                 })
                 .ToListAsync();
+        }
+
+        /// <summary>
+        /// Helper method to map the dropdown value (SA, AA Team, TO) to the actual RoleID.
+        /// Returns Guid.Empty if no matching role is found.
+        /// </summary>
+        private async Task<Guid> GetRoleIdFromDropdownValue(string roleDropdown)
+        {
+            switch (roleDropdown)
+            {
+                case "SA":
+                    return (await _roleManager.GetRoleByName("Super Admin"))?.RoleID ?? Guid.Empty;
+                case "AA Team":
+                    return (await _roleManager.GetRoleByName("Asset Administrator"))?.RoleID ?? Guid.Empty;
+                case "TO":
+                    return (await _roleManager.GetRoleByName("Transaction Manager"))?.RoleID ?? Guid.Empty;
+                default:
+                    return Guid.Empty;
+            }
         }
     }
 }

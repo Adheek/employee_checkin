@@ -15,7 +15,6 @@
 <body>
     <div class="logo">
         <img src="~/images/nttdata_logo_.png" alt="NTT DATA Business Solutions">
-        
     </div>
 
     <div class="login-container">
@@ -24,11 +23,13 @@
         <p class="welcome-subtext">Please enter your credentials to login</p>
 
         <form action="/Account/Login" method="post">
-     <input type="text" name="username" class="input-field" placeholder="Username" required autocomplete="off">
+            <input type="text" name="username" class="input-field" placeholder="Username" required autocomplete="off">
             <input type="password" name="password" class="input-field" placeholder="Password" required autocomplete="new-password">
             <button type="submit" class="login-btn">Login</button>
-</form>
+            <a href="/Account/ForgotPassword" class="forgot-password">Forgot Password?</a>
+        </form>
     </div>
+
     <script src="~/js/login.js"></script>
 </body>
 

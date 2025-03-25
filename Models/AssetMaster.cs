@@ -8,26 +8,25 @@ namespace AEET.Models
     public class AssetMaster
     {
         [Key]
-        [DatabaseGenerated(DatabaseGeneratedOption.Identity)] // Let DB generate the value.
         [StringLength(10)]
-        public string? AssetID { get; set; }  // DB will generate a value like "AST-001"
+        public string? AssetID { get; set; }  // Do not set this in code; let SQL generate it.
 
         [StringLength(255)]
-        public string? CompanyName { get; set; }  // Marked as nullable
+        public string? CompanyName { get; set; }
 
         [StringLength(255)]
-        public string? AssetName { get; set; }    // Marked as nullable
+        public string? AssetName { get; set; }
 
         [StringLength(50)]
-        public string? AssetTag { get; set; }     // Marked as nullable
+        public string? AssetTag { get; set; }
 
         [StringLength(255)]
-        public string? Model { get; set; }        // Marked as nullable
+        public string? Model { get; set; }
 
         [StringLength(50)]
-        public string? ModelNo { get; set; }      // Marked as nullable
+        public string? ModelNo { get; set; }
 
-        // Foreign Keys (as nullable GUIDs)
+        // Foreign Keys (nullable GUIDs)
         public Guid? CategoryID { get; set; }
         public Guid? ManufacturerID { get; set; }
         public Guid? SupplierID { get; set; }
@@ -44,10 +43,10 @@ namespace AEET.Models
         public DateTime? EOL { get; set; }
 
         [StringLength(50)]
-        public string? OrderNumber { get; set; }  // Marked as nullable
+        public string? OrderNumber { get; set; }
 
         [StringLength(100)]
-        public string? Status { get; set; }       // Marked as nullable
+        public string? Status { get; set; }
 
         public int? WarrantyPeriod { get; set; }
         public DateTime? WarrantyExpires { get; set; }
@@ -60,18 +59,18 @@ namespace AEET.Models
         public DateTime? LastAudit { get; set; }
         public DateTime? NextAuditDate { get; set; }
 
-        public string? Notes { get; set; }        // Marked as nullable
+        public string? Notes { get; set; }
 
         // Audit Fields
         public DateTime CreatedOn { get; set; } = DateTime.Now;
 
         [StringLength(255)]
-        public string? CreatedBy { get; set; }    // Marked as nullable
+        public string? CreatedBy { get; set; }
 
         public DateTime? ModifiedOn { get; set; } = DateTime.Now;
 
         [StringLength(255)]
-        public string? ModifiedBy { get; set; }   // Marked as nullable
+        public string? ModifiedBy { get; set; }
 
         public bool Deleted { get; set; } = false;
 

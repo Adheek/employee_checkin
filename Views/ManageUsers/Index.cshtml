@@ -1,6 +1,5 @@
 @{
     ViewData["Title"] = "Manage Users";
-    
 }
 
 <!-- User Management Modal -->
@@ -38,7 +37,7 @@
                             <th>Email</th>
                             <th>RoleName</th>
                             <th>Location</th>
-                            
+                            <th>Actions</th>
                         </tr>
                     </thead>
                     <tbody id="userTableBody"></tbody>
@@ -46,71 +45,233 @@
             </div>
         </div>
 
-        <!-- Add User Tab -->
+        <!-- Add / Edit User Tab -->
         <div id="addUser" class="tab-content">
             <form id="addUserForm">
-    <div class="form-section">
-        <h3>User Information</h3>
-        <div class="form-row">
-            <div class="form-group">
-                <label for="Newusername">Username*</label>
-                <input type="text" id="Newusername" name="Username" required>
-            </div>
-            <div class="form-group">
-                <label for="password">Password*</label>
-                <div class="password-input">
-                    <input type="password" id="password" name="PasswordHash" required>
-                    <button type="button" class="toggle-password">
-                        <i class="fas fa-eye"></i>
+                <div class="form-section">
+                    <h3>User Information</h3>
+                    <div class="form-row">
+                        <div class="form-group">
+                            <label for="Newusername">Username*</label>
+                            <input type="text" id="Newusername" name="Username" required>
+                        </div>
+                        <div class="form-group">
+                            <label for="password">Password*</label>
+                            <div class="password-input">
+                                <input type="password" id="password" name="PasswordHash" required>
+                                <button type="button" class="toggle-password">
+                                    <i class="fas fa-eye"></i>
+                                </button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="form-section">
+                    <h3>Personal Information</h3>
+                    <div class="form-row">
+                        <div class="form-group">
+                            <label for="EmployeeName">Employee Name*</label>
+                            <input type="text" id="EmployeeName" name="EmployeeName" required>
+                        </div>
+                        <div class="form-group">
+                            <label for="EmployeeID">EmployeeID*</label>
+                            <input type="text" id="EmployeeID" name="EmployeeID" required>
+                        </div>
+                        <div class="form-group">
+                            <label for="email">Email*</label>
+                            <input type="email" id="email" name="EmailID" required>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="form-section">
+                    <h3>Role & Location</h3>
+                    <div class="form-row">
+                        <div class="form-group">
+                            <label for="role">Role*</label>
+                            <select id="role" name="role" required>
+                                <option value="SA">Super Admin User</option>
+                                <option value="AA Team">Asset Admin</option>
+                                <option value="TO">Transaction Manager</option>
+                            </select>
+                        </div>
+                        <div class="form-group">
+                            <label for="Location">Location*</label>
+                            <input type="text" id="Location" name="Location" required>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="form-actions">
+                    <a asp-controller="Home" asp-action="Landing" class="btn-secondary">Cancel</a>
+                    <button type="submit" class="btn-primary">
+                        <i class="fas fa-user-plus"></i> Add User
                     </button>
                 </div>
-            </div>
+            </form>
         </div>
     </div>
+</div>
 
-    <div class="form-section">
-        <h3>Personal Information</h3>
-        <div class="form-row">
-            <div class="form-group">
-                <label for="EmployeeName">Employee Name*</label>
-                <input type="text" id="EmployeeName" name="EmployeeName" required>
-            </div>
-            <div class="form-group">
-                <label for="EmployeeID">EmployeeID*</label>
-                <input type="text" id="EmployeeID" name="EmployeeID" required>
-            </div>
-            <div class="form-group">
-                <label for="email">Email*</label>
-                <input type="email" id="email" name="EmailID" required>
-            </div>
-        </div>
-    </div>
+<!-- JavaScript Code Inside the Page -->
+<script>
+// Global variables to hold user data and current editing user object
+let usersData = [];
+let editingUser = null;
 
-    <div class="form-section">
-        <h3>Role & Location</h3>
-        <div class="form-row">
-            <div class="form-group">
-                <label for="role">Role*</label>
-                <select id="role" name="role" required>
-                    <option value="SA">Super Admin User</option>
-                    <option value="AA Team">Asset Admin</option>
-                    <option value="TO">Transaction Manager</option>
-                </select>
-            </div>
-            <div class="form-group">
-                <label for="Location">Location*</label>
-                <input type="text" id="Location" name="Location" required>
-            </div>
-        </div>
-    </div>
+document.addEventListener("DOMContentLoaded", function () {
+    const closeModalButton = document.querySelector(".close-btn");
+    const tabButtons = document.querySelectorAll(".tab-button");
+    const tabContents = document.querySelectorAll(".tab-content");
+    const modal = document.getElementById("userManagementModal");
 
-    <div class="form-actions">
-        <a asp-controller="Home" asp-action="Landing" class="btn-secondary">Cancel</a>
-        <button type="submit" class="btn-primary">
-            <i class="fas fa-user-plus"></i> Add User
-        </button>
-    </div>
-</form>
+    if (modal) {
+        modal.style.display = "block";  // Ensure modal is visible
+    }
+
+    // Close Modal (Redirects to Landing.cshtml)
+    if (closeModalButton) {
+        closeModalButton.addEventListener("click", function () {
+            window.location.href = "/Home/Landing";
+        });
+    }
+
+    // Switch Tabs
+    tabButtons.forEach(button => {
+        button.addEventListener("click", function () {
+            const targetTab = this.getAttribute("data-tab");
+
+            tabButtons.forEach(btn => btn.classList.remove("active"));
+            tabContents.forEach(content => content.classList.remove("active"));
+
+            this.classList.add("active");
+            document.getElementById(targetTab).classList.add("active");
+        });
+    });
+
+    loadUserList();
+});
+
+// Function to load user list from the API and store in a global variable
+function loadUserList() {
+    fetch('/api/access/users/list')
+        .then(response => response.json())
+        .then(data => {
+            usersData = data; // Store user list globally for editing later
+            const tableBody = document.getElementById('userTableBody');
+            tableBody.innerHTML = ''; // Clear existing rows
+
+            data.forEach(user => {
+                const row = document.createElement('tr');
+                row.innerHTML = `
+                    <td>${user.username}</td>
+                    <td>${user.employeeName}</td>
+                    <td>${user.email}</td>
+                    <td>${user.roleName}</td>
+                    <td>${user.location}</td>
+                    <td>
+                        <button class="edit-btn" onclick="editUser('${user.username}')">
+                            <i class="fas fa-edit"></i> Edit
+                        </button>
+                    </td>
+                `;
+                tableBody.appendChild(row);
+            });
+        })
+        .catch(error => console.error('Error fetching user list:', error));
+}
+
+// Function to populate the form with user data for editing
+function editUser(username) {
+    // Find the user object from the globally stored list
+    const user = usersData.find(u => u.username === username);
+    if (!user) {
+        alert("User not found");
+        return;
+    }
+    editingUser = user;  // Set global editing flag
+
+    // Populate form fields with existing user details (including password)
+    document.getElementById('Newusername').value = user.username;
+    document.getElementById('password').value = user.passwordHash;  // Fill password field
+    document.getElementById('EmployeeName').value = user.employeeName;
+    document.getElementById('EmployeeID').value = user.employeeID || "";
+    document.getElementById('email').value = user.email;
+    document.getElementById('role').value = user.roleName; // Ensure the option values match exactly
+    document.getElementById('Location').value = user.location;
+    
+    // Change the form button text to "Update User"
+    document.querySelector('.btn-primary').innerHTML = '<i class="fas fa-user-plus"></i> Update User';
+
+    // Switch to the "Add New User" (edit) tab
+    document.querySelector('.tab-button[data-tab="addUser"]').click();
+}
+
+// Form submission handler for adding/updating a user
+document.getElementById('addUserForm').addEventListener('submit', async (e) => {
+    e.preventDefault();
+
+    const userData = {
+        Username: document.getElementById('Newusername').value,
+        PasswordHash: document.getElementById('password').value,
+        EmployeeName: document.getElementById('EmployeeName').value,
+        EmployeeID: document.getElementById('EmployeeID').value,
+        EmailID: document.getElementById('email').value,
+        Role: document.getElementById('role').value,
+        Location: document.getElementById('Location').value
+    };
+
+    // Determine whether we are adding a new user or updating an existing user
+    let url = '/api/access/users/add';
+    let method = 'POST';
+
+    if (editingUser) {
+        // If editing, use an update endpoint and method (adjust URL and method as required)
+        url = '/api/access/users/update';
+        method = 'PUT';
+    }
+
+    const response = await fetch(url, {
+        method: method,
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify(userData)
+    });
+
+    if (response.ok) {
+        alert(editingUser ? 'User updated successfully!' : 'User added successfully!');
+        // Reset the editing flag and update button text back to "Add User"
+        editingUser = null;
+        document.querySelector('.btn-primary').innerHTML = '<i class="fas fa-user-plus"></i> Add User';
+        // Clear the form fields
+        document.getElementById('addUserForm').reset();
+        // Reload the user list
+        loadUserList();
+    } else {
+        alert(editingUser ? 'Failed to update user.' : 'Failed to add user.');
+    }
+});
+
+// Search functionality for user list
+document.getElementById('searchUser').addEventListener('input', function() {
+    const searchTerm = this.value.toLowerCase();
+    const rows = document.querySelectorAll('#userTableBody tr');
+
+    rows.forEach(row => {
+        const username = row.cells[0].textContent.toLowerCase();
+        const employeeName = row.cells[1].textContent.toLowerCase();
+
+        if (username.includes(searchTerm) || employeeName.includes(searchTerm)) {
+            row.style.display = '';
+        } else {
+            row.style.display = 'none';
+        }
+    });
+});
+</script>
+
+
+
 
 <style>
    
@@ -358,110 +519,3 @@
 </style>
 
 
-
-<!-- JavaScript Code Inside the Page -->
-<script>
-
- 
-    document.addEventListener("DOMContentLoaded", function () {
-        const closeModalButton = document.querySelector(".close-btn");
-        const tabButtons = document.querySelectorAll(".tab-button");
-        const tabContents = document.querySelectorAll(".tab-content");
-         const modal = document.getElementById("userManagementModal");
-
-         if (modal) {
-            modal.style.display = "block";  // ✅ Ensure modal is visible
-        }
-
-        /** Close Modal (Redirects to Landing.cshtml) */
-        if (closeModalButton) {
-            closeModalButton.addEventListener("click", function () {
-                window.location.href = "/Home/Landing"; // Redirect back to Landing.cshtml
-            });
-        }
-
-        /** Switch Tabs */
-        tabButtons.forEach(button => {
-            button.addEventListener("click", function () {
-                const targetTab = this.getAttribute("data-tab");
-
-                tabButtons.forEach(btn => btn.classList.remove("active"));
-                tabContents.forEach(content => content.classList.remove("active"));
-
-                this.classList.add("active");
-                document.getElementById(targetTab).classList.add("active");
-            });
-        });
-    });
-
-
-document.getElementById('addUserForm').addEventListener('submit', async (e) => {
-    e.preventDefault();
-
-    const userData = {
-        Username: document.getElementById('Newusername').value,
-        PasswordHash: document.getElementById('password').value,
-        EmployeeName: document.getElementById('EmployeeName').value,
-        EmployeeID: document.getElementById('EmployeeID').value,
-        EmailID: document.getElementById('email').value,
-        Role: document.getElementById('role').value,
-        Location: document.getElementById('Location').value
-    };
-
-    const response = await fetch('/api/access/users/add', {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify(userData)
-    });
-
-    if (response.ok) {
-        alert('User added successfully!');
-    } else {
-        alert('Failed to add user.');
-    }
-});
-
-
-   document.addEventListener("DOMContentLoaded", function() {
-    loadUserList();
-});
-
-function loadUserList() {
-    fetch('/api/access/users/list') // Calls the controller action
-        .then(response => response.json())
-        .then(data => {
-            const tableBody = document.getElementById('userTableBody');
-            tableBody.innerHTML = ''; // Clear existing rows
-
-            data.forEach(user => {
-                const row = document.createElement('tr');
-                row.innerHTML = `
-                    <td>${user.username}</td>
-                    <td>${user.employeeName}</td>
-                    <td>${user.email}</td>
-                    <td>${user.roleName}</td>
-                    <td>${user.location}</td>
-                `;
-                tableBody.appendChild(row);
-            });
-        })
-        .catch(error => console.error('Error fetching user list:', error));
-}
-
-document.getElementById('searchUser').addEventListener('input', function() {
-    const searchTerm = this.value.toLowerCase();
-    const rows = document.querySelectorAll('#userTableBody tr');
-
-    rows.forEach(row => {
-        const username = row.cells[0].textContent.toLowerCase();
-        const employeeName = row.cells[1].textContent.toLowerCase();
-        // ... other columns if needed
-
-        if (username.includes(searchTerm) || employeeName.includes(searchTerm)) {
-            row.style.display = '';
-        } else {
-            row.style.display = 'none';
-        }
-    });
-});
-</script>

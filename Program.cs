@@ -5,8 +5,8 @@ using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
 using Microsoft.EntityFrameworkCore;
 using System;
-using AEET.Models;      // Contains ApplicationDbContext, Model classes
-using AEET.Code;       // Contains FullDataManager, UserManager, RoleManager, EmployeeManager, etc.
+using AEET.Models;      // Contains ApplicationDbContext, model classes (Employee, ScanDetail, etc.)
+using AEET.Code;        // Contains FullDataManager, UserManager, RoleManager, EmployeeManager, EmployeeAssetMappingManager, ScanTransactionManager, etc.
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -28,20 +28,15 @@ builder.Services.AddDbContext<ApplicationDbContext>(options =>
 // Register your custom SQL test service as a Singleton.
 builder.Services.AddSingleton<Sql>();
 
-// Register your custom classes for Dependency Injection (DI).
+// Register your custom classes for Dependency Injection.
 builder.Services.AddScoped<UserManager>();
 builder.Services.AddScoped<RoleManager>();
-// builder.Services.AddScoped<AssetManager>(); // If you no longer need AssetManager, you can remove/comment it.
-
-// Add the new FullDataManager.
 builder.Services.AddScoped<FullDataManager>();
-
-// NEW: Add the EmployeeManager for handling Employee table operations.
 builder.Services.AddScoped<EmployeeManager>();
-
 builder.Services.AddScoped<EmployeeAssetMappingManager>();
+builder.Services.AddScoped<ScanTransactionManager>(); // Registration for scan transactions
 
-// Add CORS policy for development (tighten for production).
+// Add CORS policy for development (tighten for production as needed).
 builder.Services.AddCors(options =>
 {
     options.AddPolicy("AllowAllOrigins",
@@ -49,10 +44,6 @@ builder.Services.AddCors(options =>
                         .AllowAnyMethod()
                         .AllowAnyHeader());
 });
-
-// (Optional) Add authentication and authorization services if needed in the future.
-// builder.Services.AddAuthentication(/* options */).AddCookie(/* options */);
-// builder.Services.AddAuthorization();
 
 var app = builder.Build();
 
@@ -99,7 +90,7 @@ app.UseAuthorization();
 // Map attribute-routed controllers (for API endpoints).
 app.MapControllers();
 
-// Define the default MVC route (starting at the login page).
+// Define the default MVC route.
 app.MapControllerRoute(
     name: "default",
     pattern: "{controller=Account}/{action=Login}/{id?}");

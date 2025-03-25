@@ -7,64 +7,60 @@ namespace AEET.Models
     [Table("Employee")]
     public class Employee
     {
-        // Primary key: auto-incrementing integer
         [Key]
-        [DatabaseGenerated(DatabaseGeneratedOption.Identity)]
+        [DatabaseGenerated(DatabaseGeneratedOption.None)]
         public int EmployeeId { get; set; }
 
-        // EmployeeName NVARCHAR(100) UNIQUE (uniqueness can be enforced via Fluent API if needed)
         [Required]
         [StringLength(100)]
         public string EmployeeName { get; set; } = string.Empty;
 
-        // Manager NVARCHAR(100)
+        [Required]
         [StringLength(100)]
-        public string? Manager { get; set; }
+        public string Manager { get; set; } = string.Empty;
 
-        // Department NVARCHAR(255)
+        [Required]
         [StringLength(255)]
-        public string? Department { get; set; }
+        public string Department { get; set; } = string.Empty;
 
-        // Title NVARCHAR(255)
+        [Required]
         [StringLength(255)]
-        public string? Title { get; set; }
+        public string Title { get; set; } = string.Empty;
 
-        // Phone NVARCHAR(50)
+        [Required]
         [StringLength(50)]
-        public string? Phone { get; set; }
+        public string Phone { get; set; } = string.Empty;
 
-        // Address NVARCHAR(255)
+        [Required]
         [StringLength(255)]
-        public string? Address { get; set; }
+        public string Address { get; set; } = string.Empty;
 
-        // City NVARCHAR(100)
+        [Required]
         [StringLength(100)]
-        public string? City { get; set; }
+        public string City { get; set; } = string.Empty;
 
-        // State NVARCHAR(100)
+        [Required]
         [StringLength(100)]
-        public string? State { get; set; }
+        public string State { get; set; } = string.Empty;
 
-        // Country NVARCHAR(100)
+        [Required]
         [StringLength(100)]
-        public string? Country { get; set; }
+        public string Country { get; set; } = string.Empty;
 
-        // ZipCode NVARCHAR(20)
+        [Required]
         [StringLength(20)]
-        public string? ZipCode { get; set; }
+        public string ZipCode { get; set; } = string.Empty;
 
-        // CreatedOn with default GETDATE() equivalent
         public DateTime CreatedOn { get; set; } = DateTime.Now;
 
-        // CreatedBy NVARCHAR(255)
+        [Required]
         [StringLength(255)]
-        public string? CreatedBy { get; set; }
+        public string CreatedBy { get; set; } = string.Empty;
 
-        // ModifiedOn with default GETDATE() equivalent
         public DateTime ModifiedOn { get; set; } = DateTime.Now;
 
-        // ModifiedBy NVARCHAR(255)
+        [Required]
         [StringLength(255)]
-        public string? ModifiedBy { get; set; }
+        public string ModifiedBy { get; set; } = string.Empty;
     }
 }

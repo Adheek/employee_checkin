@@ -1,400 +1,352 @@
+<!DOCTYPE html>
 @{
     ViewData["Title"] = "Asset Logs";
-    Layout=null;
-    
+    Layout = null;
 }
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>@ViewData["Title"]</title>
+  <link rel="stylesheet" href="~/css/site.css" />
+  <link
+    rel="stylesheet"
+    href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css"
+  />
+  <style>
+    /* Global Font */
+    * {
+      font-family: 'Poppins', sans-serif;
+      box-sizing: border-box;
+    }
 
-                <!-- Security Logs Modal -->
-                <div id="logsModal" class="modal">
-                    <div class="modal-content">
-                        <div class="modal-header">
-                            <h2>
-                                <i class="fas fa-history"></i>
-                                Security Scanner Logs
-                            </h2>
-                            <button class="close-btn" id="closeLogsModal">&times;</button>
-                        </div>
+    /* Modal Styles */
+    .modal {
+      display: block;
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      background: rgba(244, 241, 234, 0.95);
+      z-index: 1000;
+      padding: 0 1rem;
+    }
+    .modal-content {
+      background: #faf9f6;
+      margin: 2rem auto;
+      padding: 2rem;
+      border: 1px solid #e0dcd3;
+      border-radius: 12px;
+      width: 95%;
+      max-width: 1200px;
+      height: calc(100vh - 4rem);
+      overflow-y: auto;
+      position: relative;
+      color: #333333;
+    }
+    .modal-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: 1rem;
+      padding-bottom: 1rem;
+      border-bottom: 1px solid #e0dcd3;
+    }
+    .modal-header h2 {
+      color: #0d0063;
+      font-size: 1.5rem;
+      display: flex;
+      align-items: center;
+      gap: 0.5rem;
+    }
+    .close-btn {
+      background: none;
+      border: none;
+      color: #666666;
+      font-size: 1.5rem;
+      cursor: pointer;
+      transition: color 0.3s;
+    }
+    .close-btn:hover {
+      color: #0d0063;
+    }
 
-                        <div class="logs-content">
-                            <div class="date-filter">
-                                <div class="form-group">
-                                    <label for="startDate">Start Date</label>
-                                    <input type="date" id="startDate">
-                                </div>
-                                <div class="form-group">
-                                    <label for="endDate">End Date</label>
-                                    <input type="date" id="endDate">
-                                </div>
-                                <button id="filterLogs" class="btn-primary">
-                                    <i class="fas fa-filter"></i> Filter
-                                </button>
-                                <button id="downloadLogs" class="btn-secondary">
-                                    <i class="fas fa-download"></i> Download Excel
-                                </button>
-                            </div>
+    /* Filter/Download/Clear Controls */
+    .controls {
+      display: flex;
+      flex-wrap: wrap;
+      align-items: center;
+      gap: 1rem;
+      margin-bottom: 1rem;
+    }
+    .controls label {
+      font-weight: 500;
+      margin-right: 0.5rem;
+    }
+    .controls input[type="date"] {
+      padding: 0.3rem;
+      font-size: 0.9rem;
+      border: 1px solid #ccc;
+      border-radius: 4px;
+    }
+    .controls button {
+      padding: 0.6rem 1rem;
+      border: none;
+      border-radius: 6px;
+      cursor: pointer;
+      background: #0d0063;
+      color: #ffffff;
+      font-size: 0.9rem;
+    }
 
-                            <div class="table-container">
-                                <table class="logs-table">
-                                    <thead>
-                                        <tr>
-                                            <th>Date/Time</th>
-                                            <th>User</th>
-                                            <th>Action</th>
-                                            <th>Location</th>
-                                            <th>Status</th>
-                                            <th>Details</th>
-                                        </tr>
-                                    </thead>
-                                    <tbody id="logsTableBody"></tbody>
-                                </table>
-                            </div>
-                        </div>
-                    </div>
-                </div>
+    /* Table Styles */
+    .table-container {
+      overflow-x: auto;
+      background: #ffffff;
+      border: 1px solid #e0dcd3;
+      border-radius: 8px;
+    }
+    .logs-table {
+      width: 100%;
+      border-collapse: collapse;
+    }
+    .logs-table th,
+    .logs-table td {
+      padding: 1rem;
+      text-align: left;
+      border-bottom: 1px solid #e0dcd3;
+    }
+    .logs-table th {
+      background: #0d0063;
+      color: #ffffff;
+      font-weight: 500;
+    }
+  </style>
+</head>
+<body>
+  <!-- Asset Logs Modal -->
+  <div id="logsModal" class="modal">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h2>
+          <i class="fas fa-history"></i> Asset Logs
+        </h2>
+        <button class="close-btn" id="closeLogsModal">&times;</button>
+      </div>
 
-              
-<style>
-/* Global Font */
-* {
-  font-family: 'Poppins', sans-serif;
-  box-sizing: border-box;
-}
+      <!-- Filter and Download Controls -->
+      <div class="controls">
+        <!-- Start Date -->
+        <div>
+          <label for="startDate">Start Date:</label>
+          <input type="date" id="startDate" />
+        </div>
+        <!-- End Date -->
+        <div>
+          <label for="endDate">End Date:</label>
+          <input type="date" id="endDate" />
+        </div>
+        <!-- Filter Button -->
+        <button id="filterButton">
+          <i class="fas fa-filter"></i> Filter
+        </button>
+        <!-- Download Button -->
+        <button id="downloadButton">
+          <i class="fas fa-download"></i> Download
+        </button>
+        <!-- Clear Filter Button -->
+        <button id="clearFilterButton">
+          <i class="fas fa-ban"></i> Clear Filter
+        </button>
+      </div>
 
-/* Modal Styles */
-.modal {
-  position: fixed;
-  top: 0;
-  left: 0;
-  width: 100%;
-  height: 100%;
-  background: rgba(255, 255, 255, 0.6);
-  z-index: 1000;
-  /* Instead of centering, align at the top: */
-  display: flex;
-  align-items: flex-start;
-  justify-content: center;
-  /* Add some padding on top for spacing: */
-  padding-top: 2rem;
+      <!-- Table Container -->
+      <div class="table-container">
+        <table class="logs-table">
+          <thead>
+            <tr>
+              <th>ScanId</th>
+              <th>AssetId</th>
+              <th>EmployeeId</th>
+              <th>EmployeeName</th>
+              <th>TransactionTime</th>
+              <th>TransactionType</th>
+            </tr>
+          </thead>
+          <tbody id="logsTableBody"></tbody>
+        </table>
+      </div>
+    </div>
+  </div>
 
-  animation: fadeIn 0.3s ease-in-out;
-  backdrop-filter: blur(5px);
-}
+  <script>
+    // Close the modal and redirect back to Landing when close button is clicked.
+    document.getElementById('closeLogsModal').addEventListener('click', function () {
+      window.location.href = "/Home/Landing";
+    });
 
+    // Keep a global array to store fetched logs.
+    let allLogs = [];
 
-@@keyframes fadeIn {
-  from { opacity: 0; transform: translateY(-20px); }
-  to { opacity: 1; transform: translateY(0); }
-}
+    // Helper to format date to YYYY-MM-DD for input fields
+    function formatDateForInput(date) {
+      const year = date.getFullYear();
+      const month = String(date.getMonth() + 1).padStart(2, '0');
+      const day = String(date.getDate()).padStart(2, '0');
+      return `${year}-${month}-${day}`;
+    }
 
-.modal-content {
-  background: #ffffff;
-  margin: 1rem auto;
-  padding: 1.5rem;
-  border: none;
-  border-radius: 16px;
-  width: 95%;
-  max-width: 1200px;
-  max-height: 90vh;
-  overflow-y: auto;
-  position: relative;
-  color: #333333;
-  box-shadow: 0 10px 30px rgba(13, 0, 99, 0.2);
-  transition: all 0.3s ease;
-}
+    // Set default dates: Start = 3 days ago, End = today
+    const today = new Date();
+    const past3Days = new Date();
+    past3Days.setDate(today.getDate() - 3);
 
-.modal-content.modal-sm {
-  max-width: 500px;
-}
+    // Initialize date fields
+    const startDateInput = document.getElementById('startDate');
+    const endDateInput = document.getElementById('endDate');
+    startDateInput.value = formatDateForInput(past3Days);
+    endDateInput.value = formatDateForInput(today);
 
-.modal-header {
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
-  margin-bottom: 1.5rem;
-  padding-bottom: 1rem;
-  border-bottom: 2px solid #f0f2f5;
-}
+    // Fetch logs on page load
+    window.addEventListener('DOMContentLoaded', () => {
+      fetchLogs();
+    });
 
-.modal-header h2 {
-  color: #0d0063;
-  font-size: 1.6rem;
-  font-weight: 600;
-  display: flex;
-  align-items: center;
-  gap: 0.75rem;
-  margin: 0;
-}
+    // Fetch logs from /api/ScanDetails/All
+    function fetchLogs() {
+      fetch('/api/ScanDetails/All')
+        .then((response) => {
+          if (!response.ok) {
+            return response.text().then((text) => {
+              throw new Error(text);
+            });
+          }
+          return response.json();
+        })
+        .then((data) => {
+          allLogs = data;
+          renderLogs(allLogs);
+        })
+        .catch((error) => {
+          console.error('Error fetching logs:', error);
+          alert("Error fetching logs. Please try again later.");
+        });
+    }
 
-.modal-header i {
-  color: #0d0063;
-  font-size: 1.4rem;
-}
+    // Render logs to table
+    function renderLogs(logs) {
+      const tbody = document.getElementById('logsTableBody');
+      tbody.innerHTML = ''; // Clear existing rows
 
-.close-btn {
-  background: #f0f2f5;
-  border: none;
-  color: #0d0063;
-  width: 36px;
-  height: 36px;
-  border-radius: 50%;
-  font-size: 1.5rem;
-  cursor: pointer;
-  transition: all 0.3s;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  line-height: 1;
-}
+      logs.forEach((log) => {
+        const tr = document.createElement('tr');
+        const transactionTime = new Date(log.transactionTime).toLocaleString();
+        tr.innerHTML = `
+          <td>${log.scanId}</td>
+          <td>${log.assetId}</td>
+          <td>${log.employeeId || ''}</td>
+          <td>${log.employeeName}</td>
+          <td>${transactionTime}</td>
+          <td>${log.transactionType}</td>
+        `;
+        tbody.appendChild(tr);
+      });
+    }
 
-.close-btn:hover {
-  background: #e0e3ea;
-  transform: rotate(90deg);
-}
+    // Filter button event
+    document.getElementById('filterButton').addEventListener('click', () => {
+      const startDateStr = startDateInput.value;
+      const endDateStr = endDateInput.value;
 
-/* Logs Modal Specific Styles */
-.logs-content {
-  height: auto;
-  max-height: calc(90vh - 100px);
-  display: flex;
-  flex-direction: column;
-}
+      if (!startDateStr || !endDateStr) {
+        alert('Please select both start and end dates.');
+        return;
+      }
 
-.date-filter {
-  display: flex;
-  gap: 1rem;
-  margin-bottom: 1.5rem;
-  align-items: flex-end;
-  flex-wrap: wrap;
-}
+      const startDate = new Date(startDateStr);
+      // Set time to 00:00 for start date
+      startDate.setHours(0, 0, 0, 0);
 
-.form-group {
-  flex: 1;
-  min-width: 160px;
-  margin-bottom: 0.5rem;
-}
+      const endDate = new Date(endDateStr);
+      // Set time to 23:59 for end date
+      endDate.setHours(23, 59, 59, 999);
 
-.form-group label {
-  display: block;
-  margin-bottom: 0.5rem;
-  color: #555;
-  font-size: 0.9rem;
-  font-weight: 500;
-}
+      // Filter logs in the client based on date range
+      const filteredLogs = allLogs.filter((log) => {
+        const tTime = new Date(log.transactionTime);
+        return tTime >= startDate && tTime <= endDate;
+      });
 
-.form-group input {
-  width: 100%;
-  padding: 0.75rem 1rem;
-  border: 1px solid #e0e3ea;
-  border-radius: 8px;
-  font-size: 0.95rem;
-  transition: all 0.3s;
-}
+      renderLogs(filteredLogs);
+    });
 
-.form-group input:focus {
-  outline: none;
-  border-color: #0d0063;
-  box-shadow: 0 0 0 3px rgba(13, 0, 99, 0.1);
-}
+    // Download button event
+    document.getElementById('downloadButton').addEventListener('click', () => {
+      // Read the currently displayed rows from the table
+      const rows = document.querySelectorAll('#logsTableBody tr');
 
-.table-container {
-  overflow-x: auto;
-  background: #f8f9fb;
-  border-radius: 12px;
-  margin-top: 1rem;
-  border: 1px solid #e0e3ea;
-  box-shadow: 0 2px 10px rgba(0, 0, 0, 0.05);
-}
+      // Construct an array of objects from the displayed rows
+      const displayedLogs = [];
+      rows.forEach((row) => {
+        const cells = row.querySelectorAll('td');
+        displayedLogs.push({
+          ScanId: cells[0].textContent.trim(),
+          AssetId: cells[1].textContent.trim(),
+          EmployeeId: cells[2].textContent.trim(),
+          EmployeeName: cells[3].textContent.trim(),
+          TransactionTime: cells[4].textContent.trim(),
+          TransactionType: cells[5].textContent.trim()
+        });
+      });
 
-.logs-table {
-  width: 100%;
-  border-collapse: separate;
-  border-spacing: 0;
-}
+      // Convert displayedLogs to CSV
+      const csvRows = [];
+      // Header
+      csvRows.push([
+        'ScanId',
+        'AssetId',
+        'EmployeeId',
+        'EmployeeName',
+        'TransactionTime',
+        'TransactionType'
+      ].join(','));
 
-.logs-table th,
-.logs-table td {
-  padding: 1rem;
-  text-align: left;
-}
+      // Data
+      displayedLogs.forEach(log => {
+        csvRows.push([
+          log.ScanId,
+          log.AssetId,
+          log.EmployeeId,
+          log.EmployeeName,
+          log.TransactionTime,
+          log.TransactionType
+        ].join(','));
+      });
 
-.logs-table th {
-  background: #0d0063;
-  color: #ffffff;
-  font-weight: 500;
-  position: sticky;
-  top: 0;
-  z-index: 10;
-}
+      const csvString = csvRows.join('\n');
 
-.logs-table th:first-child {
-  border-top-left-radius: 8px;
-}
+      // Create a blob and download
+      const blob = new Blob([csvString], { type: 'text/csv' });
+      const url = URL.createObjectURL(blob);
+      const link = document.createElement('a');
+      link.href = url;
+      link.download = 'AssetLogs.csv';
+      document.body.appendChild(link);
+      link.click();
+      document.body.removeChild(link);
+      URL.revokeObjectURL(url);
+    });
 
-.logs-table th:last-child {
-  border-top-right-radius: 8px;
-}
+    // Clear Filter button event
+    document.getElementById('clearFilterButton').addEventListener('click', () => {
+      // Reset the date fields to the default range
+      startDateInput.value = formatDateForInput(past3Days);
+      endDateInput.value = formatDateForInput(today);
 
-.logs-table tr {
-  transition: background 0.2s;
-}
-
-.logs-table tbody tr {
-  border-bottom: 1px solid #e0e3ea;
-}
-
-.logs-table tbody tr:last-child {
-  border-bottom: none;
-}
-
-.logs-table tbody tr:hover {
-  background: #eef1ff;
-}
-
-/* Button Styles */
-.btn-primary,
-.btn-secondary,
-.btn-danger {
-  padding: 0.75rem 1.25rem;
-  border: none;
-  border-radius: 8px;
-  cursor: pointer;
-  display: inline-flex;
-  align-items: center;
-  justify-content: center;
-  gap: 0.5rem;
-  font-size: 0.95rem;
-  transition: all 0.3s;
-  font-weight: 500;
-  min-width: 120px;
-}
-
-.btn-primary {
-  background: #0d0063;
-  color: #ffffff;
-}
-
-.btn-primary:hover {
-  background: #0a004d;
-  transform: translateY(-2px);
-  box-shadow: 0 4px 12px rgba(13, 0, 99, 0.2);
-}
-
-.btn-primary:active {
-  transform: translateY(0);
-}
-
-.btn-secondary {
-  background: #f0f2f5;
-  color: #444;
-  border: 1px solid #e0e3ea;
-}
-
-.btn-secondary:hover {
-  background: #e0e3ea;
-  transform: translateY(-2px);
-  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
-}
-
-.btn-secondary:active {
-  transform: translateY(0);
-}
-
-.btn-danger {
-  background: #dc3545;
-  color: #ffffff;
-}
-
-.btn-danger:hover {
-  background: #bb2d3b;
-  transform: translateY(-2px);
-  box-shadow: 0 4px 12px rgba(220, 53, 69, 0.2);
-}
-
-/* Status indicators */
-.status {
-  display: inline-block;
-  padding: 0.25rem 0.75rem;
-  border-radius: 1rem;
-  font-size: 0.85rem;
-  font-weight: 500;
-}
-
-.status-success {
-  background-color: #e7f7ee;
-  color: #0a7a3e;
-}
-
-.status-warning {
-  background-color: #fff8e6;
-  color: #b25b00;
-}
-
-.status-danger {
-  background-color: #ffebee;
-  color: #c62828;
-}
-
-/* Responsive adjustments */
-@@media screen and (max-width: 768px) {
-  .modal-content {
-    padding: 1rem;
-    margin: 0.5rem;
-    width: 98%;
-  }
-  
-  .modal-header h2 {
-    font-size: 1.3rem;
-  }
-  
-  .date-filter {
-    flex-direction: column;
-    align-items: stretch;
-  }
-  
-  .form-group {
-    width: 100%;
-  }
-  
-  .logs-table th,
-  .logs-table td {
-    padding: 0.75rem 0.5rem;
-    font-size: 0.9rem;
-  }
-  
-  .btn-primary,
-  .btn-secondary {
-    width: 100%;
-    margin-bottom: 0.5rem;
-  }
-}
-
-/* For very small screens */
-@@media screen and (max-width: 480px) {
-  .logs-table {
-    display: block;
-  }
-  
-  .logs-table th {
-    font-size: 0.8rem;
-    padding: 0.5rem 0.25rem;
-  }
-  
-  .logs-table td {
-    font-size: 0.8rem;
-    padding: 0.5rem 0.25rem;
-  }
-  
-  .modal-header {
-    flex-direction: column;
-    align-items: flex-start;
-    gap: 0.5rem;
-  }
-  
-  .close-btn {
-    position: absolute;
-    top: 1rem;
-    right: 1rem;
-  }
-}
-
-</style>
+      // Re-fetch all logs from the server
+      fetchLogs();
+    });
+  </script>
+</body>
+</html>

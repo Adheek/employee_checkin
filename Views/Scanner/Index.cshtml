@@ -1,12 +1,18 @@
+<!DOCTYPE html>
 @{
     ViewData["Title"] = "Scanner";
     Layout = null;
 }
-
-<!-- Include the html5-qrcode library from a CDN -->
-<script src="https://unpkg.com/html5-qrcode" type="text/javascript"></script>
-
-<style>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>@ViewData["Title"]</title>
+    <!-- Include the html5-qrcode library and jsQR from CDNs -->
+    <script src="https://unpkg.com/html5-qrcode@2.3.7/html5-qrcode.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/jsqr/dist/jsQR.js"></script>
+    <!-- Your existing styles -->
+   <style>
     body {
     margin: 0;
     padding: 0;
@@ -615,121 +621,41 @@ h1 {
 @@-webkit-keyframes placeholderShimmer{0%{background-position-x:100%}to{background-position-x:0}}
 @@keyframes placeholderShimmer{0%{background-position-x:100%}to{background-position-x:0}}
 </style>
-
-
-<!-- 
-    Scanner Modal - opens automatically on page load (see script below).
-    This is your initial camera feed for scanning the QR code.
--->
-@* <div id="scannerModal" class="scanner-modal">
-    <div class="scanner-content">
-        <div class="scanner-header">
-            <h2>
-                <i class="fas fa-qrcode"></i>
-                Scan QR Code
-            </h2>
-            <button id="scannerClose" class="scanner-close">
-                <i class="fas fa-times"></i>
-            </button>
-        </div>
-        <div class="qr-reader-container">
-            <!-- html5-qrcode will render the camera feed into this div -->
-            <div id="qrReader"></div>
-            <div id="scannerLoading" class="scanner-loading">
-                <i class="fas fa-spinner fa-spin"></i>
-                <span>Initializing camera...</span>
+</head>
+<body>
+    <!-- Scanner Options Modal -->
+    <div id="scannerOptionsModal" class="modal">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h2>Choose an Option</h2>
+                <button class="close-modal" onclick="closeModal('scannerOptionsModal')">&times;</button>
             </div>
-        </div>
-    </div>
-</div> *@
-
-<main class="content">
-    <div class="details-container">
-        <!-- Header -->
-        <div class="header">
-            <button class="back-btn" onclick="history.back()">
-                <i class="fas fa-arrow-left"></i>
-                Back
-            </button>
-            <h1>Scan Details</h1>
-        </div>
-
-        <!-- Status -->
-        <div id="currentStatus" class="status ready">Ready to Check In</div>
-
-        <!-- Scan Info -->
-        <div class="scan-info">
-            <!-- Scanned Data Card -->
-            <div class="info-card">
-                <div class="card-header">
-                    <i class="fas fa-qrcode"></i>
-                    <h2>Scanned Data</h2>
-                </div>
-                <div class="card-body">
-                    <!-- Will display the decoded text here -->
-                    <div id="scannedContent" class="scanned-data-list"></div>
-                </div>
-            </div>
-
-            <!-- Details Grid -->
-            <div class="details-grid">
-                <!-- Check In Time -->
-                <div class="info-card">
-                    <div class="card-header">
-                        <i class="fas fa-clock"></i>
-                        <h2>Check In Time</h2>
-                    </div>
-                    <div class="card-body">
-                        <p id="timeDisplay">Not checked in</p>
-                    </div>
-                </div>
-
-                <!-- Check Out Time -->
-                <div class="info-card">
-                    <div class="card-header">
-                        <i class="fas fa-clock"></i>
-                        <h2>Check Out Time</h2>
-                    </div>
-                    <div class="card-body">
-                        <p id="checkOutTimeDisplay">Not checked out</p>
-                    </div>
-                </div>
-
-                <!-- Duration -->
-                <div class="info-card">
-                    <div class="card-header">
-                        <i class="fas fa-hourglass-half"></i>
-                        <h2>Duration</h2>
-                    </div>
-                    <div class="card-body">
-                        <p id="duration">Not checked in</p>
-                    </div>
-                </div>
-            </div>
-
-            <!-- Action Buttons -->
-            <div class="action-buttons">
-                <button id="checkInBtn" class="action-btn check-in">
-                    <i class="fas fa-sign-in-alt"></i>
-                    Check In
+            <div class="modal-body">
+                <button id="liveScanOption"> 
+                    <i class="fas fa-camera"></i> Scan QR Code
                 </button>
-                <button id="checkOutBtn" class="action-btn check-out" disabled>
-                    <i class="fas fa-sign-out-alt"></i>
-                    Check Out
-                </button>
-                <button id="reportMismatchBtn" class="action-btn check-out">
-                    <i class="fas fa-exclamation-triangle"></i>
-                    Report Mismatch
-                </button>
-                <button id="scanNewBtn" class="action-btn scan-new">
-                    <i class="fas fa-qrcode"></i>
-                    Scan Another Device
+                <button id="uploadOption"> 
+                    <i class="fas fa-upload"></i> Upload QR Image
                 </button>
             </div>
         </div>
     </div>
 
-    <!-- Secondary QR Scanner Modal (optional) -->
+    <!-- Upload Modal -->
+    <div id="uploadModal" class="modal">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h2><i class="fas fa-upload"></i> Upload QR Image</h2>
+                <button class="close-modal" onclick="closeModal('uploadModal')">&times;</button>
+            </div>
+            <div class="modal-body">
+                <input type="file" id="qrFileInput" accept="image/*">
+                <button id="uploadSubmitBtn" class="action-btn scan-new" style="margin-top:1rem;">Submit Image</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Live Scanner Modal -->
     <div id="qrModal" class="modal">
         <div class="modal-content">
             <div class="modal-header">
@@ -737,255 +663,333 @@ h1 {
                 <button class="close-modal" onclick="closeModal('qrModal')">&times;</button>
             </div>
             <div class="modal-body">
-                <div id="reader"></div>
-                <div id="scannerMessage" class="scanner-message">
-                    Initializing camera...
-                </div>
+                <div id="reader" style="width: 100%;"></div>
+                <div id="scannerMessage">Initializing camera...</div>
             </div>
         </div>
     </div>
 
-    <!-- Manual Check In Modal -->
-    <div id="manualCheckInModal" class="modal">
-        <div class="modal-content">
-            <div class="modal-header">
-                <h2><i class="fas fa-clock"></i> Manual Check In</h2>
-                <button class="close-modal" onclick="closeModal('manualCheckInModal')">&times;</button>
+    <main class="content">
+        <div class="details-container">
+            <!-- Header -->
+            <div class="header">
+                <button class="back-btn" onclick="history.back()">
+                    <i class="fas fa-arrow-left"></i> Back
+                </button>
+                <h1>Scan Details</h1>
             </div>
-            <div class="modal-body">
-                <div class="form-group">
-                    <label for="manualCheckInTime">Enter Check-in Time:</label>
-                    <input type="datetime-local" id="manualCheckInTime" class="form-input" required />
-                    <div class="error-message" id="checkInError"></div>
+
+            <!-- Status -->
+            <div id="currentStatus" class="status ready">Ready to Check In</div>
+
+            <!-- Scan Info -->
+            <div class="scan-info">
+                <!-- Scanned Data Card -->
+                <div class="info-card">
+                    <div class="card-header">
+                        <i class="fas fa-qrcode"></i>
+                        <h2>Scanned Data</h2>
+                        <div class="scan-data-display">@ViewBag.ScannedData</div>
+                    </div>
+                    <div class="card-body">
+                        <!-- Decoded text will be displayed here -->
+                        <div id="scannedContent" class="scanned-data-list"></div>
+                    </div>
+                </div>
+
+                <!-- Details Grid -->
+                <div class="details-grid">
+                    <!-- Check In Time -->
+                    <div class="info-card">
+                        <div class="card-header">
+                            <i class="fas fa-clock"></i>
+                            <h2>Check In Time</h2>
+                        </div>
+                        <div class="card-body">
+                            <p id="timeDisplay">Not checked in</p>
+                        </div>
+                    </div>
+
+                    <!-- Check Out Time -->
+                    <div class="info-card">
+                        <div class="card-header">
+                            <i class="fas fa-clock"></i>
+                            <h2>Check Out Time</h2>
+                        </div>
+                        <div class="card-body">
+                            <p id="checkOutTimeDisplay">Not checked out</p>
+                        </div>
+                    </div>
+
+                    <!-- Duration -->
+                    <div class="info-card">
+                        <div class="card-header">
+                            <i class="fas fa-hourglass-half"></i>
+                            <h2>Duration</h2>
+                        </div>
+                        <div class="card-body">
+                            <p id="duration">Not checked in</p>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Action Buttons -->
+                <div class="action-buttons">
+                    <button id="checkInBtn" class="action-btn check-in" disabled>
+                        <i class="fas fa-sign-in-alt"></i> Check In
+                    </button>
+                    <button id="checkOutBtn" class="action-btn check-out" disabled>
+                        <i class="fas fa-sign-out-alt"></i> Check Out
+                    </button>
+                    <button id="reportMismatchBtn" class="action-btn check-out">
+                        <i class="fas fa-exclamation-triangle"></i> Report Mismatch
+                    </button>
+                    <button id="scanNewBtn" class="action-btn scan-new">
+                        <i class="fas fa-qrcode"></i> Scan Another Device
+                    </button>
                 </div>
             </div>
-            <div class="modal-footer">
-                <button class="btn-secondary" onclick="closeModal('manualCheckInModal')">Cancel</button>
-                <button class="btn-primary" onclick="handleManualCheckIn()">Submit</button>
-            </div>
         </div>
-    </div>
+    </main>
 
-    <!-- Manual Check Out Modal -->
-    <div id="manualCheckOutModal" class="modal">
-        <div class="modal-content">
-            <div class="modal-header">
-                <h2><i class="fas fa-clock"></i> Manual Check Out</h2>
-                <button class="close-modal" onclick="closeModal('manualCheckOutModal')">&times;</button>
-            </div>
-            <div class="modal-body">
-                <div class="form-group">
-                    <label for="manualCheckOutTime">Enter Check-out Time:</label>
-                    <input type="datetime-local" id="manualCheckOutTime" class="form-input" required />
-                    <div class="error-message" id="checkOutError"></div>
-                    <div class="warning-message" id="checkOutWarning"></div>
-                </div>
-            </div>
-            <div class="modal-footer">
-                <button class="btn-secondary" onclick="closeModal('manualCheckOutModal')">Cancel</button>
-                <button class="btn-primary" onclick="handleManualCheckOut()">Submit</button>
-            </div>
-        </div>
-    </div>
+    <script>
+        /********************************************************************
+         * Global Variables for Decoded Values
+         ********************************************************************/
+        let currentAssetId = null;
+        let currentEmployeeId = null;
+        let currentEmployeeName = null;
+        let currentStatus = null;
 
-    <!-- Mismatch Modal -->
-    <div id="mismatchModal" class="modal">
-        <div class="modal-content">
-            <div class="modal-header">
-                <h2><i class="fas fa-exclamation-triangle"></i> Asset Mismatch</h2>
-                <button class="close-modal" onclick="closeModal('mismatchModal')">&times;</button>
-            </div>
-            <div class="modal-body">
-                <div class="form-group">
-                    <label for="mismatchEmployeeId">Enter Employee ID checking out the asset:</label>
-                    <input type="text" id="mismatchEmployeeId" class="form-input" required />
-                    <div class="error-message" id="mismatchError"></div>
-                </div>
-            </div>
-            <div class="modal-footer">
-                <button class="btn-secondary" onclick="closeModal('mismatchModal')">Cancel</button>
-                <button class="btn-primary" onclick="handleMismatch()">Submit</button>
-            </div>
-        </div>
-    </div>
-</main>
-
-<script>
-    /********************************************************************
-     * 1. Modal Open/Close Functions
-     ********************************************************************/
-    function openModal(modalId) {
-        document.getElementById(modalId).style.display = "block";
-    }
-    function closeModal(modalId) {
-        document.getElementById(modalId).style.display = "none";
-    }
-
-    // Close the main scanner modal
-    const scannerCloseBtn = document.getElementById("scannerClose");
-    if (scannerCloseBtn) {
-        scannerCloseBtn.addEventListener("click", () => {
-            closeModal("scannerModal");
+        /********************************************************************
+         * Modal Open/Close Functions
+         ********************************************************************/
+        function openModal(modalId) {
+            document.getElementById(modalId).style.display = "block";
+        }
+        function closeModal(modalId) {
+            document.getElementById(modalId).style.display = "none";
+        }
+        // Close modal if click outside modal-content
+        window.addEventListener("click", function(event) {
+            document.querySelectorAll(".modal").forEach(modal => {
+                if (event.target === modal) {
+                    modal.style.display = "none";
+                }
+            });
         });
-    }
 
-    // Close modals when clicking outside content (optional)
-    window.addEventListener("click", function(event) {
-        const modals = document.querySelectorAll(".modal, .scanner-modal");
-        modals.forEach(modal => {
-            if (event.target === modal) {
-                modal.style.display = "none";
+        /********************************************************************
+         * QR Data Parsing Utility
+         ********************************************************************/
+        function parseKeyValueString(input) {
+            const dict = {};
+            const pairs = input.split(";").map(p => p.trim()).filter(Boolean);
+            pairs.forEach(pair => {
+                const [key, value] = pair.split("=");
+                if (key && value) {
+                    dict[key.trim()] = value.trim();
+                }
+            });
+            return dict;
+        }
+
+        /********************************************************************
+         * Live Scanner Setup using Html5Qrcode
+         ********************************************************************/
+        function startScanner() {
+            const html5QrcodeScanner = new Html5QrcodeScanner(
+                "reader",
+                { fps: 10, qrbox: 250 },
+                false
+            );
+
+            function onScanSuccess(decodedText, decodedResult) {
+                const data = parseKeyValueString(decodedText);
+                currentAssetId = data.AssetId || null;
+                currentEmployeeId = data.EmployeeId ? parseInt(data.EmployeeId) : null;
+                currentEmployeeName = data.EmployeeName || null;
+                currentStatus = data.Status || null;
+
+                document.getElementById("scannedContent").innerText = decodedText;
+                const checkInBtn = document.getElementById("checkInBtn");
+                if (currentAssetId && currentEmployeeId && currentEmployeeName) {
+                    checkInBtn.disabled = false;
+                }
+                closeModal("qrModal");
+                html5QrcodeScanner.clear();
             }
-        });
-    });
 
-    @* /********************************************************************
-     * 2. START the Html5Qrcode Scanner
-     *    - Called automatically on page load
-     ********************************************************************/
-    document.addEventListener("DOMContentLoaded", () => {
-        // Open the scanner modal
-        openModal("scannerModal");
-        startScanner();
-    });
+            function onScanError(errorMessage) {
+                // Optionally log or ignore scan errors
+            }
 
-    function startScanner() {
-        // Use Html5QrcodeScanner to render the camera feed in #qrReader
-        const html5QrcodeScanner = new Html5QrcodeScanner(
-            "qrReader",
-            { fps: 10, qrbox: 250 },
-            /* verbose= */ false
-        );
-
-        // Called when a QR code is successfully scanned
-        function onScanSuccess(decodedText, decodedResult) {
-            // Put the decoded text in the scannedContent div
-            document.getElementById("scannedContent").innerText = decodedText;
-
-            // Optionally hide the loading overlay once scanning starts
-            document.getElementById("scannerLoading").style.display = "none";
-
-            // If you only want one successful scan, you can stop scanning:
-            // html5QrcodeScanner.clear();
-            // closeModal("scannerModal");
+            html5QrcodeScanner.render(onScanSuccess, onScanError);
         }
 
-        // Called on scan error (typically ignore or log)
-        function onScanError(errorMessage) {
-            // console.warn("Scan error:", errorMessage);
+        /********************************************************************
+         * Upload QR Image Functionality using jsQR
+         ********************************************************************/
+        function uploadQr() {
+            const input = document.getElementById("qrFileInput");
+            if (!input.files || input.files.length === 0) {
+                alert("Please select a QR image to upload.");
+                return;
+            }
+            const file = input.files[0];
+            const reader = new FileReader();
+            reader.onload = async function(e) {
+                const imageDataUrl = e.target.result;
+                try {
+                    const decodedText = await decodeQrFromImage(imageDataUrl);
+                    if (decodedText) {
+                        const data = parseKeyValueString(decodedText);
+                        currentAssetId = data.AssetId || null;
+                        currentEmployeeId = data.EmployeeId ? parseInt(data.EmployeeId) : null;
+                        currentEmployeeName = data.EmployeeName || null;
+                        currentStatus = data.Status || null;
+                        document.getElementById("scannedContent").innerText = decodedText;
+                        const checkInBtn = document.getElementById("checkInBtn");
+                        if (currentAssetId && currentEmployeeId && currentEmployeeName) {
+                            checkInBtn.disabled = false;
+                        }
+                        closeModal("uploadModal");
+                    } else {
+                        alert("Unable to decode QR code from the image.");
+                    }
+                } catch (error) {
+                    console.error("Error decoding QR image:", error);
+                    alert("Error decoding QR image: " + error.message);
+                }
+            };
+            reader.readAsDataURL(file);
+        }
+        async function decodeQrFromImage(imageDataUrl) {
+            return new Promise((resolve, reject) => {
+                const image = new Image();
+                image.onload = function() {
+                    const canvas = document.createElement("canvas");
+                    canvas.width = image.width;
+                    canvas.height = image.height;
+                    const context = canvas.getContext("2d");
+                    context.drawImage(image, 0, 0, canvas.width, canvas.height);
+                    const imageData = context.getImageData(0, 0, canvas.width, canvas.height);
+                    const code = jsQR(imageData.data, canvas.width, canvas.height);
+                    if (code) {
+                        resolve(code.data);
+                    } else {
+                        reject(new Error("QR code not found in the image."));
+                    }
+                };
+                image.onerror = function() {
+                    reject(new Error("Could not load image for QR decoding."));
+                };
+                image.src = imageDataUrl;
+            });
         }
 
-        // Render the scanner UI
-        html5QrcodeScanner.render(onScanSuccess, onScanError);
-    } *@
-
-    /********************************************************************
-     * 3. Button Event Handlers
-     ********************************************************************/
-    const scanNewBtn = document.getElementById("scanNewBtn");
-    if (scanNewBtn) {
-        scanNewBtn.addEventListener("click", () => {
-            // Re-open the scanner modal to scan again
-            openModal("scannerModal");
-            // If you want to re-init scanning each time:
-            // startScanner();
+        /********************************************************************
+         * Button Event Handlers
+         ********************************************************************/
+        document.addEventListener("DOMContentLoaded", () => {
+            // Open the options modal on page load
+            openModal("scannerOptionsModal");
         });
-    }
-
-    const reportMismatchBtn = document.getElementById("reportMismatchBtn");
-    if (reportMismatchBtn) {
-        reportMismatchBtn.addEventListener("click", () => {
-            openModal("mismatchModal");
+        document.getElementById("liveScanOption").addEventListener("click", () => {
+            closeModal("scannerOptionsModal");
+            openModal("qrModal");
+            startScanner();
         });
-    }
-
-    const checkInBtn = document.getElementById("checkInBtn");
-    if (checkInBtn) {
-        checkInBtn.addEventListener("click", () => {
-            const now = new Date().toLocaleString();
-            document.getElementById("timeDisplay").innerText = now;
-            document.getElementById("currentStatus").innerText = "Checked In";
-            document.getElementById("currentStatus").classList.remove("ready");
-            document.getElementById("currentStatus").style.backgroundColor = "#007bff"; // Blue
-            checkInBtn.disabled = true;
-            document.getElementById("checkOutBtn").disabled = false;
+        document.getElementById("uploadOption").addEventListener("click", () => {
+            closeModal("scannerOptionsModal");
+            openModal("uploadModal");
         });
-    }
+        document.getElementById("uploadSubmitBtn").addEventListener("click", uploadQr);
 
-    const checkOutBtn = document.getElementById("checkOutBtn");
-    if (checkOutBtn) {
-        checkOutBtn.addEventListener("click", () => {
-            const now = new Date().toLocaleString();
-            document.getElementById("checkOutTimeDisplay").innerText = now;
-            document.getElementById("currentStatus").innerText = "Checked Out";
-            document.getElementById("currentStatus").style.backgroundColor = "#dc3545"; // Red
-            checkOutBtn.disabled = true;
+        const checkInBtn = document.getElementById("checkInBtn");
+        const checkOutBtn = document.getElementById("checkOutBtn");
+        const reportMismatchBtn = document.getElementById("reportMismatchBtn");
+        const scanNewBtn = document.getElementById("scanNewBtn");
 
-            // Simple duration calculation (placeholder)
-            const checkInTime = document.getElementById("timeDisplay").innerText;
-            document.getElementById("duration").innerText = `From ${checkInTime} to ${now}`;
-        });
-    }
-
-    /********************************************************************
-     * 4. Manual Check In/Out & Mismatch Functions
-     ********************************************************************/
-    function handleManualCheckIn() {
-        const timeInput = document.getElementById("manualCheckInTime");
-        const checkInError = document.getElementById("checkInError");
-
-        if (!timeInput.value) {
-            checkInError.innerText = "Please select a check-in time.";
-            return;
+        if (checkInBtn) {
+            checkInBtn.addEventListener("click", handleCheckIn);
         }
-        checkInError.innerText = "";
-
-        document.getElementById("timeDisplay").innerText = new Date(timeInput.value).toLocaleString();
-        document.getElementById("currentStatus").innerText = "Checked In (Manual)";
-        document.getElementById("currentStatus").style.backgroundColor = "#007bff";
-        document.getElementById("checkInBtn").disabled = true;
-        document.getElementById("checkOutBtn").disabled = false;
-
-        closeModal("manualCheckInModal");
-    }
-
-    function handleManualCheckOut() {
-        const timeInput = document.getElementById("manualCheckOutTime");
-        const checkOutError = document.getElementById("checkOutError");
-        const checkOutWarning = document.getElementById("checkOutWarning");
-
-        if (!timeInput.value) {
-            checkOutError.innerText = "Please select a check-out time.";
-            return;
+        if (checkOutBtn) {
+            checkOutBtn.addEventListener("click", handleCheckOut);
         }
-        checkOutError.innerText = "";
-        checkOutWarning.innerText = "";
-
-        document.getElementById("checkOutTimeDisplay").innerText = new Date(timeInput.value).toLocaleString();
-        document.getElementById("currentStatus").innerText = "Checked Out (Manual)";
-        document.getElementById("currentStatus").style.backgroundColor = "#dc3545";
-        document.getElementById("checkOutBtn").disabled = true;
-
-        // Simple placeholder for duration
-        const checkInTime = document.getElementById("timeDisplay").innerText;
-        document.getElementById("duration").innerText =
-            `From ${checkInTime} to ${new Date(timeInput.value).toLocaleString()}`;
-
-        closeModal("manualCheckOutModal");
-    }
-
-    function handleMismatch() {
-        const mismatchEmployeeId = document.getElementById("mismatchEmployeeId").value.trim();
-        const mismatchError = document.getElementById("mismatchError");
-
-        if (!mismatchEmployeeId) {
-            mismatchError.innerText = "Please enter an Employee ID.";
-            return;
+        if (reportMismatchBtn) {
+            reportMismatchBtn.addEventListener("click", () => openModal("mismatchModal"));
         }
-        mismatchError.innerText = "";
+        if (scanNewBtn) {
+            scanNewBtn.addEventListener("click", () => {
+                openModal("scannerOptionsModal");
+            });
+        }
 
-        // TODO: Add your own mismatch logic here (database, logs, etc.)
-        closeModal("mismatchModal");
-        alert("Mismatch reported successfully!");
-    }
-</script>
+        async function handleCheckIn() {
+            if (!currentAssetId || !currentEmployeeId || !currentEmployeeName) {
+                alert("No valid asset/employee data found from QR scan.");
+                return;
+            }
+            try {
+                const response = await fetch('/api/ScanDetails/CheckIn', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({
+                        assetId: currentAssetId,
+                        employeeId: currentEmployeeId,
+                        employeeName: currentEmployeeName
+                    })
+                });
+                const result = await response.json();
+                if (response.ok && result.success) {
+                    const now = new Date().toLocaleString();
+                    document.getElementById("timeDisplay").innerText = now;
+                    document.getElementById("currentStatus").innerText = "Checked In";
+                    document.getElementById("currentStatus").classList.remove("ready");
+                    document.getElementById("currentStatus").style.backgroundColor = "#007bff";
+                    checkInBtn.disabled = true;
+                    checkOutBtn.disabled = false;
+                } else {
+                    alert("Check-in failed: " + (result.message || "Unknown error"));
+                }
+            } catch (err) {
+                console.error("CheckIn error:", err);
+                alert("Error during check-in. See console for details.");
+            }
+        }
+        async function handleCheckOut() {
+            if (!currentAssetId || !currentEmployeeId || !currentEmployeeName) {
+                alert("No valid asset/employee data found from QR scan.");
+                return;
+            }
+            try {
+                const response = await fetch('/api/ScanDetails/CheckOut', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({
+                        assetId: currentAssetId,
+                        employeeId: currentEmployeeId,
+                        employeeName: currentEmployeeName
+                    })
+                });
+                const result = await response.json();
+                if (response.ok && result.success) {
+                    const now = new Date().toLocaleString();
+                    document.getElementById("checkOutTimeDisplay").innerText = now;
+                    document.getElementById("currentStatus").innerText = "Checked Out";
+                    document.getElementById("currentStatus").style.backgroundColor = "#dc3545";
+                    checkOutBtn.disabled = true;
+                    const checkInTime = document.getElementById("timeDisplay").innerText;
+                    document.getElementById("duration").innerText = `From ${checkInTime} to ${now}`;
+                } else {
+                    alert("Check-out failed: " + (result.message || "Unknown error"));
+                }
+            } catch (err) {
+                console.error("CheckOut error:", err);
+                alert("Error during check-out. See console for details.");
+            }
+        }
+    </script>
+</body>
+</html>

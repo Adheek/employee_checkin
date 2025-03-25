@@ -1,7 +1,6 @@
 using Microsoft.AspNetCore.Mvc;
-using AeeT_MVC.Models; 
 
-namespace AeeT_MVC.Controllers
+namespace AEET.Controllers
 {
     // Simple model to hold scanned data
     public class ScanDataModel
@@ -9,19 +8,30 @@ namespace AeeT_MVC.Controllers
         public string? ScannedData { get; set; }
     }
 
-    // Route all actions to /Scanner/...
     [Route("Scanner")]
     public class ScannerController : Controller
     {
+        // Parameterless constructor only – no dependency injection here.
+        public ScannerController()
+        {
+        }
+
+        // GET: /Scanner/Index
         // GET: /Scanner/Index
         [HttpGet("Index")]
         public IActionResult Index()
         {
-            // Retrieve scanned data from TempData, if any
-            var scanData = TempData["ScannedData"] as string;
-            ViewBag.ScannedData = scanData;
+            // First check for query parameter
+            var scanDataFromQuery = Request.Query["scanned"].ToString();
 
-            // Return the Scanner/Index.cshtml view
+            // Then check TempData
+            var scanDataFromTemp = TempData["ScannedData"] as string;
+
+            // Use query parameter first, then fall back to TempData
+            ViewBag.ScannedData = !string.IsNullOrEmpty(scanDataFromQuery)
+                ? scanDataFromQuery
+                : scanDataFromTemp;
+
             return View("~/Views/Scanner/Index.cshtml");
         }
 
@@ -34,13 +44,10 @@ namespace AeeT_MVC.Controllers
                 return BadRequest("Invalid scan data received");
             }
 
-            // Store the scanned data in TempData so Index can display it
+            // Store the scanned data in TempData for later display by the Index view.
             TempData["ScannedData"] = model.ScannedData;
-
-            // Log or process the scanned data as needed
             Console.WriteLine($"Received scan data: {model.ScannedData}");
 
-            // Return OK so the client knows it succeeded
             return Ok(new { success = true, message = "Scan data received successfully" });
         }
     }

@@ -1,5 +1,9 @@
+using Microsoft.EntityFrameworkCore;
+using System;
+
 namespace AEET.Models.DTOs
 {
+    [Keyless]
     public class MappedAssetDto
     {
         public string AssetId { get; set; }
