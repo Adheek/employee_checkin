@@ -29,6 +29,9 @@
                 <button class="tab-button" data-tab="addAsset">
                     <i class="fas fa-plus"></i> Add New Asset
                 </button>
+                <button class="tab-button" data-tab="bulkUploadAsset">
+                    <i class="fas fa-plus"></i> Bulk Upload Asset
+                </button>
             </div>
 
             <!-- Asset List Tab Content -->
@@ -206,10 +209,21 @@
                     </div>
                 </form>
             </div>
+
+            <!-- Bulk Asset Upload Tab Content -->
+            <div id="bulkUploadAsset" class="tab-content">
+                <form id="bulkUploadForm" class="full-data-form" enctype="multipart/form-data">
+                    <!-- Button to upload the excel file -->
+                    <input type="file" name="Files" />
+                    <button type="button" id="uploadExcelTemplateFileBtn" class="btn-primary">
+                        Upload Excel Template
+                    </button>
+                </form>
+            </div>
         </div>
     </div>
     <style>
-         /* Modal Styles */
+        /* Modal Styles */
         .modal {
             display: none;
             position: fixed;
@@ -247,13 +261,13 @@
             border-bottom: 1px solid #e0dcd3;
         }
 
-        .modal-header h2 {
-            color: #0d0063;
-            font-size: 1.5rem;
-            display: flex;
-            align-items: center;
-            gap: 0.5rem;
-        }
+            .modal-header h2 {
+                color: #0d0063;
+                font-size: 1.5rem;
+                display: flex;
+                align-items: center;
+                gap: 0.5rem;
+            }
 
         .close-btn {
             background: none;
@@ -287,18 +301,18 @@
             transition: all 0.3s;
         }
 
-        .tab-button.active {
-            color: #0d0063;
-            border-bottom-color: #0d0063;
-        }
+            .tab-button.active {
+                color: #0d0063;
+                border-bottom-color: #0d0063;
+            }
 
         .tab-content {
             display: none;
         }
 
-        .tab-content.active {
-            display: block;
-        }
+            .tab-content.active {
+                display: block;
+            }
 
         /* Section Tabs */
         .section-tabs {
@@ -321,14 +335,14 @@
             transition: all 0.3s;
         }
 
-        .section-tab:hover {
-            color: #0d0063;
-        }
+            .section-tab:hover {
+                color: #0d0063;
+            }
 
-        .section-tab.active {
-            color: #0d0063;
-            border-bottom-color: #0d0063;
-        }
+            .section-tab.active {
+                color: #0d0063;
+                border-bottom-color: #0d0063;
+            }
 
         .section-content {
             display: none;
@@ -337,9 +351,9 @@
             margin-bottom: 1.5rem;
         }
 
-        .section-content.active {
-            display: block;
-        }
+            .section-content.active {
+                display: block;
+            }
 
         /* Form Styles */
         .form-grid {
@@ -352,37 +366,37 @@
             margin-bottom: 1.5rem;
         }
 
-        .form-group label {
-            display: block;
-            margin-bottom: 0.5rem;
-            color: #666666;
-            font-size: 0.9rem;
-        }
+            .form-group label {
+                display: block;
+                margin-bottom: 0.5rem;
+                color: #666666;
+                font-size: 0.9rem;
+            }
 
-        .form-group input,
-        .form-group select,
-        .form-group textarea {
-            width: 100%;
-            padding: 0.8rem;
-            background: #faf9f6;
-            border: 1px solid #e0dcd3;
-            border-radius: 6px;
-            color: #333333;
-            font-size: 0.9rem;
-            transition: all 0.3s ease;
-        }
+            .form-group input,
+            .form-group select,
+            .form-group textarea {
+                width: 100%;
+                padding: 0.8rem;
+                background: #faf9f6;
+                border: 1px solid #e0dcd3;
+                border-radius: 6px;
+                color: #333333;
+                font-size: 0.9rem;
+                transition: all 0.3s ease;
+            }
 
-        .form-group input:focus,
-        .form-group select:focus,
-        .form-group textarea:focus {
-            border-color: #0d0063;
-            box-shadow: 0 0 0 2px rgba(13, 0, 99, 0.2);
-            outline: none;
-        }
+                .form-group input:focus,
+                .form-group select:focus,
+                .form-group textarea:focus {
+                    border-color: #0d0063;
+                    box-shadow: 0 0 0 2px rgba(13, 0, 99, 0.2);
+                    outline: none;
+                }
 
-        .form-group.full-width {
-            grid-column: 1 / -1;
-        }
+            .form-group.full-width {
+                grid-column: 1 / -1;
+            }
 
         /* Button Styles */
         .btn-primary,
@@ -438,23 +452,23 @@
             border-collapse: collapse;
         }
 
-        .asset-table th,
-        .asset-table td {
-            padding: 1rem;
-            text-align: left;
-            border-bottom: 1px solid #e0dcd3;
-        }
+            .asset-table th,
+            .asset-table td {
+                padding: 1rem;
+                text-align: left;
+                border-bottom: 1px solid #e0dcd3;
+            }
 
-        .asset-table th {
-            background: #0d0063;
-            color: #ffffff;
-            font-weight: 500;
-            white-space: nowrap;
-        }
+            .asset-table th {
+                background: #0d0063;
+                color: #ffffff;
+                font-weight: 500;
+                white-space: nowrap;
+            }
 
-        .asset-table tr:hover {
-            background: #f4f1ea;
-        }
+            .asset-table tr:hover {
+                background: #f4f1ea;
+            }
 
         /* Search Box Styles */
         .search-box {
@@ -463,64 +477,64 @@
             margin-bottom: 1.5rem;
         }
 
-        .search-box i {
-            position: absolute;
-            left: 1rem;
-            top: 50%;
-            transform: translateY(-50%);
-            color: #666666;
-        }
+            .search-box i {
+                position: absolute;
+                left: 1rem;
+                top: 50%;
+                transform: translateY(-50%);
+                color: #666666;
+            }
 
-        .search-box input {
-            width: 100%;
-            padding: 0.8rem 1rem 0.8rem 2.5rem;
-            background: #ffffff;
-            border: 1px solid #e0dcd3;
-            border-radius: 6px; 
-            color: #333333;
-        }
+            .search-box input {
+                width: 100%;
+                padding: 0.8rem 1rem 0.8rem 2.5rem;
+                background: #ffffff;
+                border: 1px solid #e0dcd3;
+                border-radius: 6px;
+                color: #333333;
+            }
 
         /* Responsive Design */
         @@media(max - width: 768px) {
-                .modal-content {
-                    margin: 1rem;
-                    padding: 1.5rem;
-                }
+            .modal-content {
+                margin: 1rem;
+                padding: 1.5rem;
+            }
 
-                .form-grid {
-                    grid-template-columns: 1fr;
-                }
+            .form-grid {
+                grid-template-columns: 1fr;
+            }
 
-                .form-actions {
-                    flex-direction: column;
-                }
+            .form-actions {
+                flex-direction: column;
+            }
 
                 .form-actions button {
                     width: 100%;
                 }
 
-                .tabs {
-                    flex-direction: column;
-                }
-
-                .tab-button {
-                    width: 100%;
-                    justify-content: center;
-                }
+            .tabs {
+                flex-direction: column;
             }
 
-            @@media(max - width: 480px) {
-                    .table-container {
-                        font-size: 0.9rem;
-                    }
+            .tab-button {
+                width: 100%;
+                justify-content: center;
+            }
+        }
 
-                    .tab-button {
-                        padding: 1rem;
-                    }
-                }
+        @@media(max - width: 480px) {
+            .table-container {
+                font-size: 0.9rem;
+            }
 
-                /* Animation */
-                @@keyframes fadeIn {
+            .tab-button {
+                padding: 1rem;
+            }
+        }
+
+        /* Animation */
+        @@keyframes fadeIn {
             from {
                 opacity: 0;
                 transform: translateY(10px);
@@ -754,6 +768,81 @@
                     console.error('Error adding data:', error);
                     alert('An error occurred while adding the data.');
                 }
+            });
+
+            const bulkUploadForm = document.getElementById("bulkUploadForm");
+            const fileInput = document.querySelector('input[name="Files"]');
+            const uploadButton = document.getElementById("uploadExcelTemplateFileBtn");
+
+            // Add a click event for the button
+            uploadButton.addEventListener("click", async function (e) {
+
+                // Ensure a file is selected
+                if (fileInput.files.length === 0) {
+                    alert("Please select a file to upload.");
+                    e.preventDefault();
+                    return;
+                }
+
+                // Since only one file is allowed, pick the first file
+                const file = fileInput.files[0];
+
+                // Define allowed MIME types for Excel files
+                const allowedTypes = [
+                    "application/vnd.ms-excel", // XLS
+                    "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet" // XLSX
+                ];
+
+                // Define allowed file extensions (case-insensitive)
+                const allowedExtensions = /\.(xls|xlsx)$/i;
+
+                // Validate the file's MIME type if available
+                if (file.type && !allowedTypes.includes(file.type)) {
+                    alert(`Invalid file type for ${file.name}. Please upload an Excel file (.xls or .xlsx).`);
+                    e.preventDefault();
+                    return;
+                }
+
+                // Fallback: Validate using the file extension in case the MIME type is unreliable
+                if (!allowedExtensions.test(file.name)) {
+                    alert(`Invalid file extension for ${file.name}. Please upload an Excel file (.xls or .xlsx).`);
+                    e.preventDefault();
+                    return;
+                }
+
+                try {
+
+                    // Create FormData to send the file
+                    const formData = new FormData();
+                    formData.append('File', file);
+
+                    const response = await fetch('/api/fullData/BulkUploadAssetDetails', {
+                        method: 'POST',
+                        body: formData
+                    });
+
+                    // Parse the JSON response
+                    const data = await response.json();
+
+                    if (response.ok) {
+                        alert('Data added successfully! ' + data.message);
+                        bulkUploadForm.reset();
+                        // Load updated asset list and switch to the "Asset List" tab
+                        loadAssetList();
+                        switchTab('assetList');
+                    }
+                    else {
+                        alert('Failed to add data. ' + data.message);
+                    }
+                }
+                catch(error) {
+                    console.log('Error completing bulk upload data: ' + error);
+                    alert('An error occurred while completing bulk upload data. Please try again.');
+                }
+            });
+
+            bulkUploadForm.addEventListener("submit", async function (e) {
+                e.preventDefault();
             });
         });
     </script>
