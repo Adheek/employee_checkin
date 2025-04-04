@@ -26,6 +26,9 @@ namespace AEET.Models
         [StringLength(50)]
         public string? ModelNo { get; set; }
 
+        [StringLength(50)]
+        public string? AssetEntryProcess { get; set; }
+
         // Foreign Keys (nullable GUIDs)
         public Guid? CategoryID { get; set; }
         public Guid? ManufacturerID { get; set; }

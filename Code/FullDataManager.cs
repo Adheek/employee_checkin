@@ -4,6 +4,7 @@ using Microsoft.EntityFrameworkCore;
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Text.RegularExpressions;
 using System.Threading.Tasks;
 
 namespace AEET.Code
@@ -17,7 +18,7 @@ namespace AEET.Code
             _context = context;
         }
 
-            public async Task<AssetMaster> AddFullDataAsync(CombinedDataDto dto)
+        public async Task<AssetMaster> AddFullDataAsync(CombinedDataDto dto)
             {
                 // Start a transaction to ensure all inserts succeed or fail as one.
                 using var transaction = await _context.Database.BeginTransactionAsync();
@@ -111,6 +112,7 @@ namespace AEET.Code
                         LastAudit = dto.Asset.LastAudit,
                         NextAuditDate = dto.Asset.NextAuditDate,
                         Notes = dto.Asset.Notes,
+                        AssetEntryProcess = "Manual",
                         CreatedOn = DateTime.Now,
                         CreatedBy = "system",
                         ModifiedOn = DateTime.Now,
@@ -154,5 +156,144 @@ namespace AEET.Code
                 .Where(a => a.AssetID != null && a.AssetID.StartsWith(term))
                 .ToListAsync();
         }
+
+        public int BulkUploadAssets(List<BulkUploadTemplateRecordModel> assetsList, out bool success)
+        {
+            try
+            {
+                List<AssetMaster> assetMasterList = new List<AssetMaster>();
+                List<string> errorRecords = new List<string>(); // To record erroneous records
+
+                foreach (var asset in assetsList)
+                {
+                    try
+                    {
+                        var isAssetinDB = _context.AssetMasters.Any(c => c.AssetName == asset.Asset_Name && c.AssetTag == asset.Asset_Tag && c.SerialNumber == asset.Serial_Number);
+                        if (!isAssetinDB)
+                        {
+                            // Attempt to find related records and convert fields
+                            var category = _context.CategoryMasters.FirstOrDefault(c => c.CategoryName == asset.Category);
+                            if (category == null && !String.IsNullOrEmpty(asset.Category))
+                            {
+                                category = new CategoryMaster
+                                {
+                                    CategoryName = asset.Category,
+                                    CreatedOn = DateTime.Now,
+                                    CreatedBy = "system",
+                                    ModifiedOn = DateTime.Now,
+                                    ModifiedBy = "system"
+                                };
+                                _context.CategoryMasters.Add(category);
+                                _context.SaveChangesAsync();
+                            }
+
+                            var vendor = _context.VendorMasters.FirstOrDefault(v => v.Name == asset.Manufacturer && v.VendorType == asset.Supplier);
+                            if (vendor == null && !String.IsNullOrEmpty(asset.Manufacturer) && !String.IsNullOrEmpty(asset.Supplier))
+                            { 
+                                vendor = new VendorMaster
+                                {
+                                    Name = asset.Manufacturer,
+                                    VendorType = asset.Supplier,
+                                    CreatedOn = DateTime.Now,
+                                    CreatedBy = "system",
+                                    ModifiedOn = DateTime.Now,
+                                    ModifiedBy = "system"
+                                };
+                                _context.VendorMasters.Add(vendor);
+                                _context.SaveChangesAsync();
+                            }
+
+                            // Need to check
+                            var location = _context.LocationMasters.FirstOrDefault(l => l.City == asset.Location);
+                            //if (location == null && !String.IsNullOrEmpty(asset.Location))
+                            //{
+                            //    location = new LocationMaster
+                            //    {
+                            //        Country = dto.Location.Country,
+                            //        State = dto.Location.State,
+                            //        City = asset.Location,
+                            //        Address = dto.Location.Address,
+                            //        ZipCode = dto.Location.ZipCode,
+                            //        LocationType = dto.Location.LocationType ?? 0,
+                            //        CreatedOn = DateTime.Now,
+                            //        CreatedBy = "system",
+                            //        ModifiedOn = DateTime.Now,
+                            //        ModifiedBy = "system"
+                            //    };
+                            //    _context.LocationMasters.Add(location);
+                            //    _context.SaveChangesAsync();
+                            //}
+
+                            // Extract numerical value for WarrantyPeriod
+                            var warrantyPeriod = Regex.IsMatch(asset.Warranty, @"\d+(\.\d+)?") ? (int?)int.Parse(Regex.Match(asset.Warranty, @"\d+(\.\d+)?").Value) : null;
+
+                            // Add valid record to assetMasterList
+                            assetMasterList.Add(new AssetMaster
+                            {
+                                CompanyName = asset.Company,
+                                AssetName = asset.Asset_Name,
+                                AssetTag = asset.Asset_Tag,
+                                Model = asset.Model_Name,
+                                ModelNo = asset.Model_Number,
+                                SerialNumber = asset.Serial_Number,
+                                PurchasedDate = Convert.ToDateTime(asset.Purchase_Date), // Handle empty or invalid date
+                                Cost = Convert.ToDecimal(asset.Purchase_Cost), // Handle empty or invalid cost
+                                OrderNumber = asset.Order_Number,
+                                Status = asset.Status,
+                                WarrantyPeriod = warrantyPeriod,
+                                WarrantyExpires = warrantyPeriod.HasValue ?
+                                                        (asset.Purchase_Date != null ? Convert.ToDateTime(asset.Purchase_Date).AddMonths((int)warrantyPeriod.Value)
+                                                                    : (DateTime?)null) : null, // Add warranty months to Purchase_Date if it exists
+                                Notes = asset.Status,
+                                AssetEntryProcess = "Bulk Upload",
+                                CreatedOn = DateTime.Now,
+                                CreatedBy = "", // Need to add logged-in user details
+                                ModifiedOn = DateTime.Now,
+                                ModifiedBy = "", // Need to add logged-in user details
+                                CategoryID = category?.CategoryID,
+                                ManufacturerID = vendor?.VendorID,
+                                SupplierID = vendor?.VendorID,
+                                DefaultLocationID = location?.LocationID
+                            });
+                        }
+                    }
+                    catch (Exception ex)
+                    {
+                        // Log the error and record the asset causing the issue
+                        errorRecords.Add($"Error processing asset {asset.Asset_Name}: {ex.Message}");
+                    }
+                }
+
+                // Save the valid records to the database
+                if (assetMasterList.Count > 0)
+                {
+                    _context.AssetMasters.AddRange(assetMasterList);
+                    _context.SaveChanges(); // Commit the valid records
+                }
+
+                // Handle errors
+                if (errorRecords.Count > 0)
+                {
+                    // Log or handle the errors as needed
+                    foreach (var error in errorRecords)
+                    {
+                        Console.WriteLine(error); // Log to console (or use a logging framework)
+                    }
+
+                    success = false; // Indicate partial success
+                    return 0;//errorRecords.Count; // Return the number of errors
+                }
+
+                success = true; // All records were processed successfully
+                return assetMasterList.Count; // Return the count of successful records
+            }
+            catch (Exception ex)
+            {
+                success = false; // Indicate failure due to a global error
+                Console.WriteLine($"Unhandled error: {ex.Message}"); // Log global error
+                return 0; // No records were processed
+            }
+        }
+
     }
 }

@@ -158,7 +158,12 @@ namespace AEET.Api
             {
                 //_dbContext.TemplateRecords.AddRange(records);
                 //await _dbContext.SaveChangesAsync();
-                return Ok(new { message = $"{records.Count} record(s) processed successfully." });
+                bool success = true;
+                int numberOfAssetsUploaded = _fullDataManager.BulkUploadAssets(records, out success);
+                if (!success && numberOfAssetsUploaded < 1)
+                    return Ok(new { message = $"Request completed without completing bulk asset upload operation." });
+                else
+                    return Ok(new { message = $"{numberOfAssetsUploaded} record(s) processed successfully." });
             }
             else
             {
