@@ -69,5 +69,21 @@ namespace AEET.Controllers
                 return StatusCode(500, new { success = false, message = ex.Message });
             }
         }
+
+        // GET api/ScanDetails/All
+        [HttpGet("GetAllAssetTransaction")]
+        public async Task<IActionResult> GetAllAssetTransaction(ScanTransactionDto dto)
+        {
+            try
+            {
+                // Retrieve logs using a function defined in ScanTransactionManager.
+                var logs = await _transactionManager.GetAllTransaction(dto);
+                return Ok(logs);
+            }
+            catch (Exception ex)
+            {
+                return StatusCode(500, new { success = false, message = ex.Message });
+            }
+        }
     }
 }

@@ -89,5 +89,30 @@ namespace AEET.Code
 
             return logs;
         }
+
+        public async Task<object> GetAllTransaction(ScanTransactionDto dto)
+        {
+            var logs = await (from scanDetail in _context.ScanDetails
+                              join assetDetail in _context.AssetMasters
+                              on scanDetail.AssetId equals assetDetail.AssetID into assetGroup
+                              from asset in assetGroup.DefaultIfEmpty() // Left join
+                              where scanDetail.AssetId == dto.AssetId &&
+                                    scanDetail.EmployeeId == dto.EmployeeId &&
+                                    scanDetail.EmployeeName == dto.EmployeeName
+                              orderby scanDetail.TransactionTime descending
+                              select new
+                              {
+                                  scanDetail.ScanId,
+                                  scanDetail.AssetId,
+                                  scanDetail.EmployeeName,
+                                  scanDetail.TransactionTime,
+                                  scanDetail.TransactionType,
+                                  scanDetail.EmployeeId,
+                                  AssetName = asset != null ? asset.AssetName : null,
+                                  Status = asset != null ? asset.Status : null
+                              }).ToListAsync();
+
+            return logs;
+        }
     }
 }
