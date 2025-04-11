@@ -221,9 +221,9 @@
                 </form>
 
                 <!-- Table Container -->
-                <div class="table-container">
+                <div id="failedRecordTableContainer" hidden class="table-container">
                     <h2>Failed Asset List on Bulk Upload</h2>
-                    <table class="logs-table">
+                    <table class="asset-table">
                         <thead>
                             <tr>
                                 <th>Company</th>
@@ -599,6 +599,13 @@
             // Activate the target tab content
             const targetContent = document.getElementById(tabId);
             if (targetContent) targetContent.classList.add("active");
+
+            const container = document.getElementById("failedRecordTableContainer");
+
+            // Check if the container doesn't already have the "hidden" attribute
+            if (!container.hasAttribute("hidden")) {
+              container.setAttribute("hidden", ""); // For Boolean attributes, the value can be an empty string.
+            }
         }
 
         // Called when "Asset List" tab is clicked to load assets
@@ -861,10 +868,11 @@
                         switchTab('assetList');
                     }
                     else if(response.ok && data.hasOwnProperty('failedrecordsList') && data.failedrecordsList.length > 0) {
-                        alert('Data added successfully! ' + data.message);
+                        alert('Processed request! ' + data.message);
                         bulkUploadForm.reset();
 
-                        // Load failed asset list in below table and don't switch to the any other tab
+                        // Load failed asset list in below table and don't switch to the any other tab by making the table container unhidden
+                        document.getElementById('failedRecordTableContainer').hidden = false;
 
                         // Create a table for failed records dynamically
                         const failedTableBody = document.querySelector('#logsTableBody');
