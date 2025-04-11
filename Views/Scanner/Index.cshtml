@@ -4,389 +4,385 @@
 }
 <!DOCTYPE html>
 <html lang="en">
-    <head>
-        <meta charset="UTF-8">
-        <meta name="viewport" content="width=device-width, initial-scale=1">
-        <title>Scanner Page</title>
-        <!-- Import Poppins font -->
-        <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600&display=swap" rel="stylesheet">
-        <style>
-            /* Global Styles */
-            * {
-                box-sizing: border-box;
-            }
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>Scanner Page</title>
+    <!-- Import Poppins font -->
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600&display=swap" rel="stylesheet">
+    <style>
+        /* Global Styles */
+        * {
+            box-sizing: border-box;
+        }
 
-            body {
+        body {
+            margin: 0;
+            font-family: 'Poppins', sans-serif;
+            background-color: #f4f1ea;
+            color: #333;
+            line-height: 1.6;
+        }
+
+        header {
+            background-color: #0d0063;
+            color: #fff;
+            display: flex;
+            align-items: center;
+            padding: 0.75rem;
+            position: sticky;
+            top: 0;
+            z-index: 100;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+        }
+
+            header h1 {
                 margin: 0;
-                font-family: 'Poppins', sans-serif;
-                background-color: #f4f1ea;
-                color: #333;
-                line-height: 1.6;
-            }
-
-            header {
-                background-color: #0d0063;
-                color: #fff;
-                display: flex;
-                align-items: center;
-                padding: 0.75rem;
-                position: sticky;
-                top: 0;
-                z-index: 100;
-                box-shadow: 0 2px 10px rgba(0,0,0,0.1);
-            }
-
-                header h1 {
-                    margin: 0;
-                    font-size: 1.5rem;
-                    flex-grow: 1;
-                    text-align: center;
-                }
-
-            .back-arrow {
-                text-decoration: none;
-                color: #fff;
                 font-size: 1.5rem;
-                margin-right: auto;
-                padding: 0 0.5rem;
+                flex-grow: 1;
+                text-align: center;
             }
 
-            main {
-                padding: 0.75rem;
-                max-width: 900px; /* Reduced from 1200px */
-                margin: 0 auto;
+        .back-arrow {
+            text-decoration: none;
+            color: #fff;
+            font-size: 1.5rem;
+            margin-right: auto;
+            padding: 0 0.5rem;
+        }
+
+        main {
+            padding: 0.75rem;
+            max-width: 900px; /* Reduced from 1200px */
+            margin: 0 auto;
+            width: 100%;
+        }
+
+        /* Scanner Section: Camera + Details */
+        .scanner-section {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 1rem; /* Reduced from 1.5rem */
+            margin-bottom: 1rem; /* Reduced from 2rem */
+        }
+
+        .camera-container {
+            flex: 1 1 300px; /* Reduced from 350px */
+            background-color: #fff;
+            border: 1px solid #e0dcd3;
+            border-radius: 8px;
+            overflow: hidden;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            min-height: 250px; /* Reduced from 300px */
+            box-shadow: 0 2px 8px rgba(0,0,0,0.08);
+            transition: all 0.3s ease;
+        }
+
+            .camera-container:hover {
+                box-shadow: 0 4px 12px rgba(0,0,0,0.12);
+            }
+
+            .camera-container #cameraPreview {
                 width: 100%;
-            }
-
-            /* Scanner Section: Camera + Details */
-            .scanner-section {
-                display: flex;
-                flex-wrap: wrap;
-                gap: 1rem; /* Reduced from 1.5rem */
-                margin-bottom: 1rem; /* Reduced from 2rem */
-            }
-
-            .camera-container {
-                flex: 1 1 300px; /* Reduced from 350px */
-                background-color: #fff;
-                border: 1px solid #e0dcd3;
-                border-radius: 8px;
-                overflow: hidden;
+                height: 100%;
+                background: #ddd;
                 display: flex;
                 align-items: center;
                 justify-content: center;
-                min-height: 250px; /* Reduced from 300px */
-                box-shadow: 0 2px 8px rgba(0,0,0,0.08);
-                transition: all 0.3s ease;
+                font-size: 1rem;
+                color: #666;
             }
 
-                .camera-container:hover {
-                    box-shadow: 0 4px 12px rgba(0,0,0,0.12);
-                }
+        .details-container {
+            flex: 1 1 300px; /* Reduced from 350px */
+            display: flex;
+            flex-direction: column;
+            gap: 1rem; /* Reduced from 1.5rem */
+        }
 
-                .camera-container #cameraPreview {
-                    width: 100%;
-                    height: 100%;
-                    background: #ddd;
-                    display: flex;
-                    align-items: center;
-                    justify-content: center;
-                    font-size: 1rem;
-                    color: #666;
-                }
+        .detail-box {
+            background-color: #fff;
+            border: 1px solid #e0dcd3;
+            border-radius: 8px;
+            padding: 1rem; /* Reduced from 1.5rem */
+            box-shadow: 0 2px 8px rgba(0,0,0,0.08);
+            transition: all 0.3s ease;
+        }
 
-            .details-container {
-                flex: 1 1 300px; /* Reduced from 350px */
+            .detail-box:hover {
+                box-shadow: 0 4px 12px rgba(0,0,0,0.12);
+            }
+
+            .detail-box h2 {
+                margin-top: 0;
+                color: #0d0063;
+                font-size: 1.2rem; /* Fixed size */
+                border-bottom: 2px solid #0d0063;
+                padding-bottom: 0.25rem; /* Reduced from 0.5rem */
+                margin-bottom: 0.75rem; /* Reduced from 1rem */
+            }
+
+            .detail-box p {
+                margin: 0.5rem 0; /* Reduced from 0.75rem */
+                line-height: 1.4; /* Reduced from 1.5 */
                 display: flex;
+                justify-content: space-between;
+                flex-wrap: wrap;
+                font-size: 0.9rem; /* Fixed size */
+            }
+
+                .detail-box p span {
+                    font-weight: 500;
+                    color: #0d0063;
+                }
+
+        /* History Section */
+        .history-section {
+            background-color: #fff;
+            border: 1px solid #e0dcd3;
+            border-radius: 8px;
+            padding: 1rem; /* Reduced from 1.5rem */
+            box-shadow: 0 2px 8px rgba(0,0,0,0.08);
+            overflow-x: auto;
+        }
+
+            .history-section h2 {
+                margin-top: 0;
+                color: #0d0063;
+                text-align: center;
+                margin-bottom: 0.75rem; /* Reduced from 1.5rem */
+                font-size: 1.2rem; /* Fixed size */
+                border-bottom: 2px solid #0d0063;
+                padding-bottom: 0.25rem; /* Reduced from 0.5rem */
+            }
+
+            .history-section table {
+                width: 100%;
+                border-collapse: collapse;
+                min-width: 600px;
+            }
+
+            .history-section th,
+            .history-section td {
+                padding: 0.5rem 0.75rem; /* Reduced from 1rem */
+                border-bottom: 1px solid #e0dcd3;
+                text-align: left;
+                font-size: 0.85rem; /* Fixed size */
+            }
+
+            .history-section th {
+                background-color: #0d0063;
+                color: #fff;
+                position: sticky;
+                top: 0;
+                font-weight: 500;
+            }
+
+            .history-section tr:last-child td {
+                border-bottom: none;
+            }
+
+            .history-section tr:nth-child(even) {
+                background-color: #f9f7f2;
+            }
+
+            .history-section tr:hover {
+                background-color: #f0ece0;
+            }
+
+        /* Responsive adjustments */
+        @@media (max-width: 768px) {
+            .scanner-section {
                 flex-direction: column;
-                gap: 1rem; /* Reduced from 1.5rem */
+            }
+
+            .camera-container {
+                min-height: 220px;
             }
 
             .detail-box {
-                background-color: #fff;
-                border: 1px solid #e0dcd3;
-                border-radius: 8px;
-                padding: 1rem; /* Reduced from 1.5rem */
-                box-shadow: 0 2px 8px rgba(0,0,0,0.08);
-                transition: all 0.3s ease;
+                padding: 0.75rem;
             }
 
-                .detail-box:hover {
-                    box-shadow: 0 4px 12px rgba(0,0,0,0.12);
-                }
-
-                .detail-box h2 {
-                    margin-top: 0;
-                    color: #0d0063;
-                    font-size: 1.2rem; /* Fixed size */
-                    border-bottom: 2px solid #0d0063;
-                    padding-bottom: 0.25rem; /* Reduced from 0.5rem */
-                    margin-bottom: 0.75rem; /* Reduced from 1rem */
-                }
-
-                .detail-box p {
-                    margin: 0.5rem 0; /* Reduced from 0.75rem */
-                    line-height: 1.4; /* Reduced from 1.5 */
-                    display: flex;
-                    justify-content: space-between;
-                    flex-wrap: wrap;
-                    font-size: 0.9rem; /* Fixed size */
-                }
-
-                    .detail-box p span {
-                        font-weight: 500;
-                        color: #0d0063;
-                    }
-
-            /* History Section */
             .history-section {
-                background-color: #fff;
-                border: 1px solid #e0dcd3;
-                border-radius: 8px;
-                padding: 1rem; /* Reduced from 1.5rem */
-                box-shadow: 0 2px 8px rgba(0,0,0,0.08);
-                overflow-x: auto;
+                padding: 0.75rem;
             }
-
-                .history-section h2 {
-                    margin-top: 0;
-                    color: #0d0063;
-                    text-align: center;
-                    margin-bottom: 0.75rem; /* Reduced from 1.5rem */
-                    font-size: 1.2rem; /* Fixed size */
-                    border-bottom: 2px solid #0d0063;
-                    padding-bottom: 0.25rem; /* Reduced from 0.5rem */
-                }
-
-                .history-section table {
-                    width: 100%;
-                    border-collapse: collapse;
-                    min-width: 600px;
-                }
 
                 .history-section th,
                 .history-section td {
-                    padding: 0.5rem 0.75rem; /* Reduced from 1rem */
-                    border-bottom: 1px solid #e0dcd3;
-                    text-align: left;
-                    font-size: 0.85rem; /* Fixed size */
+                    padding: 0.5rem 0.4rem;
                 }
+        }
 
-                .history-section th {
-                    background-color: #0d0063;
-                    color: #fff;
-                    position: sticky;
-                    top: 0;
-                    font-weight: 500;
-                }
-
-                .history-section tr:last-child td {
-                    border-bottom: none;
-                }
-
-                .history-section tr:nth-child(even) {
-                    background-color: #f9f7f2;
-                }
-
-                .history-section tr:hover {
-                    background-color: #f0ece0;
-                }
-
-            /* Responsive adjustments */
-            @@media (max-width: 768px) {
-                .scanner-section {
-                    flex-direction: column;
-                }
-
-                .camera-container {
-                    min-height: 220px;
-                }
-
-                .detail-box {
-                    padding: 0.75rem;
-                }
-
-                .history-section {
-                    padding: 0.75rem;
-                }
-
-                    .history-section th,
-                    .history-section td {
-                        padding: 0.5rem 0.4rem;
-                    }
+        @@media (max-width: 480px) {
+            main {
+                padding: 0.5rem;
             }
 
-            @@media (max-width: 480px) {
-                main {
-                    padding: 0.5rem;
-                }
-
-                .camera-container {
-                    min-height: 180px;
-                }
-
-                .detail-box p {
-                    flex-direction: column;
-                    gap: 0.15rem;
-                }
+            .camera-container {
+                min-height: 180px;
             }
-        </style>
-    </head>
-    <body>
-        <header>
-            <a href="/Home/Landing" class="back-arrow" title="Home">&#8592;</a>
-            <h1>Scanner Page</h1>
-        </header>
-        <main>
-            <!-- Scanner Section -->
-            <section class="scanner-section">
-                <!-- Left: Camera Preview -->
-                <div class="camera-container">
-                    <div id="cameraPreview">Camera Preview</div>
+
+            .detail-box p {
+                flex-direction: column;
+                gap: 0.15rem;
+            }
+        }
+    </style>
+</head>
+<body>
+    <header>
+        <a href="/Home/Landing" class="back-arrow" title="Home">&#8592;</a>
+        <h1>Scanner Page</h1>
+    </header>
+    <main>
+        <!-- Scanner Section -->
+        <section class="scanner-section">
+            <!-- Left: Camera Preview -->
+            <div class="camera-container">
+                <div id="cameraPreview">Camera Preview</div>
+            </div>
+            <!-- Right: Details -->
+            <div class="details-container">
+                <div class="detail-box asset-details">
+                    <h2>Asset Details</h2>
+                    <p>Asset ID: <span id="assetId">--</span></p>
+                    <p>Asset Name: <span id="assetName">--</span></p>
                 </div>
-                <!-- Right: Details -->
-                <div class="details-container">
-                    <div class="detail-box asset-details">
-                        <h2>Asset Details</h2>
-                        <p>Asset ID: <span id="assetId">--</span></p>
-                        <p>Asset Name: <span id="assetName">--</span></p>
-                    </div>
-                    <div class="detail-box employee-details">
-                        <h2>Employee Details</h2>
-                        <p>Employee ID: <span id="employeeId">--</span></p>
-                        <p>Employee Name: <span id="employeeName">--</span></p>
-                    </div>
+                <div class="detail-box employee-details">
+                    <h2>Employee Details</h2>
+                    <p>Employee ID: <span id="employeeId">--</span></p>
+                    <p>Employee Name: <span id="employeeName">--</span></p>
                 </div>
-            </section>
-            <!-- History Section -->
-            <section class="history-section">
-                <h2>Scan History (Last 17 Hours)</h2>
-                <table>
-                    <thead>
-                        <tr>
-                            <th>Time</th>
-                            <th>Asset ID</th>
-                            <th>Asset Name</th>
-                            <th>Employee ID</th>
-                            <th>Employee Name</th>
-                            <th>Status</th>
-                        </tr>
-                    </thead>
-                    <tbody>
-                        <!-- History rows will be populated here -->
-                        <tr>
-                            <td>--</td>
-                            <td>--</td>
-                            <td>--</td>
-                            <td>--</td>
-                            <td>--</td>
-                            <td>--</td>
-                        </tr>
-                    </tbody>
-                </table>
-            </section>
-        </main>
+            </div>
+        </section>
+        <!-- History Section -->
+        <section class="history-section">
+            <h2>Scan History (Last 17 Hours)</h2>
+            <table>
+                <thead>
+                    <tr>
+                        <th>Time</th>
+                        <th>Asset ID</th>
+                        <th>Asset Name</th>
+                        <th>Employee ID</th>
+                        <th>Employee Name</th>
+                        <th>Status</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <!-- History rows will be populated here -->
+                    <tr>
+                        <td>--</td>
+                        <td>--</td>
+                        <td>--</td>
+                        <td>--</td>
+                        <td>--</td>
+                        <td>--</td>
+                    </tr>
+                </tbody>
+            </table>
+        </section>
+    </main>
 
-        <!-- Include html5-qrcode library -->
-        <script src="https://unpkg.com/html5-qrcode@2.3.7/html5-qrcode.min.js"></script>
-        <script>
-            document.addEventListener("DOMContentLoaded", function () {
-              // Create an instance of Html5Qrcode attached to the 'cameraPreview' container
-              const html5QrCode = new Html5Qrcode("cameraPreview");
+    <!-- Include html5-qrcode library -->
+    <script src="https://unpkg.com/html5-qrcode@2.3.7/html5-qrcode.min.js"></script>
+    <script>
+        document.addEventListener("DOMContentLoaded", function () {
+          // Create an instance of Html5Qrcode attached to the 'cameraPreview' container
+          const html5QrCode = new Html5Qrcode("cameraPreview");
 
-              // Scanner configuration options
-              const config = {
-                fps: 10, // Scans per second
-                qrbox: { width: 200, height: 200 } // Reduced from 250x250
-              };
+          // Scanner configuration options
+          const config = {
+            fps: 10, // Scans per second
+            qrbox: { width: 200, height: 200 } // Reduced from 250x250
+          };
 
-              // Success callback: called when a QR code is successfully scanned
-              async function onScanSuccess(decodedText, decodedResult) {
-                console.log("Decoded text:", decodedText);
+          // Success callback: called when a QR code is successfully scanned
+          function onScanSuccess(decodedText, decodedResult) {
+            console.log("Decoded text:", decodedText);
+            // Parse the key-value pairs from the scanned QR code
+            const data = parseKeyValueString(decodedText);
+            if (data) {
+              // Update the asset details box
+              document.getElementById("assetId").innerText = data.AssetId || "--";
+              document.getElementById("assetName").innerText = data.AssetName || "--";
+              // Update the employee details box
+              document.getElementById("employeeId").innerText = data.EmployeeId || "--";
+              document.getElementById("employeeName").innerText = data.EmployeeName || "--";
 
- 
-                
-                // Parse the key-value pairs from the scanned QR code
-                const data = parseKeyValueString(decodedText);
-                if (data) {
-                  // Update the asset details box
-                  document.getElementById("assetId").innerText = data.AssetId || "--";
-                  document.getElementById("assetName").innerText = data.AssetName || "--";
-                  // Update the employee details box
-                  document.getElementById("employeeId").innerText = data.EmployeeId || "--";
-                  document.getElementById("employeeName").innerText = data.EmployeeName || "--";
+              // Combine everything for the /api/fullData/add endpoint
+                const combinedData = {
+                    AssetId: data.AssetId,
+                    EmployeeId: data.EmployeeId,
+                    EmployeeName: data.EmployeeName,
+                    MismatchedEmployeeId: ""
+                };
 
-                  // Combine everything for the /api/fullData/add endpoint
-                    const combinedData = {
-                        AssetId: data.AssetId,
-                        EmployeeId: data.EmployeeId,
-                        EmployeeName: data.EmployeeName,
-                        MismatchedEmployeeId: ""
-                    };
+                try {
+                    const response = await fetch('/api/ScanDetailsController/GetAllAssetTransaction', {
+                        method: 'GET',
+                        headers: { 'Content-Type': 'application/json' },
+                        body: JSON.stringify(combinedData)
+                    });
 
-                    try {
-                        const response = await fetch('/api/ScanDetailsController/GetAllAssetTransaction', {
-                            method: 'GET',
-                            headers: { 'Content-Type': 'application/json' },
-                            body: JSON.stringify(combinedData)
+                    if (response.ok) {
+                        const transactions = await response.json();
+
+                        // Get the table's tbody element
+                        const tableBody = document.querySelector('table tbody');
+                        tableBody.innerHTML = ''; // Clear any existing rows
+
+                        // Iterate through the transactions and create rows dynamically
+                        transactions.forEach(transaction => {
+                            const row = document.createElement('tr');
+                            row.innerHTML = `
+                                <td>${transaction.TransactionTime || '--'}</td>
+                                <td>${transaction.AssetId || '--'}</td>
+                                <td>${transaction.AssetName || '--'}</td>
+                                <td>${transaction.EmployeeId || '--'}</td>
+                                <td>${transaction.EmployeeName || '--'}</td>
+                                <td>${transaction.Status || '--'}</td>
+                            `;
+                            tableBody.appendChild(row);
                         });
-
-                        if (response.ok) {
-                            const transactions = await response.json();
-
-                            // Get the table's tbody element
-                            const tableBody = document.querySelector('table tbody');
-                            tableBody.innerHTML = ''; // Clear any existing rows
-
-                            // Iterate through the transactions and create rows dynamically
-                            transactions.forEach(transaction => {
-                                const row = document.createElement('tr');
-                                row.innerHTML = `
-                                    <td>${transaction.TransactionTime || '--'}</td>
-                                    <td>${transaction.AssetId || '--'}</td>
-                                    <td>${transaction.AssetName || '--'}</td>
-                                    <td>${transaction.EmployeeId || '--'}</td>
-                                    <td>${transaction.EmployeeName || '--'}</td>
-                                    <td>${transaction.Status || '--'}</td>
-                                `;
-                                tableBody.appendChild(row);
-                            });
-                        } 
-                        else {
-                            console.error('Failed to fetch data');
-                            alert('Unable to retrieve transaction details.');
-                        }
-                    } catch (error) {
-                        console.error('Error fetching data:', error);
-                        alert('An error occurred while fetching transaction details.');
+                    } else {
+                        console.error('Failed to fetch data');
+                        alert('Unable to retrieve transaction details.');
                     }
+                } catch (error) {
+                    console.error('Error fetching data:', error);
+                    alert('An error occurred while fetching transaction details.');
                 }
-              }
+            }
+          }
 
-              // Failure callback: can be used to log errors or show messages if needed
-              function onScanFailure(error) {
-                console.warn("QR Code scan error:", error);
-              }
+          // Failure callback: can be used to log errors or show messages if needed
+          function onScanFailure(error) {
+            console.warn("QR Code scan error:", error);
+          }
 
-              // Start the scanner with the back camera (if available)
-              html5QrCode
-                .start({ facingMode: "environment" }, config, onScanSuccess, onScanFailure)
-                .catch(err => {
-                  console.error("Error starting QR scanner:", err);
-                });
+          // Start the scanner with the back camera (if available)
+          html5QrCode
+            .start({ facingMode: "environment" }, config, onScanSuccess, onScanFailure)
+            .catch(err => {
+              console.error("Error starting QR scanner:", err);
+            });
 
-              // Helper function to parse key-value pairs from a semicolon-separated string
-              function parseKeyValueString(input) {
-                const result = {};
-                input.split(";").forEach(pair => {
-                  const [key, value] = pair.split("=");
-                  if (key && value) {
-                    result[key.trim()] = value.trim();
-                  }
-                });
-                return result;
+          // Helper function to parse key-value pairs from a semicolon-separated string
+          function parseKeyValueString(input) {
+            const result = {};
+            input.split(";").forEach(pair => {
+              const [key, value] = pair.split("=");
+              if (key && value) {
+                result[key.trim()] = value.trim();
               }
             });
-        </script>
-    </body>
+            return result;
+          }
+        });
+    </script>
+</body>
 </html>
