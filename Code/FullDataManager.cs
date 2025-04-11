@@ -168,7 +168,7 @@ namespace AEET.Code
                 {
                     try
                     {
-                        var isAssetinDB = _context.AssetMasters.Any(c => c.AssetName == asset.Asset_Name && c.AssetTag == asset.Asset_Tag && c.SerialNumber == asset.Serial_Number);
+                        var isAssetinDB = _context.AssetMasters.Any(c => c.AssetName == asset.Asset_Name || c.AssetTag == asset.Asset_Tag || c.SerialNumber == asset.Serial_Number);
                         if (!isAssetinDB)
                         {
                             // Attempt to find related records and convert fields
