@@ -301,8 +301,11 @@
               };
 
               // Success callback: called when a QR code is successfully scanned
-              function onScanSuccess(decodedText, decodedResult) {
+              async function onScanSuccess(decodedText, decodedResult) {
                 console.log("Decoded text:", decodedText);
+
+ 
+                
                 // Parse the key-value pairs from the scanned QR code
                 const data = parseKeyValueString(decodedText);
                 if (data) {
@@ -348,7 +351,8 @@
                                 `;
                                 tableBody.appendChild(row);
                             });
-                        } else {
+                        } 
+                        else {
                             console.error('Failed to fetch data');
                             alert('Unable to retrieve transaction details.');
                         }

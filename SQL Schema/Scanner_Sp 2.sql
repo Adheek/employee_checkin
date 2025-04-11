@@ -190,12 +190,12 @@ BEGIN
      ******************************************************************/
     CREATE TABLE LocationMaster (
         LocationID UNIQUEIDENTIFIER PRIMARY KEY DEFAULT NEWID(),
-        Country NVARCHAR(100) NOT NULL DEFAULT(''),
-        State NVARCHAR(100) NOT NULL DEFAULT(''),
+        Country NVARCHAR(100) NULL DEFAULT(''),
+        State NVARCHAR(100) NULL DEFAULT(''),
         City NVARCHAR(100) NOT NULL DEFAULT(''),
-        Address NVARCHAR(255) NOT NULL DEFAULT(''),
-        ZipCode NVARCHAR(20) NOT NULL DEFAULT(''),
-        LocationType INT NOT NULL DEFAULT(0),
+        Address NVARCHAR(255) NULL DEFAULT(''),
+        ZipCode NVARCHAR(20) NULL DEFAULT(''),
+        LocationType INT NULL DEFAULT(0),
         CreatedOn DATETIME DEFAULT GETDATE(),
         CreatedBy NVARCHAR(255) NOT NULL DEFAULT(''),
         ModifiedOn DATETIME DEFAULT GETDATE(),

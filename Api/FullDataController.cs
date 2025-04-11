@@ -156,14 +156,13 @@ namespace AEET.Api
             // Insert the parsed records in bulk if any valid records were found
             if (records.Any())
             {
-                //_dbContext.TemplateRecords.AddRange(records);
-                //await _dbContext.SaveChangesAsync();
                 bool success = true;
-                int numberOfAssetsUploaded = _fullDataManager.BulkUploadAssets(records, out success);
+                List<FailedAssetUploadModel> failedrecordsList = new List<FailedAssetUploadModel>();
+                int numberOfAssetsUploaded = _fullDataManager.BulkUploadAssets(records, out success, out failedrecordsList);
                 if (!success && numberOfAssetsUploaded < 1)
                     return Ok(new { message = $"Request completed without completing bulk asset upload operation." });
                 else
-                    return Ok(new { message = $"{numberOfAssetsUploaded} record(s) processed successfully." });
+                    return Ok(new { message = $"{numberOfAssetsUploaded} record(s) processed successfully.", failedrecordsList });
             }
             else
             {

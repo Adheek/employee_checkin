@@ -157,12 +157,12 @@ namespace AEET.Code
                 .ToListAsync();
         }
 
-        public int BulkUploadAssets(List<BulkUploadTemplateRecordModel> assetsList, out bool success)
+        public int BulkUploadAssets(List<BulkUploadTemplateRecordModel> assetsList, out bool success, out List<FailedAssetUploadModel> failedRecords)
         {
+            failedRecords = new List<FailedAssetUploadModel>();
             try
             {
                 List<AssetMaster> assetMasterList = new List<AssetMaster>();
-                List<string> errorRecords = new List<string>(); // To record erroneous records
 
                 foreach (var asset in assetsList)
                 {
@@ -189,7 +189,7 @@ namespace AEET.Code
 
                             var vendor = _context.VendorMasters.FirstOrDefault(v => v.Name == asset.Manufacturer && v.VendorType == asset.Supplier);
                             if (vendor == null && !String.IsNullOrEmpty(asset.Manufacturer) && !String.IsNullOrEmpty(asset.Supplier))
-                            { 
+                            {
                                 vendor = new VendorMaster
                                 {
                                     Name = asset.Manufacturer,
@@ -205,24 +205,19 @@ namespace AEET.Code
 
                             // Need to check
                             var location = _context.LocationMasters.FirstOrDefault(l => l.City == asset.Location);
-                            //if (location == null && !String.IsNullOrEmpty(asset.Location))
-                            //{
-                            //    location = new LocationMaster
-                            //    {
-                            //        Country = dto.Location.Country,
-                            //        State = dto.Location.State,
-                            //        City = asset.Location,
-                            //        Address = dto.Location.Address,
-                            //        ZipCode = dto.Location.ZipCode,
-                            //        LocationType = dto.Location.LocationType ?? 0,
-                            //        CreatedOn = DateTime.Now,
-                            //        CreatedBy = "system",
-                            //        ModifiedOn = DateTime.Now,
-                            //        ModifiedBy = "system"
-                            //    };
-                            //    _context.LocationMasters.Add(location);
-                            //    _context.SaveChangesAsync();
-                            //}
+                            if (location == null && !String.IsNullOrEmpty(asset.Location))
+                            {
+                                location = new LocationMaster
+                                {
+                                    City = asset.Location,
+                                    CreatedOn = DateTime.Now,
+                                    CreatedBy = "system",
+                                    ModifiedOn = DateTime.Now,
+                                    ModifiedBy = "system"
+                                };
+                                _context.LocationMasters.Add(location);
+                                _context.SaveChangesAsync();
+                            }
 
                             // Extract numerical value for WarrantyPeriod
                             var warrantyPeriod = Regex.IsMatch(asset.Warranty, @"\d+(\.\d+)?") ? (int?)int.Parse(Regex.Match(asset.Warranty, @"\d+(\.\d+)?").Value) : null;
@@ -256,11 +251,16 @@ namespace AEET.Code
                                 DefaultLocationID = location?.LocationID
                             });
                         }
+                        else
+                        {
+                            // Log the error and record the asset causing the issue
+                            failedRecords.Add(new FailedAssetUploadModel { AssetDetails = asset, ErrorMessage = "Record Already present in DB." });
+                        }
                     }
                     catch (Exception ex)
                     {
                         // Log the error and record the asset causing the issue
-                        errorRecords.Add($"Error processing asset {asset.Asset_Name}: {ex.Message}");
+                        failedRecords.Add(new FailedAssetUploadModel { AssetDetails = asset, ErrorMessage = ex.Message });
                     }
                 }
 
@@ -269,19 +269,6 @@ namespace AEET.Code
                 {
                     _context.AssetMasters.AddRange(assetMasterList);
                     _context.SaveChanges(); // Commit the valid records
-                }
-
-                // Handle errors
-                if (errorRecords.Count > 0)
-                {
-                    // Log or handle the errors as needed
-                    foreach (var error in errorRecords)
-                    {
-                        Console.WriteLine(error); // Log to console (or use a logging framework)
-                    }
-
-                    success = false; // Indicate partial success
-                    return 0;//errorRecords.Count; // Return the number of errors
                 }
 
                 success = true; // All records were processed successfully
@@ -294,6 +281,5 @@ namespace AEET.Code
                 return 0; // No records were processed
             }
         }
-
     }
 }

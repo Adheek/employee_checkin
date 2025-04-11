@@ -219,6 +219,35 @@
                         Upload Excel Template
                     </button>
                 </form>
+
+                <!-- Table Container -->
+                <div class="table-container">
+                    <h2>Failed Asset List on Bulk Upload</h2>
+                    <table class="logs-table">
+                        <thead>
+                            <tr>
+                                <th>Company</th>
+                                <th>Asset Name</th>
+                                <th>Asset Tag</th>
+                                <th>Serial Number</th>
+                                <th>Model Name</th>
+                                <th>Model Number</th>
+                                <th>Category</th>
+                                <th>Location</th>
+                                <th>Manufacturer</th>
+                                <th>Supplier</th>
+                                <th>Purchase Date</th>
+                                <th>Purchase Cost</th>
+                                <th>Order Number</th>
+                                <th>Warranty Months</th>
+                                <th>Status</th>
+                                <th>Error</th>
+                            </tr>
+                        </thead>
+                        <tbody id="logsTableBody"></tbody>
+                    </table>
+                </div>
+
             </div>
         </div>
     </div>
@@ -824,12 +853,53 @@
                     // Parse the JSON response
                     const data = await response.json();
 
-                    if (response.ok) {
+                    if (response.ok && data.hasOwnProperty('failedrecordsList') && data.failedrecordsList.length < 1) {
                         alert('Data added successfully! ' + data.message);
                         bulkUploadForm.reset();
                         // Load updated asset list and switch to the "Asset List" tab
                         loadAssetList();
                         switchTab('assetList');
+                    }
+                    else if(response.ok && data.hasOwnProperty('failedrecordsList') && data.failedrecordsList.length > 0) {
+                        alert('Data added successfully! ' + data.message);
+                        bulkUploadForm.reset();
+
+                        // Load failed asset list in below table and don't switch to the any other tab
+
+                        // Create a table for failed records dynamically
+                        const failedTableBody = document.querySelector('#logsTableBody');
+
+                        // Ensure failedrecordsList exists and has data
+                        if (data.failedrecordsList && Array.isArray(data.failedrecordsList) && data.failedrecordsList.length > 0) {
+                            failedTableBody.innerHTML = ''; // Clear previous errors
+
+                            // Iterate through the failed records array and create rows dynamically
+                            data.failedrecordsList.forEach(failedRecord => {
+                                console.log(failedRecord);
+                                const row = document.createElement('tr');
+                                row.innerHTML = `
+                                    <td>${failedRecord.assetDetails.company || '--'}</td>
+                                    <td>${failedRecord.assetDetails.asset_Name || '--'}</td>
+                                    <td>${failedRecord.assetDetails.asset_Tag || '--'}</td>
+                                    <td>${failedRecord.assetDetails.serial_Number || '--'}</td>
+                                    <td>${failedRecord.assetDetails.model_Name || '--'}</td>
+                                    <td>${failedRecord.assetDetails.model_Number || '--'}</td>
+                                    <td>${failedRecord.assetDetails.category || '--'}</td>
+                                    <td>${failedRecord.assetDetails.location || '--'}</td>
+                                    <td>${failedRecord.assetDetails.manufacturer || '--'}</td>
+                                    <td>${failedRecord.assetDetails.supplier || '--'}</td>
+                                    <td>${failedRecord.assetDetails.purchase_Date || '--'}</td>
+                                    <td>${failedRecord.assetDetails.purchase_Cost || '--'}</td>
+                                    <td>${failedRecord.assetDetails.order_Number || '--'}</td>
+                                    <td>${failedRecord.assetDetails.warranty || '--'}</td>
+                                    <td>${failedRecord.assetDetails.status || '--'}</td>
+                                    <td>${failedRecord.errorMessage || 'Unknown Error'}</td>
+                                `;
+                                failedTableBody.appendChild(row);
+                            });
+                        }
+
+                        alert("Some records failed. Check the error details in below table.");
                     }
                     else {
                         alert('Failed to add data. ' + data.message);
