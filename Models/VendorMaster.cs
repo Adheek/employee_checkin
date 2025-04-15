@@ -14,7 +14,7 @@ namespace AEET.Models
         [StringLength(255)]
         public string Name { get; set; }
 
-        [StringLength(16)]
+        [StringLength(200)]
         public string VendorType { get; set; }
 
         public DateTime CreatedOn { get; set; } = DateTime.Now;
