@@ -5,17 +5,17 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
     <title>Scanner Page</title>
     <!-- Import Poppins font -->
-    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600&display=swap" rel="stylesheet" />
+
     <style>
         /* Global Styles */
         * {
             box-sizing: border-box;
         }
-
         body {
             margin: 0;
             font-family: 'Poppins', sans-serif;
@@ -23,7 +23,6 @@
             color: #333;
             line-height: 1.6;
         }
-
         header {
             background-color: #0d0063;
             color: #fff;
@@ -35,14 +34,12 @@
             z-index: 100;
             box-shadow: 0 2px 10px rgba(0,0,0,0.1);
         }
-
-            header h1 {
-                margin: 0;
-                font-size: 1.5rem;
-                flex-grow: 1;
-                text-align: center;
-            }
-
+        header h1 {
+            margin: 0;
+            font-size: 1.5rem;
+            flex-grow: 1;
+            text-align: center;
+        }
         .back-arrow {
             text-decoration: none;
             color: #fff;
@@ -50,24 +47,22 @@
             margin-right: auto;
             padding: 0 0.5rem;
         }
-
         main {
             padding: 0.75rem;
-            max-width: 900px; /* Reduced from 1200px */
+            max-width: 900px;
             margin: 0 auto;
             width: 100%;
         }
 
-        /* Scanner Section: Camera + Details */
+        /* Scanner Section: Camera + Combined Details */
         .scanner-section {
             display: flex;
             flex-wrap: wrap;
-            gap: 1rem; /* Reduced from 1.5rem */
-            margin-bottom: 1rem; /* Reduced from 2rem */
+            gap: 1rem;
+            margin-bottom: 1rem;
         }
-
         .camera-container {
-            flex: 1 1 300px; /* Reduced from 350px */
+            flex: 1 1 300px;
             background-color: #fff;
             border: 1px solid #e0dcd3;
             border-radius: 8px;
@@ -75,157 +70,149 @@
             display: flex;
             align-items: center;
             justify-content: center;
-            min-height: 250px; /* Reduced from 300px */
+            min-height: 250px;
             box-shadow: 0 2px 8px rgba(0,0,0,0.08);
             transition: all 0.3s ease;
+            position: relative;
         }
-
-            .camera-container:hover {
-                box-shadow: 0 4px 12px rgba(0,0,0,0.12);
-            }
-
-            .camera-container #cameraPreview {
-                width: 100%;
-                height: 100%;
-                background: #ddd;
-                display: flex;
-                align-items: center;
-                justify-content: center;
-                font-size: 1rem;
-                color: #666;
-            }
-
-        .details-container {
-            flex: 1 1 300px; /* Reduced from 350px */
+        .camera-container:hover {
+            box-shadow: 0 4px 12px rgba(0,0,0,0.12);
+        }
+        #cameraPreview {
+            width: 100%;
+            height: 100%;
+            background: #ddd;
             display: flex;
-            flex-direction: column;
-            gap: 1rem; /* Reduced from 1.5rem */
+            align-items: center;
+            justify-content: center;
+            font-size: 1rem;
+            color: #666;
+        }
+        .scan-cooldown {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background-color: rgba(0, 0, 0, 0.5);
+            color: white;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            font-size: 1.2rem;
+            z-index: 10;
         }
 
-        .detail-box {
+        .combined-details {
+            flex: 1 1 300px;
             background-color: #fff;
             border: 1px solid #e0dcd3;
             border-radius: 8px;
-            padding: 1rem; /* Reduced from 1.5rem */
+            padding: 1rem;
             box-shadow: 0 2px 8px rgba(0,0,0,0.08);
             transition: all 0.3s ease;
         }
-
-            .detail-box:hover {
-                box-shadow: 0 4px 12px rgba(0,0,0,0.12);
-            }
-
-            .detail-box h2 {
-                margin-top: 0;
-                color: #0d0063;
-                font-size: 1.2rem; /* Fixed size */
-                border-bottom: 2px solid #0d0063;
-                padding-bottom: 0.25rem; /* Reduced from 0.5rem */
-                margin-bottom: 0.75rem; /* Reduced from 1rem */
-            }
-
-            .detail-box p {
-                margin: 0.5rem 0; /* Reduced from 0.75rem */
-                line-height: 1.4; /* Reduced from 1.5 */
-                display: flex;
-                justify-content: space-between;
-                flex-wrap: wrap;
-                font-size: 0.9rem; /* Fixed size */
-            }
-
-                .detail-box p span {
-                    font-weight: 500;
-                    color: #0d0063;
-                }
+        .combined-details:hover {
+            box-shadow: 0 4px 12px rgba(0,0,0,0.12);
+        }
+        .combined-details h2 {
+            margin-top: 0;
+            color: #0d0063;
+            font-size: 1.2rem;
+            border-bottom: 2px solid #0d0063;
+            padding-bottom: 0.25rem;
+            margin-bottom: 0.75rem;
+        }
+        .combined-details p {
+            margin: 0.5rem 0;
+            line-height: 1.4;
+            display: flex;
+            justify-content: space-between;
+            flex-wrap: wrap;
+            font-size: 0.9rem;
+        }
+        .combined-details p span {
+            font-weight: 500;
+            color: #0d0063;
+        }
 
         /* History Section */
         .history-section {
             background-color: #fff;
             border: 1px solid #e0dcd3;
             border-radius: 8px;
-            padding: 1rem; /* Reduced from 1.5rem */
+            padding: 1rem;
             box-shadow: 0 2px 8px rgba(0,0,0,0.08);
             overflow-x: auto;
         }
+        .history-section h2 {
+            margin-top: 0;
+            color: #0d0063;
+            text-align: center;
+            margin-bottom: 0.75rem;
+            font-size: 1.2rem;
+            border-bottom: 2px solid #0d0063;
+            padding-bottom: 0.25rem;
+        }
+        .history-section table {
+            width: 100%;
+            border-collapse: collapse;
+            min-width: 600px;
+        }
+        .history-section th,
+        .history-section td {
+            padding: 0.5rem 0.75rem;
+            border-bottom: 1px solid #e0dcd3;
+            text-align: left;
+            font-size: 0.85rem;
+        }
+        .history-section th {
+            background-color: #0d0063;
+            color: #fff;
+            position: sticky;
+            top: 0;
+            font-weight: 500;
+        }
+        .history-section tr:nth-child(even) {
+            background-color: #f9f7f2;
+        }
+        .history-section tr:hover {
+            background-color: #f0ece0;
+        }
 
-            .history-section h2 {
-                margin-top: 0;
-                color: #0d0063;
-                text-align: center;
-                margin-bottom: 0.75rem; /* Reduced from 1.5rem */
-                font-size: 1.2rem; /* Fixed size */
-                border-bottom: 2px solid #0d0063;
-                padding-bottom: 0.25rem; /* Reduced from 0.5rem */
-            }
+        /* Success message styling */
+        .success-message {
+            display: none;
+            position: fixed;
+            top: 80px; /* just below header */
+            left: 50%;
+            transform: translateX(-50%);
+            background-color: #28a745;
+            color: #fff;
+            padding: 0.75rem 1rem;
+            border-radius: 6px;
+            font-size: 1rem;
+            z-index: 9999;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.3);
+        }
 
-            .history-section table {
-                width: 100%;
-                border-collapse: collapse;
-                min-width: 600px;
-            }
-
-            .history-section th,
-            .history-section td {
-                padding: 0.5rem 0.75rem; /* Reduced from 1rem */
-                border-bottom: 1px solid #e0dcd3;
-                text-align: left;
-                font-size: 0.85rem; /* Fixed size */
-            }
-
-            .history-section th {
-                background-color: #0d0063;
-                color: #fff;
-                position: sticky;
-                top: 0;
-                font-weight: 500;
-            }
-
-            .history-section tr:last-child td {
-                border-bottom: none;
-            }
-
-            .history-section tr:nth-child(even) {
-                background-color: #f9f7f2;
-            }
-
-            .history-section tr:hover {
-                background-color: #f0ece0;
-            }
-
-        /* Responsive adjustments */
+        /* Responsive */
         @@media (max-width: 768px) {
             .scanner-section {
                 flex-direction: column;
             }
-
             .camera-container {
                 min-height: 220px;
             }
-
-            .detail-box {
-                padding: 0.75rem;
-            }
-
-            .history-section {
-                padding: 0.75rem;
-            }
-
-                .history-section th,
-                .history-section td {
-                    padding: 0.5rem 0.4rem;
-                }
         }
-
         @@media (max-width: 480px) {
             main {
                 padding: 0.5rem;
             }
-
             .camera-container {
                 min-height: 180px;
             }
-
-            .detail-box p {
+            .combined-details p {
                 flex-direction: column;
                 gap: 0.15rem;
             }
@@ -237,27 +224,25 @@
         <a href="/Home/Landing" class="back-arrow" title="Home">&#8592;</a>
         <h1>Scanner Page</h1>
     </header>
+    <div class="success-message" id="successMessage"></div>
     <main>
         <!-- Scanner Section -->
         <section class="scanner-section">
-            <!-- Left: Camera Preview -->
             <div class="camera-container">
                 <div id="cameraPreview">Camera Preview</div>
+                <div class="scan-cooldown" id="scanCooldown" style="display: none;">
+                    Processing... <span id="cooldownTimer">5</span>
+                </div>
             </div>
-            <!-- Right: Details -->
-            <div class="details-container">
-                <div class="detail-box asset-details">
-                    <h2>Asset Details</h2>
-                    <p>Asset ID: <span id="assetId">--</span></p>
-                    <p>Asset Name: <span id="assetName">--</span></p>
-                </div>
-                <div class="detail-box employee-details">
-                    <h2>Employee Details</h2>
-                    <p>Employee ID: <span id="employeeId">--</span></p>
-                    <p>Employee Name: <span id="employeeName">--</span></p>
-                </div>
+            <div class="combined-details">
+                <h2>Scan Details</h2>
+                <p>Asset ID: <span id="assetId">--</span></p>
+                <p>Asset Name: <span id="assetName">--</span></p>
+                <p>Employee ID: <span id="employeeId">--</span></p>
+                <p>Employee Name: <span id="employeeName">--</span></p>
             </div>
         </section>
+
         <!-- History Section -->
         <section class="history-section">
             <h2>Scan History (Last 17 Hours)</h2>
@@ -269,11 +254,10 @@
                         <th>Asset Name</th>
                         <th>Employee ID</th>
                         <th>Employee Name</th>
-                        <th>Status</th>
+                        <th>Transaction Type</th>
                     </tr>
                 </thead>
-                <tbody>
-                    <!-- History rows will be populated here -->
+                <tbody id="historyBody">
                     <tr>
                         <td>--</td>
                         <td>--</td>
@@ -287,101 +271,283 @@
         </section>
     </main>
 
-    <!-- Include html5-qrcode library -->
+    <!-- html5-qrcode library -->
     <script src="https://unpkg.com/html5-qrcode@2.3.7/html5-qrcode.min.js"></script>
     <script>
         document.addEventListener("DOMContentLoaded", function () {
-          // Create an instance of Html5Qrcode attached to the 'cameraPreview' container
-          const html5QrCode = new Html5Qrcode("cameraPreview");
+            const html5QrCode = new Html5Qrcode("cameraPreview");
+            const config = {
+                fps: 10,
+                qrbox: { width: 200, height: 200 }
+            };
 
-          // Scanner configuration options
-          const config = {
-            fps: 10, // Scans per second
-            qrbox: { width: 200, height: 200 } // Reduced from 250x250
-          };
+            const COOLDOWN_SECONDS = 5;
+            const HOURS_17_MS = 17 * 60 * 60 * 1000;
+            
+            // Scan cooldown control variables
+            let isCoolingDown = false;
+            let lastScannedData = null;
+            let cooldownInterval = null;
+            let cooldownSecondsLeft = COOLDOWN_SECONDS;
 
-          // Success callback: called when a QR code is successfully scanned
-          function onScanSuccess(decodedText, decodedResult) {
-            console.log("Decoded text:", decodedText);
-            // Parse the key-value pairs from the scanned QR code
-            const data = parseKeyValueString(decodedText);
-            if (data) {
-              // Update the asset details box
-              document.getElementById("assetId").innerText = data.AssetId || "--";
-              document.getElementById("assetName").innerText = data.AssetName || "--";
-              // Update the employee details box
-              document.getElementById("employeeId").innerText = data.EmployeeId || "--";
-              document.getElementById("employeeName").innerText = data.EmployeeName || "--";
+            // Start scanning
+            html5QrCode.start({ facingMode: "environment" }, config, onScanSuccess, onScanFailure)
+                .catch(err => console.error("Error starting QR scanner:", err));
 
-              // Combine everything for the /api/fullData/add endpoint
-                const combinedData = {
-                    AssetId: data.AssetId,
-                    EmployeeId: data.EmployeeId,
-                    EmployeeName: data.EmployeeName,
-                    MismatchedEmployeeId: ""
-                };
+            async function onScanSuccess(decodedText, decodedResult) {
+                // If we're in cooldown period, ignore the scan
+                if (isCoolingDown) {
+                    console.log("Ignoring scan during cooldown period");
+                    return;
+                }
+                
+                console.log("Decoded text:", decodedText);
 
-                try {
-                    const response = await fetch('/api/ScanDetailsController/GetAllAssetTransaction', {
-                        method: 'GET',
-                        headers: { 'Content-Type': 'application/json' },
-                        body: JSON.stringify(combinedData)
-                    });
+                // Parse the text: "Asset ID: x\nEmployee ID: y\n..."
+                const data = parseKeyValueString(decodedText);
+                console.log("Parsed data:", data);
 
-                    if (response.ok) {
-                        const transactions = await response.json();
+                // Display scanned details
+                displayDetails(data);
+                
+                // Start cooldown period
+                startCooldown();
+                
+                // Process the scan
+                await processCheckInOrOut(data);
+                
+                // Save last scanned data for comparison
+                lastScannedData = data;
+                
+                // Refresh the history table
+                loadHistory();
+            }
 
-                        // Get the table's tbody element
-                        const tableBody = document.querySelector('table tbody');
-                        tableBody.innerHTML = ''; // Clear any existing rows
+            function onScanFailure(error) {
+                console.warn("QR Code scan error:", error);
+            }
 
-                        // Iterate through the transactions and create rows dynamically
-                        transactions.forEach(transaction => {
-                            const row = document.createElement('tr');
-                            row.innerHTML = `
-                                <td>${transaction.TransactionTime || '--'}</td>
-                                <td>${transaction.AssetId || '--'}</td>
-                                <td>${transaction.AssetName || '--'}</td>
-                                <td>${transaction.EmployeeId || '--'}</td>
-                                <td>${transaction.EmployeeName || '--'}</td>
-                                <td>${transaction.Status || '--'}</td>
-                            `;
-                            tableBody.appendChild(row);
-                        });
-                    } else {
-                        console.error('Failed to fetch data');
-                        alert('Unable to retrieve transaction details.');
+            // Display scanned details
+            function displayDetails(data) {
+                document.getElementById("assetId").innerText = data.AssetId || "--";
+                document.getElementById("assetName").innerText = data.AssetName || "--";
+                document.getElementById("employeeId").innerText = data.EmployeeId || "--";
+                document.getElementById("employeeName").innerText = data.EmployeeName || "--";
+            }
+
+            // Clear details
+            function clearDetails() {
+                document.getElementById("assetId").innerText = "--";
+                document.getElementById("assetName").innerText = "--";
+                document.getElementById("employeeId").innerText = "--";
+                document.getElementById("employeeName").innerText = "--";
+            }
+
+            // Show a success message for 5 seconds
+            function showSuccessMessage(msg) {
+                const msgBox = document.getElementById("successMessage");
+                msgBox.innerText = msg;
+                msgBox.style.display = "block";
+                setTimeout(() => {
+                    msgBox.style.display = "none";
+                }, 5000);
+            }
+
+            // Start the cooldown period
+            function startCooldown() {
+                isCoolingDown = true;
+                cooldownSecondsLeft = COOLDOWN_SECONDS;
+                
+                const cooldownElement = document.getElementById("scanCooldown");
+                const timerElement = document.getElementById("cooldownTimer");
+                
+                // Show cooldown overlay
+                cooldownElement.style.display = "flex";
+                timerElement.textContent = cooldownSecondsLeft;
+                
+                // Clear any existing interval
+                if (cooldownInterval) {
+                    clearInterval(cooldownInterval);
+                }
+                
+                // Start countdown
+                cooldownInterval = setInterval(() => {
+                    cooldownSecondsLeft--;
+                    timerElement.textContent = cooldownSecondsLeft;
+                    
+                    if (cooldownSecondsLeft <= 0) {
+                        // End cooldown
+                        clearInterval(cooldownInterval);
+                        cooldownElement.style.display = "none";
+                        isCoolingDown = false;
                     }
-                } catch (error) {
-                    console.error('Error fetching data:', error);
-                    alert('An error occurred while fetching transaction details.');
+                }, 1000);
+            }
+
+            // Decides if we do CheckOut or CheckIn
+            // If the same asset/employee combination is scanned again, do a CheckOut
+            async function processCheckInOrOut(data) {
+                const logs = await fetchAllTransactions(data);
+                if (!logs || logs.length === 0) {
+                    // No prior records -> CheckIn
+                    await callCheckIn(data);
+                    showSuccessMessage("Successfully Checked In!");
+                    return;
+                }
+                
+                // logs are sorted descending in your manager
+                const lastRecord = logs[0];
+                if (lastRecord.transactionType === "CheckIn") {
+                    // Last record was CheckIn -> do CheckOut
+                    await callCheckOut(data);
+                    showSuccessMessage("Successfully Checked Out!");
+                } else {
+                    // Last record was CheckOut -> do CheckIn
+                    await callCheckIn(data);
+                    showSuccessMessage("Successfully Checked In!");
                 }
             }
-          }
 
-          // Failure callback: can be used to log errors or show messages if needed
-          function onScanFailure(error) {
-            console.warn("QR Code scan error:", error);
-          }
+            // Retrieves all logs for the last 17 hours to display
+            async function loadHistory() {
+                try {
+                    const response = await fetch('/api/ScanDetails/All');
+                    if (!response.ok) {
+                        console.error('Failed to fetch scan history:', response.statusText);
+                        return;
+                    }
+                    const allLogs = await response.json();
+                    const now = new Date();
+                    const filteredLogs = allLogs.filter(item => {
+                        const t = new Date(item.transactionTime);
+                        return now - t < HOURS_17_MS;
+                    });
 
-          // Start the scanner with the back camera (if available)
-          html5QrCode
-            .start({ facingMode: "environment" }, config, onScanSuccess, onScanFailure)
-            .catch(err => {
-              console.error("Error starting QR scanner:", err);
-            });
+                    const historyBody = document.getElementById("historyBody");
+                    historyBody.innerHTML = "";
+                    filteredLogs.forEach(item => {
+                        const tr = document.createElement("tr");
+                        tr.innerHTML = `
+                            <td>${formatDateTime(item.transactionTime)}</td>
+                            <td>${item.assetId || '--'}</td>
+                            <td>${item.assetName || '--'}</td>
+                            <td>${item.employeeId || '--'}</td>
+                            <td>${item.employeeName || '--'}</td>
+                            <td>${item.transactionType || '--'}</td>
+                        `;
+                        historyBody.appendChild(tr);
+                    });
+                } catch (error) {
+                    console.error('Error loading history:', error);
+                }
+            }
+            
+            // Format date to readable format
+            function formatDateTime(dateString) {
+                if (!dateString) return '--';
+                const date = new Date(dateString);
+                return date.toLocaleString();
+            }
 
-          // Helper function to parse key-value pairs from a semicolon-separated string
-          function parseKeyValueString(input) {
-            const result = {};
-            input.split(";").forEach(pair => {
-              const [key, value] = pair.split("=");
-              if (key && value) {
-                result[key.trim()] = value.trim();
-              }
-            });
-            return result;
-          }
+            // Post to /api/ScanDetails/GetAllAssetTransaction
+            async function fetchAllTransactions(data) {
+                try {
+                    const dto = {
+                        assetId: data.AssetId,
+                        employeeId: parseInt(data.EmployeeId || "0", 10),
+                        employeeName: data.EmployeeName || "",
+                        mismatchedEmployeeId: ""
+                    };
+                    const response = await fetch('/api/ScanDetails/GetAllAssetTransaction', {
+                        method: 'POST',
+                        headers: { 'Content-Type': 'application/json' },
+                        body: JSON.stringify(dto)
+                    });
+                    if (!response.ok) {
+                        console.error('GetAllTransaction request failed:', response.statusText);
+                        return null;
+                    }
+                    return await response.json();
+                } catch (err) {
+                    console.error('Error fetching transactions:', err);
+                    return null;
+                }
+            }
+
+            async function callCheckIn(data) {
+                const payload = {
+                    assetId: data.AssetId,
+                    employeeId: parseInt(data.EmployeeId || "0", 10),
+                    employeeName: data.EmployeeName || "",
+                    mismatchedEmployeeId: ""
+                };
+                try {
+                    const resp = await fetch('/api/ScanDetails/CheckIn', {
+                        method: 'POST',
+                        headers: { 'Content-Type': 'application/json' },
+                        body: JSON.stringify(payload)
+                    });
+                    if (!resp.ok) {
+                        console.error('CheckIn request failed:', resp.statusText);
+                    }
+                } catch (err) {
+                    console.error("Error calling CheckIn:", err);
+                }
+            }
+
+            async function callCheckOut(data) {
+                const payload = {
+                    assetId: data.AssetId,
+                    employeeId: parseInt(data.EmployeeId || "0", 10),
+                    employeeName: data.EmployeeName || "",
+                    mismatchedEmployeeId: ""
+                };
+                try {
+                    const resp = await fetch('/api/ScanDetails/CheckOut', {
+                        method: 'POST',
+                        headers: { 'Content-Type': 'application/json' },
+                        body: JSON.stringify(payload)
+                    });
+                    if (!resp.ok) {
+                        console.error('CheckOut request failed:', resp.statusText);
+                    }
+                } catch (err) {
+                    console.error("Error calling CheckOut:", err);
+                }
+            }
+
+            function parseKeyValueString(input) {
+                const lines = input.split("\n");
+                const result = {};
+                for (const line of lines) {
+                    const idx = line.indexOf(":");
+                    if (idx < 0) continue;
+                    let key = line.substring(0, idx).trim().toLowerCase().replace(/\s+/g, '');
+                    let val = line.substring(idx + 1).trim();
+                    switch (key) {
+                        case "assetid":
+                            key = "AssetId";
+                            break;
+                        case "assetname":
+                            key = "AssetName";
+                            break;
+                        case "employeeid":
+                            key = "EmployeeId";
+                            break;
+                        case "employeename":
+                            key = "EmployeeName";
+                            break;
+                        default:
+                            key = key.replace(/\W/g, '');
+                            break;
+                    }
+                    result[key] = val;
+                }
+                return result;
+            }
+
+            // Initial load
+            loadHistory();
         });
     </script>
 </body>

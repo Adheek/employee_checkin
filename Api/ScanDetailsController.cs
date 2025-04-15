@@ -12,7 +12,6 @@ namespace AEET.Controllers
     {
         private readonly ScanTransactionManager _transactionManager;
 
-        // Single constructor accepting only ScanTransactionManager.
         public ScanDetailsController(ScanTransactionManager transactionManager)
         {
             _transactionManager = transactionManager;
@@ -60,7 +59,6 @@ namespace AEET.Controllers
         {
             try
             {
-                // Retrieve logs using a function defined in ScanTransactionManager.
                 var logs = await _transactionManager.GetAllScanLogsAsync();
                 return Ok(logs);
             }
@@ -70,13 +68,15 @@ namespace AEET.Controllers
             }
         }
 
-        // GET api/ScanDetails/All
-        [HttpGet("GetAllAssetTransaction")]
-        public async Task<IActionResult> GetAllAssetTransaction(ScanTransactionDto dto)
+        // POST api/ScanDetails/GetAllAssetTransaction
+        [HttpPost("GetAllAssetTransaction")]
+        public async Task<IActionResult> GetAllAssetTransaction([FromBody] ScanTransactionDto dto)
         {
+            if (dto == null)
+                return BadRequest("No scan data received.");
+
             try
             {
-                // Retrieve logs using a function defined in ScanTransactionManager.
                 var logs = await _transactionManager.GetAllTransaction(dto);
                 return Ok(logs);
             }
