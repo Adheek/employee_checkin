@@ -1,4 +1,4 @@
-using Microsoft.AspNetCore.Mvc;
+﻿using Microsoft.AspNetCore.Mvc;
 using System;
 using System.Threading.Tasks;
 using AEET.DTOs;
@@ -17,7 +17,6 @@ namespace AEET.Controllers
             _transactionManager = transactionManager;
         }
 
-        // POST api/ScanDetails/CheckIn
         [HttpPost("CheckIn")]
         public async Task<IActionResult> CheckIn([FromBody] ScanTransactionDto dto)
         {
@@ -35,7 +34,6 @@ namespace AEET.Controllers
             }
         }
 
-        // POST api/ScanDetails/CheckOut
         [HttpPost("CheckOut")]
         public async Task<IActionResult> CheckOut([FromBody] ScanTransactionDto dto)
         {
@@ -53,7 +51,6 @@ namespace AEET.Controllers
             }
         }
 
-        // GET api/ScanDetails/All
         [HttpGet("All")]
         public async Task<IActionResult> GetAllLogs()
         {
@@ -68,7 +65,39 @@ namespace AEET.Controllers
             }
         }
 
-        // POST api/ScanDetails/GetAllAssetTransaction
+
+
+        // POST api/ScanDetails/Process
+        [HttpPost("Process")]
+        public async Task<IActionResult> Process([FromBody] ScanTransactionDto dto)
+        {
+            if (dto == null)
+                return BadRequest(new { success = false, message = "No scan data received." });
+
+            try
+            {
+                // --- ADD THIS LINE ---
+                Console.WriteLine($"[ScanDetailsController] Process called at {DateTime.UtcNow:O} " +
+                                  $"– AssetId={dto.AssetId}, EmployeeId={dto.EmployeeId}, EmployeeName={dto.EmployeeName}");
+
+                // This will automatically decide CheckIn vs CheckOut based on your 17‑hour rule
+                await _transactionManager.ProcessScanAsync(dto);
+
+                Console.WriteLine($"[ScanDetailsController] Process completed successfully for AssetId={dto.AssetId}");
+
+                return Ok(new { success = true, message = "Scan processed successfully." });
+            }
+            catch (Exception ex)
+            {
+                Console.WriteLine($"[ScanDetailsController] Process error: {ex}");
+                return StatusCode(500, new { success = false, message = ex.Message });
+            }
+        }
+
+
+
+
+
         [HttpPost("GetAllAssetTransaction")]
         public async Task<IActionResult> GetAllAssetTransaction([FromBody] ScanTransactionDto dto)
         {

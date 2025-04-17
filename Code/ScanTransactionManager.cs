@@ -1,4 +1,4 @@
-using System;
+﻿using System;
 using System.Threading.Tasks;
 using AEET.DTOs;
 using AEET.Models;
@@ -73,27 +73,26 @@ namespace AEET.Code
         /// <summary>
         /// Retrieves all scan logs (without any time filtering).
         /// </summary>
-     public async Task<object> GetAllScanLogsAsync()
-{
-    var logs = await (from scanDetail in _context.ScanDetails
-                      join assetDetail in _context.AssetMasters
-                      on scanDetail.AssetId equals assetDetail.AssetID into assetGroup
-                      from asset in assetGroup.DefaultIfEmpty() // Left join so that even if there's no match, we still get the scan detail
-                      orderby scanDetail.TransactionTime descending
-                      select new
-                      {
-                          scanDetail.ScanId,
-                          scanDetail.AssetId,
-                          scanDetail.EmployeeName,
-                          scanDetail.TransactionTime,
-                          scanDetail.TransactionType,
-                          scanDetail.EmployeeId,
-                          AssetName = asset != null ? asset.AssetName : null
-                      }).ToListAsync();
+        public async Task<object> GetAllScanLogsAsync()
+        {
+            var logs = await (from scanDetail in _context.ScanDetails
+                              join assetDetail in _context.AssetMasters
+                                on scanDetail.AssetId equals assetDetail.AssetID into assetGroup
+                              from asset in assetGroup.DefaultIfEmpty() // Left join
+                              orderby scanDetail.TransactionTime descending
+                              select new
+                              {
+                                  scanDetail.ScanId,
+                                  scanDetail.AssetId,
+                                  scanDetail.EmployeeName,
+                                  scanDetail.TransactionTime,
+                                  scanDetail.TransactionType,
+                                  scanDetail.EmployeeId,
+                                  AssetName = asset != null ? asset.AssetName : null
+                              }).ToListAsync();
 
-    return logs;
-}
-
+            return logs;
+        }
 
         /// <summary>
         /// Retrieves transaction logs for a given asset/employee (without a time filter).

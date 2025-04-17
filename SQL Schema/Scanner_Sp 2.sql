@@ -305,6 +305,9 @@ BEGIN
         CONSTRAINT FK_ScanDetails_Asset FOREIGN KEY (AssetId) REFERENCES AssetMaster(AssetID)
     );
 	
+	ALTER TABLE ScanDetails  
+ADD AssetName NVARCHAR(255) NULL,
+    Location NVARCHAR(255) NULL;
 
 
     PRINT 'Tables created successfully. Inserting sample data...';

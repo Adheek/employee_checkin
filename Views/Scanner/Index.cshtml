@@ -16,6 +16,7 @@
         * {
             box-sizing: border-box;
         }
+
         body {
             margin: 0;
             font-family: 'Poppins', sans-serif;
@@ -23,6 +24,7 @@
             color: #333;
             line-height: 1.6;
         }
+
         header {
             background-color: #0d0063;
             color: #fff;
@@ -34,12 +36,14 @@
             z-index: 100;
             box-shadow: 0 2px 10px rgba(0,0,0,0.1);
         }
-        header h1 {
-            margin: 0;
-            font-size: 1.5rem;
-            flex-grow: 1;
-            text-align: center;
-        }
+
+            header h1 {
+                margin: 0;
+                font-size: 1.5rem;
+                flex-grow: 1;
+                text-align: center;
+            }
+
         .back-arrow {
             text-decoration: none;
             color: #fff;
@@ -47,12 +51,31 @@
             margin-right: auto;
             padding: 0 0.5rem;
         }
+
         main {
             padding: 0.75rem;
             max-width: 900px;
             margin: 0 auto;
             width: 100%;
         }
+
+        /* HIDE the USB‑HID Scanner Input visually but keep it focusable */
+        .scanner-input {
+            position: absolute;
+            width: 1px;
+            height: 1px;
+            overflow: hidden;
+            opacity: 0;
+        }
+
+            .scanner-input input {
+                width: 1px;
+                height: 1px;
+                border: none;
+                padding: 0;
+                margin: 0;
+            }
+
 
         /* Scanner Section: Camera + Combined Details */
         .scanner-section {
@@ -61,6 +84,7 @@
             gap: 1rem;
             margin-bottom: 1rem;
         }
+
         .camera-container {
             flex: 1 1 300px;
             background-color: #fff;
@@ -75,9 +99,11 @@
             transition: all 0.3s ease;
             position: relative;
         }
-        .camera-container:hover {
-            box-shadow: 0 4px 12px rgba(0,0,0,0.12);
-        }
+
+            .camera-container:hover {
+                box-shadow: 0 4px 12px rgba(0,0,0,0.12);
+            }
+
         #cameraPreview {
             width: 100%;
             height: 100%;
@@ -88,6 +114,7 @@
             font-size: 1rem;
             color: #666;
         }
+
         .scan-cooldown {
             position: absolute;
             top: 0;
@@ -112,29 +139,33 @@
             box-shadow: 0 2px 8px rgba(0,0,0,0.08);
             transition: all 0.3s ease;
         }
-        .combined-details:hover {
-            box-shadow: 0 4px 12px rgba(0,0,0,0.12);
-        }
-        .combined-details h2 {
-            margin-top: 0;
-            color: #0d0063;
-            font-size: 1.2rem;
-            border-bottom: 2px solid #0d0063;
-            padding-bottom: 0.25rem;
-            margin-bottom: 0.75rem;
-        }
-        .combined-details p {
-            margin: 0.5rem 0;
-            line-height: 1.4;
-            display: flex;
-            justify-content: space-between;
-            flex-wrap: wrap;
-            font-size: 0.9rem;
-        }
-        .combined-details p span {
-            font-weight: 500;
-            color: #0d0063;
-        }
+
+            .combined-details:hover {
+                box-shadow: 0 4px 12px rgba(0,0,0,0.12);
+            }
+
+            .combined-details h2 {
+                margin-top: 0;
+                color: #0d0063;
+                font-size: 1.2rem;
+                border-bottom: 2px solid #0d0063;
+                padding-bottom: 0.25rem;
+                margin-bottom: 0.75rem;
+            }
+
+            .combined-details p {
+                margin: 0.5rem 0;
+                line-height: 1.4;
+                display: flex;
+                justify-content: space-between;
+                flex-wrap: wrap;
+                font-size: 0.9rem;
+            }
+
+                .combined-details p span {
+                    font-weight: 500;
+                    color: #0d0063;
+                }
 
         /* History Section */
         .history-section {
@@ -145,40 +176,46 @@
             box-shadow: 0 2px 8px rgba(0,0,0,0.08);
             overflow-x: auto;
         }
-        .history-section h2 {
-            margin-top: 0;
-            color: #0d0063;
-            text-align: center;
-            margin-bottom: 0.75rem;
-            font-size: 1.2rem;
-            border-bottom: 2px solid #0d0063;
-            padding-bottom: 0.25rem;
-        }
-        .history-section table {
-            width: 100%;
-            border-collapse: collapse;
-            min-width: 600px;
-        }
-        .history-section th,
-        .history-section td {
-            padding: 0.5rem 0.75rem;
-            border-bottom: 1px solid #e0dcd3;
-            text-align: left;
-            font-size: 0.85rem;
-        }
-        .history-section th {
-            background-color: #0d0063;
-            color: #fff;
-            position: sticky;
-            top: 0;
-            font-weight: 500;
-        }
-        .history-section tr:nth-child(even) {
-            background-color: #f9f7f2;
-        }
-        .history-section tr:hover {
-            background-color: #f0ece0;
-        }
+
+            .history-section h2 {
+                margin-top: 0;
+                color: #0d0063;
+                text-align: center;
+                margin-bottom: 0.75rem;
+                font-size: 1.2rem;
+                border-bottom: 2px solid #0d0063;
+                padding-bottom: 0.25rem;
+            }
+
+            .history-section table {
+                width: 100%;
+                border-collapse: collapse;
+                min-width: 600px;
+            }
+
+            .history-section th,
+            .history-section td {
+                padding: 0.5rem 0.75rem;
+                border-bottom: 1px solid #e0dcd3;
+                text-align: left;
+                font-size: 0.85rem;
+            }
+
+            .history-section th {
+                background-color: #0d0063;
+                color: #fff;
+                position: sticky;
+                top: 0;
+                font-weight: 500;
+            }
+
+            .history-section tr:nth-child(even) {
+                background-color: #f9f7f2;
+            }
+
+            .history-section tr:hover {
+                background-color: #f0ece0;
+            }
 
         /* Success message styling */
         .success-message {
@@ -201,17 +238,21 @@
             .scanner-section {
                 flex-direction: column;
             }
+
             .camera-container {
                 min-height: 220px;
             }
         }
+
         @@media (max-width: 480px) {
             main {
                 padding: 0.5rem;
             }
+
             .camera-container {
                 min-height: 180px;
             }
+
             .combined-details p {
                 flex-direction: column;
                 gap: 0.15rem;
@@ -226,6 +267,13 @@
     </header>
     <div class="success-message" id="successMessage"></div>
     <main>
+
+        <!-- USB‑HID scanner input -->
+        <div class="scanner-input">
+            <input id="qrInput" type="text" autofocus />
+        </div>
+
+
         <!-- Scanner Section -->
         <section class="scanner-section">
             <div class="camera-container">
@@ -275,6 +323,45 @@
     <script src="https://unpkg.com/html5-qrcode@2.3.7/html5-qrcode.min.js"></script>
     <script>
         document.addEventListener("DOMContentLoaded", function () {
+
+            // —— USB‑HID Keyboard Scanner support ——
+            const keyboardInput = document.getElementById("qrInput");
+            keyboardInput.focus();
+            keyboardInput.addEventListener("keydown", async e => {
+                if (e.key === "Enter") {
+                    const scannedValue = keyboardInput.value.trim();
+                    if (!scannedValue) return;
+
+                    // populate details display
+                    document.getElementById("assetId").innerText = scannedValue;
+                    document.getElementById("assetName").innerText = "--";
+                    document.getElementById("employeeId").innerText = "--";
+                    document.getElementById("employeeName").innerText = "--";
+
+                    // send to your Process endpoint
+                    try {
+                        const payload = {
+                            assetId: scannedValue,
+                            employeeId: 0,       // fill in or compute as needed
+                            employeeName: ""     // fill in or compute as needed
+                        };
+                        const resp = await fetch("/api/ScanDetails/Process", {
+                            method: "POST",
+                            headers: { "Content-Type": "application/json" },
+                            body: JSON.stringify(payload)
+                        });
+                        const data = await resp.json();
+                        showSuccessMessage(data.message || (data.success ? "Processed" : "Error"));
+                        loadHistory();
+                    } catch (err) {
+                        console.error(err);
+                    }
+
+                    keyboardInput.value = "";
+                }
+            });
+
+            // —— existing camera‑based QR logic ——
             const html5QrCode = new Html5Qrcode("cameraPreview");
             const config = {
                 fps: 10,
@@ -283,10 +370,8 @@
 
             const COOLDOWN_SECONDS = 5;
             const HOURS_17_MS = 17 * 60 * 60 * 1000;
-            
-            // Scan cooldown control variables
+
             let isCoolingDown = false;
-            let lastScannedData = null;
             let cooldownInterval = null;
             let cooldownSecondsLeft = COOLDOWN_SECONDS;
 
@@ -295,31 +380,15 @@
                 .catch(err => console.error("Error starting QR scanner:", err));
 
             async function onScanSuccess(decodedText, decodedResult) {
-                // If we're in cooldown period, ignore the scan
                 if (isCoolingDown) {
                     console.log("Ignoring scan during cooldown period");
                     return;
                 }
-                
-                console.log("Decoded text:", decodedText);
 
-                // Parse the text: "Asset ID: x\nEmployee ID: y\n..."
                 const data = parseKeyValueString(decodedText);
-                console.log("Parsed data:", data);
-
-                // Display scanned details
                 displayDetails(data);
-                
-                // Start cooldown period
                 startCooldown();
-                
-                // Process the scan
                 await processCheckInOrOut(data);
-                
-                // Save last scanned data for comparison
-                lastScannedData = data;
-                
-                // Refresh the history table
                 loadHistory();
             }
 
@@ -327,7 +396,6 @@
                 console.warn("QR Code scan error:", error);
             }
 
-            // Display scanned details
             function displayDetails(data) {
                 document.getElementById("assetId").innerText = data.AssetId || "--";
                 document.getElementById("assetName").innerText = data.AssetName || "--";
@@ -335,48 +403,25 @@
                 document.getElementById("employeeName").innerText = data.EmployeeName || "--";
             }
 
-            // Clear details
-            function clearDetails() {
-                document.getElementById("assetId").innerText = "--";
-                document.getElementById("assetName").innerText = "--";
-                document.getElementById("employeeId").innerText = "--";
-                document.getElementById("employeeName").innerText = "--";
-            }
-
-            // Show a success message for 5 seconds
-            function showSuccessMessage(msg) {
-                const msgBox = document.getElementById("successMessage");
-                msgBox.innerText = msg;
-                msgBox.style.display = "block";
-                setTimeout(() => {
-                    msgBox.style.display = "none";
-                }, 5000);
-            }
-
-            // Start the cooldown period
             function startCooldown() {
                 isCoolingDown = true;
                 cooldownSecondsLeft = COOLDOWN_SECONDS;
-                
+
                 const cooldownElement = document.getElementById("scanCooldown");
                 const timerElement = document.getElementById("cooldownTimer");
-                
-                // Show cooldown overlay
+
                 cooldownElement.style.display = "flex";
                 timerElement.textContent = cooldownSecondsLeft;
-                
-                // Clear any existing interval
+
                 if (cooldownInterval) {
                     clearInterval(cooldownInterval);
                 }
-                
-                // Start countdown
+
                 cooldownInterval = setInterval(() => {
                     cooldownSecondsLeft--;
                     timerElement.textContent = cooldownSecondsLeft;
-                    
+
                     if (cooldownSecondsLeft <= 0) {
-                        // End cooldown
                         clearInterval(cooldownInterval);
                         cooldownElement.style.display = "none";
                         isCoolingDown = false;
@@ -384,31 +429,24 @@
                 }, 1000);
             }
 
-            // Decides if we do CheckOut or CheckIn
-            // If the same asset/employee combination is scanned again, do a CheckOut
             async function processCheckInOrOut(data) {
                 const logs = await fetchAllTransactions(data);
                 if (!logs || logs.length === 0) {
-                    // No prior records -> CheckIn
                     await callCheckIn(data);
                     showSuccessMessage("Successfully Checked In!");
                     return;
                 }
-                
-                // logs are sorted descending in your manager
+
                 const lastRecord = logs[0];
                 if (lastRecord.transactionType === "CheckIn") {
-                    // Last record was CheckIn -> do CheckOut
                     await callCheckOut(data);
                     showSuccessMessage("Successfully Checked Out!");
                 } else {
-                    // Last record was CheckOut -> do CheckIn
                     await callCheckIn(data);
                     showSuccessMessage("Successfully Checked In!");
                 }
             }
 
-            // Retrieves all logs for the last 17 hours to display
             async function loadHistory() {
                 try {
                     const response = await fetch('/api/ScanDetails/All');
@@ -428,28 +466,26 @@
                     filteredLogs.forEach(item => {
                         const tr = document.createElement("tr");
                         tr.innerHTML = `
-                            <td>${formatDateTime(item.transactionTime)}</td>
-                            <td>${item.assetId || '--'}</td>
-                            <td>${item.assetName || '--'}</td>
-                            <td>${item.employeeId || '--'}</td>
-                            <td>${item.employeeName || '--'}</td>
-                            <td>${item.transactionType || '--'}</td>
-                        `;
+                                    <td>${formatDateTime(item.transactionTime)}</td>
+                                    <td>${item.assetId || '--'}</td>
+                                    <td>${item.assetName || '--'}</td>
+                                    <td>${item.employeeId || '--'}</td>
+                                    <td>${item.employeeName || '--'}</td>
+                                    <td>${item.transactionType || '--'}</td>
+                                `;
                         historyBody.appendChild(tr);
                     });
                 } catch (error) {
                     console.error('Error loading history:', error);
                 }
             }
-            
-            // Format date to readable format
+
             function formatDateTime(dateString) {
                 if (!dateString) return '--';
                 const date = new Date(dateString);
                 return date.toLocaleString();
             }
 
-            // Post to /api/ScanDetails/GetAllAssetTransaction
             async function fetchAllTransactions(data) {
                 try {
                     const dto = {

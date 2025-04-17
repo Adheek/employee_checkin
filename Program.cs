@@ -5,15 +5,22 @@ using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
 using Microsoft.EntityFrameworkCore;
 using System;
-using AEET.Models;      // Contains ApplicationDbContext, model classes (Employee, ScanDetail, etc.)
-using AEET.Code;        // Contains FullDataManager, UserManager, RoleManager, EmployeeManager, EmployeeAssetMappingManager, ScanTransactionManager, etc.
+using System.Text.Json;                       // for JsonNamingPolicy
+using AEET.Models;      // ApplicationDbContext, model classes
+using AEET.Code;        // ScanTransactionManager, plus your other managers
 
 var builder = WebApplication.CreateBuilder(args);
 
-// Add services to the container.
-builder.Services.AddControllersWithViews();
+// 1. Add MVC + runtime‐compilation + camelCase JSON
+builder.Services
+    .AddControllersWithViews()
+                  // see .cshtml updates live
+    .AddJsonOptions(opts =>
+    {
+        opts.JsonSerializerOptions.PropertyNamingPolicy = JsonNamingPolicy.CamelCase;
+    });
 
-// Add session service with a 30-minute idle timeout.
+// 2. Session (30‑minute idle timeout)
 builder.Services.AddSession(options =>
 {
     options.IdleTimeout = TimeSpan.FromMinutes(30);
@@ -21,78 +28,66 @@ builder.Services.AddSession(options =>
     options.Cookie.IsEssential = true;
 });
 
-// Configure Entity Framework Core to use SQL Server.
+// 3. EF Core → SQL Server
 builder.Services.AddDbContext<ApplicationDbContext>(options =>
     options.UseSqlServer(builder.Configuration.GetConnectionString("DefaultConnection")));
 
-// Register your custom SQL test service as a Singleton.
+// 4. Your custom services
 builder.Services.AddSingleton<Sql>();
-
-// Register your custom classes for Dependency Injection.
 builder.Services.AddScoped<UserManager>();
 builder.Services.AddScoped<RoleManager>();
 builder.Services.AddScoped<FullDataManager>();
 builder.Services.AddScoped<EmployeeManager>();
 builder.Services.AddScoped<EmployeeAssetMappingManager>();
-builder.Services.AddScoped<ScanTransactionManager>(); // Registration for scan transactions
+builder.Services.AddScoped<ScanTransactionManager>();
 
-// Add CORS policy for development (tighten for production as needed).
+// 5. CORS (for API calls, if needed)
 builder.Services.AddCors(options =>
 {
-    options.AddPolicy("AllowAllOrigins",
-        policy => policy.AllowAnyOrigin()
-                        .AllowAnyMethod()
-                        .AllowAnyHeader());
+    options.AddPolicy("AllowAllOrigins", policy =>
+        policy.AllowAnyOrigin()
+              .AllowAnyMethod()
+              .AllowAnyHeader());
 });
 
 var app = builder.Build();
 
-// Test the database connection using dependency injection.
+// 6. Test DB connection at startup
 try
 {
     using var scope = app.Services.CreateScope();
     var sqlTest = scope.ServiceProvider.GetRequiredService<Sql>();
-    sqlTest.TestConnection(); // Prints success/failure in the terminal.
+    sqlTest.TestConnection();
 }
 catch (Exception ex)
 {
     Console.WriteLine($"❌ Database Connection Failed: {ex.Message}");
 }
 
-// Configure the HTTP request pipeline.
+// 7. Error handling & security
 if (!app.Environment.IsDevelopment())
 {
     app.UseExceptionHandler("/Home/Error");
     app.UseHsts();
 }
 
-// Use the CORS policy before routing.
-app.UseCors("AllowAllOrigins");
-
-// Redirect HTTP requests to HTTPS.
+// 8. Standard middleware
 app.UseHttpsRedirection();
-
-// Serve static files (like CSS, JavaScript, images).
 app.UseStaticFiles();
 
-// Enable routing.
 app.UseRouting();
 
-// Enable session middleware.
+// 9. Move CORS here (after routing, before auth)
+app.UseCors("AllowAllOrigins");
+
 app.UseSession();
-
-// (Optional) If you add authentication later, call app.UseAuthentication() before UseAuthorization.
-// app.UseAuthentication();
-
-// Enable authorization middleware.
 app.UseAuthorization();
 
-// Map attribute-routed controllers (for API endpoints).
+// 10. Endpoints
 app.MapControllers();
-
-// Define the default MVC route.
 app.MapControllerRoute(
     name: "default",
-    pattern: "{controller=Account}/{action=Login}/{id?}");
+    pattern: "{controller=Account}/{action=Login}/{id?}"
+);
 
 app.Run();

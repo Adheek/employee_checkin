@@ -23,6 +23,8 @@ namespace AEET.Controllers
         [HttpPost]
         public IActionResult Login(string username, string password)
         {
+            ViewBag.Error = "Entering into the login";
+            
             // 1. Query the UserMasters table for a matching record
             var user = _context.UserMasters.FirstOrDefault(u =>
                 u.EmailID == username && u.PasswordHash == password);
