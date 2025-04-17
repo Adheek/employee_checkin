@@ -177,12 +177,13 @@ BEGIN
      ******************************************************************/
     CREATE TABLE VendorMaster (
         VendorID UNIQUEIDENTIFIER PRIMARY KEY DEFAULT NEWID(),
-        Name NVARCHAR(255) UNIQUE NOT NULL DEFAULT(''),
-        VendorType CHAR(16) NOT NULL DEFAULT(''),
+        Name NVARCHAR(255) NOT NULL DEFAULT(''),
+        VendorType NVARCHAR(200) NOT NULL DEFAULT(''),
         CreatedOn DATETIME DEFAULT GETDATE(),
         CreatedBy NVARCHAR(255) NOT NULL DEFAULT(''),
         ModifiedOn DATETIME DEFAULT GETDATE(),
-        ModifiedBy NVARCHAR(255) NOT NULL DEFAULT('')
+        ModifiedBy NVARCHAR(255) NOT NULL DEFAULT(''),
+		CONSTRAINT UQ_VendorMaster_NameVendorType UNIQUE (Name, VendorType)
     );
 
     /******************************************************************
