@@ -59,22 +59,20 @@
             width: 100%;
         }
 
-        /* HIDE the USB‑HID Scanner Input visually but keep it focusable */
         .scanner-input {
-            position: absolute;
-            width: 1px;
-            height: 1px;
-            overflow: hidden;
-            opacity: 0;
+            /* let it grow like the camera and details panels */
+            flex: 1 1 300px;
+            margin: 1rem 0;
         }
 
             .scanner-input input {
-                width: 1px;
-                height: 1px;
-                border: none;
-                padding: 0;
-                margin: 0;
+                width: 100%; /* fill its flex column */
+                padding: 0.75rem; /* a bit more height */
+                font-size: 1rem; /* easy to read */
+                border: 1px solid #ccc;
+                border-radius: 4px;
             }
+
 
 
         /* Scanner Section: Camera + Combined Details */
@@ -268,10 +266,7 @@
     <div class="success-message" id="successMessage"></div>
     <main>
 
-        <!-- USB‑HID scanner input -->
-        <div class="scanner-input">
-            <input id="qrInput" type="text" autofocus />
-        </div>
+     
 
 
         <!-- Scanner Section -->
@@ -282,6 +277,19 @@
                     Processing... <span id="cooldownTimer">5</span>
                 </div>
             </div>
+
+
+
+              <!-- QR input box placed directly under the camera preview -->
+            <div class="scanner-input">
+                <input id="qrInput"
+                       type="text"
+                       class="form-control"
+                       autofocus />
+            </div>
+
+
+
             <div class="combined-details">
                 <h2>Scan Details</h2>
                 <p>Asset ID: <span id="assetId">--</span></p>
@@ -322,44 +330,22 @@
     <!-- html5-qrcode library -->
     <script src="https://unpkg.com/html5-qrcode@2.3.7/html5-qrcode.min.js"></script>
     <script>
-        document.addEventListener("DOMContentLoaded", function () {
+       document.addEventListener("DOMContentLoaded", function () {
+    const keyboardInput = document.getElementById("qrInput");
+    // ensure the scanner always types into this field
+    keyboardInput.focus();
 
-            // —— USB‑HID Keyboard Scanner support ——
-            const keyboardInput = document.getElementById("qrInput");
-            keyboardInput.focus();
-            keyboardInput.addEventListener("keydown", async e => {
-                if (e.key === "Enter") {
-                    const scannedValue = keyboardInput.value.trim();
-                    if (!scannedValue) return;
-
-                    // populate details display
-                    document.getElementById("assetId").innerText = scannedValue;
-                    document.getElementById("assetName").innerText = "--";
-                    document.getElementById("employeeId").innerText = "--";
-                    document.getElementById("employeeName").innerText = "--";
-
-                    // send to your Process endpoint
-                    try {
-                        const payload = {
-                            assetId: scannedValue,
-                            employeeId: 0,       // fill in or compute as needed
-                            employeeName: ""     // fill in or compute as needed
-                        };
-                        const resp = await fetch("/api/ScanDetails/Process", {
-                            method: "POST",
-                            headers: { "Content-Type": "application/json" },
-                            body: JSON.stringify(payload)
-                        });
-                        const data = await resp.json();
-                        showSuccessMessage(data.message || (data.success ? "Processed" : "Error"));
-                        loadHistory();
-                    } catch (err) {
-                        console.error(err);
-                    }
-
-                    keyboardInput.value = "";
-                }
-            });
+    keyboardInput.addEventListener("keydown", function (e) {
+        if (e.key === "Enter") {
+            e.preventDefault();
+            const scannedValue = keyboardInput.value.trim();
+            if (!scannedValue) return;
+            // the scannedValue stays visible in the input box
+            console.log("Scanned via Zebra:", scannedValue);
+            // (no clearing, no extra display logic — it's all in the input)
+        }
+    });
+});
 
             // —— existing camera‑based QR logic ——
             const html5QrCode = new Html5Qrcode("cameraPreview");
