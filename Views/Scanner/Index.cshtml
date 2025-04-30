@@ -1,5 +1,5 @@
-@{
-    ViewData["Title"] = "Scanner";
+﻿@{
+    ViewData["Title"] = "Scanner Page";
     Layout = null;
 }
 <!DOCTYPE html>
@@ -7,10 +7,8 @@
 <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1" />
-    <title>Scanner Page</title>
-    <!-- Import Poppins font -->
+    <title>@ViewData["Title"]</title>
     <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600&display=swap" rel="stylesheet" />
-
     <style>
         /* Global Styles */
         * {
@@ -37,45 +35,27 @@
             box-shadow: 0 2px 10px rgba(0,0,0,0.1);
         }
 
-            header h1 {
-                margin: 0;
-                font-size: 1.5rem;
-                flex-grow: 1;
-                text-align: center;
-            }
-
         .back-arrow {
-            text-decoration: none;
             color: #fff;
+            text-decoration: none;
             font-size: 1.5rem;
             margin-right: auto;
             padding: 0 0.5rem;
         }
 
+        header h1 {
+            flex-grow: 1;
+            margin: 0;
+            text-align: center;
+            font-size: 1.5rem;
+        }
+
         main {
-            padding: 0.75rem;
             max-width: 900px;
-            margin: 0 auto;
-            width: 100%;
+            margin: 1rem auto;
+            padding: 0 0.75rem;
         }
 
-        .scanner-input {
-            /* let it grow like the camera and details panels */
-            flex: 1 1 300px;
-            margin: 1rem 0;
-        }
-
-            .scanner-input input {
-                width: 100%; /* fill its flex column */
-                padding: 0.75rem; /* a bit more height */
-                font-size: 1rem; /* easy to read */
-                border: 1px solid #ccc;
-                border-radius: 4px;
-            }
-
-
-
-        /* Scanner Section: Camera + Combined Details */
         .scanner-section {
             display: flex;
             flex-wrap: wrap;
@@ -83,64 +63,83 @@
             margin-bottom: 1rem;
         }
 
-        .camera-container {
-            flex: 1 1 300px;
+        .camera-container,
+        .combined-details {
             background-color: #fff;
             border: 1px solid #e0dcd3;
             border-radius: 8px;
-            overflow: hidden;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            min-height: 250px;
             box-shadow: 0 2px 8px rgba(0,0,0,0.08);
-            transition: all 0.3s ease;
-            position: relative;
+            transition: box-shadow 0.3s ease;
         }
 
-            .camera-container:hover {
+            .camera-container:hover,
+            .combined-details:hover {
                 box-shadow: 0 4px 12px rgba(0,0,0,0.12);
             }
 
+        .camera-container {
+            flex: 1 1 300px;
+            position: relative;
+            display: flex;
+            flex-direction: column;
+            min-height: 250px;
+            overflow: hidden;
+        }
+
         #cameraPreview {
-            width: 100%;
-            height: 100%;
+            flex: 1;
             background: #ddd;
             display: flex;
             align-items: center;
             justify-content: center;
-            font-size: 1rem;
             color: #666;
+            font-size: 1rem;
+            width: 100%;
         }
 
         .scan-cooldown {
             position: absolute;
-            top: 0;
-            left: 0;
-            width: 100%;
-            height: 100%;
-            background-color: rgba(0, 0, 0, 0.5);
-            color: white;
-            display: flex;
-            justify-content: center;
+            inset: 0;
+            background: rgba(0,0,0,0.5);
+            color: #fff;
+            display: none;
             align-items: center;
+            justify-content: center;
             font-size: 1.2rem;
             z-index: 10;
         }
-
-        .combined-details {
-            flex: 1 1 300px;
-            background-color: #fff;
-            border: 1px solid #e0dcd3;
-            border-radius: 8px;
-            padding: 1rem;
-            box-shadow: 0 2px 8px rgba(0,0,0,0.08);
-            transition: all 0.3s ease;
+        /* Manual Entry */
+        .manual-entry {
+            padding: 0.75rem;
+            border-top: 1px solid #e0dcd3;
+            background: #f9f7f2;
         }
 
-            .combined-details:hover {
-                box-shadow: 0 4px 12px rgba(0,0,0,0.12);
-            }
+        .manual-entry-label {
+            color: #0d0063;
+            font-weight: 500;
+            margin-bottom: 0.5rem;
+            display: block;
+        }
+
+        #manualEntryInput {
+            width: 100%;
+            padding: 0.5rem;
+            font-size: 0.9rem;
+            border: 1px solid #ccc;
+            border-radius: 4px;
+        }
+
+        .manual-entry p {
+            margin: 0.5rem 0 0;
+            font-size: 0.85rem;
+            color: #666;
+        }
+        /* Scan Details */
+        .combined-details {
+            flex: 1 1 300px;
+            padding: 1rem;
+        }
 
             .combined-details h2 {
                 margin-top: 0;
@@ -152,11 +151,9 @@
             }
 
             .combined-details p {
-                margin: 0.5rem 0;
-                line-height: 1.4;
                 display: flex;
                 justify-content: space-between;
-                flex-wrap: wrap;
+                margin: 0.5rem 0;
                 font-size: 0.9rem;
             }
 
@@ -164,43 +161,42 @@
                     font-weight: 500;
                     color: #0d0063;
                 }
-
-        /* History Section */
+        /* History */
         .history-section {
-            background-color: #fff;
+            background: #fff;
             border: 1px solid #e0dcd3;
             border-radius: 8px;
-            padding: 1rem;
             box-shadow: 0 2px 8px rgba(0,0,0,0.08);
             overflow-x: auto;
+            padding: 1rem;
         }
 
             .history-section h2 {
-                margin-top: 0;
-                color: #0d0063;
                 text-align: center;
-                margin-bottom: 0.75rem;
+                color: #0d0063;
                 font-size: 1.2rem;
                 border-bottom: 2px solid #0d0063;
                 padding-bottom: 0.25rem;
+                margin-top: 0;
+                margin-bottom: 0.75rem;
             }
 
             .history-section table {
                 width: 100%;
-                border-collapse: collapse;
                 min-width: 600px;
+                border-collapse: collapse;
             }
 
             .history-section th,
             .history-section td {
                 padding: 0.5rem 0.75rem;
                 border-bottom: 1px solid #e0dcd3;
-                text-align: left;
                 font-size: 0.85rem;
+                text-align: left;
             }
 
             .history-section th {
-                background-color: #0d0063;
+                background: #0d0063;
                 color: #fff;
                 position: sticky;
                 top: 0;
@@ -208,29 +204,26 @@
             }
 
             .history-section tr:nth-child(even) {
-                background-color: #f9f7f2;
+                background: #f9f7f2;
             }
 
             .history-section tr:hover {
-                background-color: #f0ece0;
+                background: #f0ece0;
             }
-
-        /* Success message styling */
+        /* Messages */
         .success-message {
-            display: none;
             position: fixed;
-            top: 80px; /* just below header */
+            top: 80px;
             left: 50%;
             transform: translateX(-50%);
-            background-color: #28a745;
+            display: none;
+            background: #28a745;
             color: #fff;
             padding: 0.75rem 1rem;
             border-radius: 6px;
-            font-size: 1rem;
-            z-index: 9999;
             box-shadow: 0 2px 8px rgba(0,0,0,0.3);
+            z-index: 9999;
         }
-
         /* Responsive */
         @@media (max-width: 768px) {
             .scanner-section {
@@ -238,7 +231,7 @@
             }
 
             .camera-container {
-                min-height: 220px;
+                min-height: 360px;
             }
         }
 
@@ -248,7 +241,7 @@
             }
 
             .camera-container {
-                min-height: 180px;
+                min-height: 320px;
             }
 
             .combined-details p {
@@ -261,45 +254,32 @@
 <body>
     <header>
         <a href="/Home/Landing" class="back-arrow" title="Home">&#8592;</a>
-        <h1>Scanner Page</h1>
+        <h1>@ViewData["Title"]</h1>
     </header>
     <div class="success-message" id="successMessage"></div>
     <main>
-
-     
-
-
-        <!-- Scanner Section -->
         <section class="scanner-section">
             <div class="camera-container">
                 <div id="cameraPreview">Camera Preview</div>
-                <div class="scan-cooldown" id="scanCooldown" style="display: none;">
-                    Processing... <span id="cooldownTimer">5</span>
+                <div class="scan-cooldown" id="scanCooldown">
+                    Processing… <span id="cooldownTimer">5</span>
+                </div>
+                <div class="manual-entry">
+                    <label class="manual-entry-label" for="manualEntryInput">Enter Asset ID:</label>
+                    <input type="text" id="manualEntryInput" placeholder="e.g. AST-001" />
+                    <p>Press Enter to check-in/out</p>
                 </div>
             </div>
-
-
-
-              <!-- QR input box placed directly under the camera preview -->
-            <div class="scanner-input">
-                <input id="qrInput"
-                       type="text"
-                       class="form-control"
-                       autofocus />
-            </div>
-
-
-
             <div class="combined-details">
                 <h2>Scan Details</h2>
                 <p>Asset ID: <span id="assetId">--</span></p>
                 <p>Asset Name: <span id="assetName">--</span></p>
                 <p>Employee ID: <span id="employeeId">--</span></p>
                 <p>Employee Name: <span id="employeeName">--</span></p>
+                <p>Time: <span id="scanTime">--</span></p>
+
             </div>
         </section>
-
-        <!-- History Section -->
         <section class="history-section">
             <h2>Scan History (Last 17 Hours)</h2>
             <table>
@@ -314,263 +294,239 @@
                     </tr>
                 </thead>
                 <tbody id="historyBody">
-                    <tr>
-                        <td>--</td>
-                        <td>--</td>
-                        <td>--</td>
-                        <td>--</td>
-                        <td>--</td>
-                        <td>--</td>
-                    </tr>
+                    <tr><td colspan="6" style="text-align:center">No records</td></tr>
                 </tbody>
             </table>
         </section>
     </main>
+ <script src="https://unpkg.com/html5-qrcode@2.3.7/html5-qrcode.min.js"></script>
+<script>
+document.addEventListener("DOMContentLoaded", () => {
+  // IST formatter
+  const istFormatter = new Intl.DateTimeFormat('en-IN', {
+    timeZone: 'Asia/Kolkata',
+    day:     'numeric',
+    month:   'numeric',
+    year:    'numeric',
+    hour:    '2-digit',
+    minute:  '2-digit',
+    second:  '2-digit',
+    hour12:  true
+  });
 
-    <!-- html5-qrcode library -->
-    <script src="https://unpkg.com/html5-qrcode@2.3.7/html5-qrcode.min.js"></script>
-    <script>
-       document.addEventListener("DOMContentLoaded", function () {
-    const keyboardInput = document.getElementById("qrInput");
-    // ensure the scanner always types into this field
-    keyboardInput.focus();
+  // Scanner + 2s cooldown
+  const html5QrCode = new Html5Qrcode("cameraPreview");
+  html5QrCode.start(
+    { facingMode: "environment" },
+    { fps: 10, qrbox: { width: 200, height: 200 } },
+    onQrSuccess,
+    onQrError
+  ).catch(console.error);
 
-    keyboardInput.addEventListener("keydown", function (e) {
-        if (e.key === "Enter") {
-            e.preventDefault();
-            const scannedValue = keyboardInput.value.trim();
-            if (!scannedValue) return;
-            // the scannedValue stays visible in the input box
-            console.log("Scanned via Zebra:", scannedValue);
-            // (no clearing, no extra display logic — it's all in the input)
-        }
+  const COOLDOWN = 2;
+  let cooling = false, timerId;
+  function startCooldown() {
+    cooling = true;
+    let sec = COOLDOWN;
+    const overlay = document.getElementById("scanCooldown"),
+          timerEl = document.getElementById("cooldownTimer");
+    overlay.style.display = "flex";
+    timerEl.textContent = sec;
+    clearInterval(timerId);
+    timerId = setInterval(() => {
+      if (--sec <= 0) {
+        clearInterval(timerId);
+        overlay.style.display = "none";
+        cooling = false;
+      } else {
+        timerEl.textContent = sec;
+      }
+    }, 1000);
+  }
+
+  // display / message helpers
+  function displayDetails(d) {
+    document.getElementById("assetId").innerText      = d.assetId      || "--";
+    document.getElementById("assetName").innerText    = d.assetName    || "--";
+    document.getElementById("employeeId").innerText   = d.employeeId   || "--";
+    document.getElementById("employeeName").innerText = d.employeeName || "--";
+    document.getElementById("scanTime").innerText     = istFormatter.format(new Date());
+  }
+  function showMessage(msg, isError = false) {
+    const box = document.getElementById("successMessage");
+    box.innerText = msg;
+    box.style.backgroundColor = isError ? "#dc3545" : "#28a745";
+    box.style.display = "block";
+    setTimeout(() => box.style.display = "none", 4000);
+  }
+
+  // lookup mapping
+  async function fetchMapping(assetId) {
+    const res = await fetch(`/api/EmployeeAssetMapping/${encodeURIComponent(assetId)}`);
+    if (!res.ok) return null;
+    return res.json();
+  }
+
+  // QR success
+  async function onQrSuccess(decodedText) {
+    if (cooling) return;
+    const raw = parseKeyValueString(decodedText),
+          assetId = raw.assetId;
+    if (!assetId) {
+      showMessage("Invalid QR", true);
+      return;
+    }
+    startCooldown();
+
+    const map = await fetchMapping(assetId);
+    if (!map) {
+      showMessage(`No mapping for ${assetId}`, true);
+      return;
+    }
+
+    const dto = {
+      assetId:      assetId,
+      assetName:    map.assetName,
+      employeeId:   map.employeeId,
+      employeeName: map.employeeName
+    };
+    displayDetails(dto);
+
+    await processCheckInOrOut(dto);
+    await loadHistory();
+  }
+  function onQrError() {}
+
+  // manual input: debounce 3 seconds
+  const manualInput = document.getElementById("manualEntryInput");
+  let manualTimer;
+  manualInput.addEventListener("input", () => {
+    clearTimeout(manualTimer);
+    manualTimer = setTimeout(async () => {
+      const assetId = manualInput.value.trim();
+      if (!assetId || cooling) return;
+      manualInput.value = "";
+      startCooldown();
+
+      const map = await fetchMapping(assetId);
+      if (!map) {
+        showMessage(`No mapping for ${assetId}`, true);
+        return;
+      }
+
+      const dto = {
+        assetId:      assetId,
+        assetName:    map.assetName,
+        employeeId:   map.employeeId,
+        employeeName: map.employeeName
+      };
+      displayDetails(dto);
+
+      await processCheckInOrOut(dto);
+      await loadHistory();
+    }, 2000);
+  });
+
+  // check-in/out logic
+  async function processCheckInOrOut(d) {
+    const logs = await fetchAllTransactions(d);
+    if (!logs || logs.length === 0) {
+      await callCheckIn(d);
+      showMessage("Checked In");
+    } else if (logs[0].transactionType === "CheckIn") {
+      await callCheckOut(d);
+      showMessage("Checked Out");
+    } else {
+      await callCheckIn(d);
+      showMessage("Checked In");
+    }
+  }
+  async function fetchAllTransactions(d) {
+    const payload = {
+      assetId:      d.assetId,
+      employeeId:   parseInt(d.employeeId || "0",10),
+      employeeName: d.employeeName || ""
+    };
+    const res = await fetch('/api/ScanDetails/GetAllAssetTransaction', {
+      method:'POST', headers:{'Content-Type':'application/json'},
+      body: JSON.stringify(payload)
     });
+    return res.ok ? res.json() : null;
+  }
+  async function callCheckIn(d) {
+    await fetch('/api/ScanDetails/CheckIn', {
+      method:'POST', headers:{'Content-Type':'application/json'},
+      body: JSON.stringify({
+        assetId:      d.assetId,
+        employeeId:   parseInt(d.employeeId||"0",10),
+        employeeName: d.employeeName||""
+      })
+    });
+  }
+  async function callCheckOut(d) {
+    await fetch('/api/ScanDetails/CheckOut', {
+      method:'POST', headers:{'Content-Type':'application/json'},
+      body: JSON.stringify({
+        assetId:      d.assetId,
+        employeeId:   parseInt(d.employeeId||"0",10),
+        employeeName: d.employeeName||""
+      })
+    });
+  }
+
+  // history loader (17h + IST)
+  async function loadHistory() {
+    const res = await fetch('/api/ScanDetails/All');
+    if (!res.ok) return;
+    const all = await res.json(),
+          cutoff = Date.now() - 17*3600*1000,
+          recent = all.filter(x => new Date(x.transactionTime).getTime() > cutoff),
+          tbody = document.getElementById("historyBody");
+    tbody.innerHTML = "";
+
+    if (!recent.length) {
+      tbody.innerHTML = `<tr><td colspan="6" style="text-align:center">No records</td></tr>`;
+      return;
+    }
+
+    recent.forEach(item => {
+      let ts = item.transactionTime;
+      if (!ts.endsWith('Z')) ts += 'Z';
+      const dt = istFormatter.format(new Date(ts));
+      const tr = document.createElement("tr");
+      tr.innerHTML = `
+        <td>${dt}</td>
+        <td>${item.assetId      || '--'}</td>
+        <td>${item.assetName    || '--'}</td>
+        <td>${item.employeeId   || '--'}</td>
+        <td>${item.employeeName || '--'}</td>
+        <td>${item.transactionType || '--'}</td>
+      `;
+      tbody.appendChild(tr);
+    });
+  }
+
+  // parse key/value
+  function parseKeyValueString(txt) {
+    const out={}, lines=txt.split("\n");
+    for (let L of lines) {
+      const i = L.indexOf(":");
+      if (i<0) continue;
+      let k = L.slice(0,i).trim().toLowerCase().replace(/\s+/g,''), 
+          v = L.slice(i+1).trim();
+      if (k==='assetid') k='assetId';
+      out[k] = v;
+    }
+    return out;
+  }
+
+  loadHistory().catch(console.error);
 });
+</script>
 
-            // —— existing camera‑based QR logic ——
-            const html5QrCode = new Html5Qrcode("cameraPreview");
-            const config = {
-                fps: 10,
-                qrbox: { width: 200, height: 200 }
-            };
 
-            const COOLDOWN_SECONDS = 5;
-            const HOURS_17_MS = 17 * 60 * 60 * 1000;
 
-            let isCoolingDown = false;
-            let cooldownInterval = null;
-            let cooldownSecondsLeft = COOLDOWN_SECONDS;
 
-            // Start scanning
-            html5QrCode.start({ facingMode: "environment" }, config, onScanSuccess, onScanFailure)
-                .catch(err => console.error("Error starting QR scanner:", err));
 
-            async function onScanSuccess(decodedText, decodedResult) {
-                if (isCoolingDown) {
-                    console.log("Ignoring scan during cooldown period");
-                    return;
-                }
-
-                const data = parseKeyValueString(decodedText);
-                displayDetails(data);
-                startCooldown();
-                await processCheckInOrOut(data);
-                loadHistory();
-            }
-
-            function onScanFailure(error) {
-                console.warn("QR Code scan error:", error);
-            }
-
-            function displayDetails(data) {
-                document.getElementById("assetId").innerText = data.AssetId || "--";
-                document.getElementById("assetName").innerText = data.AssetName || "--";
-                document.getElementById("employeeId").innerText = data.EmployeeId || "--";
-                document.getElementById("employeeName").innerText = data.EmployeeName || "--";
-            }
-
-            function startCooldown() {
-                isCoolingDown = true;
-                cooldownSecondsLeft = COOLDOWN_SECONDS;
-
-                const cooldownElement = document.getElementById("scanCooldown");
-                const timerElement = document.getElementById("cooldownTimer");
-
-                cooldownElement.style.display = "flex";
-                timerElement.textContent = cooldownSecondsLeft;
-
-                if (cooldownInterval) {
-                    clearInterval(cooldownInterval);
-                }
-
-                cooldownInterval = setInterval(() => {
-                    cooldownSecondsLeft--;
-                    timerElement.textContent = cooldownSecondsLeft;
-
-                    if (cooldownSecondsLeft <= 0) {
-                        clearInterval(cooldownInterval);
-                        cooldownElement.style.display = "none";
-                        isCoolingDown = false;
-                    }
-                }, 1000);
-            }
-
-            async function processCheckInOrOut(data) {
-                const logs = await fetchAllTransactions(data);
-                if (!logs || logs.length === 0) {
-                    await callCheckIn(data);
-                    showSuccessMessage("Successfully Checked In!");
-                    return;
-                }
-
-                const lastRecord = logs[0];
-                if (lastRecord.transactionType === "CheckIn") {
-                    await callCheckOut(data);
-                    showSuccessMessage("Successfully Checked Out!");
-                } else {
-                    await callCheckIn(data);
-                    showSuccessMessage("Successfully Checked In!");
-                }
-            }
-
-            async function loadHistory() {
-                try {
-                    const response = await fetch('/api/ScanDetails/All');
-                    if (!response.ok) {
-                        console.error('Failed to fetch scan history:', response.statusText);
-                        return;
-                    }
-                    const allLogs = await response.json();
-                    const now = new Date();
-                    const filteredLogs = allLogs.filter(item => {
-                        const t = new Date(item.transactionTime);
-                        return now - t < HOURS_17_MS;
-                    });
-
-                    const historyBody = document.getElementById("historyBody");
-                    historyBody.innerHTML = "";
-                    filteredLogs.forEach(item => {
-                        const tr = document.createElement("tr");
-                        tr.innerHTML = `
-                                    <td>${formatDateTime(item.transactionTime)}</td>
-                                    <td>${item.assetId || '--'}</td>
-                                    <td>${item.assetName || '--'}</td>
-                                    <td>${item.employeeId || '--'}</td>
-                                    <td>${item.employeeName || '--'}</td>
-                                    <td>${item.transactionType || '--'}</td>
-                                `;
-                        historyBody.appendChild(tr);
-                    });
-                } catch (error) {
-                    console.error('Error loading history:', error);
-                }
-            }
-
-            function formatDateTime(dateString) {
-                if (!dateString) return '--';
-                const date = new Date(dateString);
-                return date.toLocaleString();
-            }
-
-            async function fetchAllTransactions(data) {
-                try {
-                    const dto = {
-                        assetId: data.AssetId,
-                        employeeId: parseInt(data.EmployeeId || "0", 10),
-                        employeeName: data.EmployeeName || "",
-                        mismatchedEmployeeId: ""
-                    };
-                    const response = await fetch('/api/ScanDetails/GetAllAssetTransaction', {
-                        method: 'POST',
-                        headers: { 'Content-Type': 'application/json' },
-                        body: JSON.stringify(dto)
-                    });
-                    if (!response.ok) {
-                        console.error('GetAllTransaction request failed:', response.statusText);
-                        return null;
-                    }
-                    return await response.json();
-                } catch (err) {
-                    console.error('Error fetching transactions:', err);
-                    return null;
-                }
-            }
-
-            async function callCheckIn(data) {
-                const payload = {
-                    assetId: data.AssetId,
-                    employeeId: parseInt(data.EmployeeId || "0", 10),
-                    employeeName: data.EmployeeName || "",
-                    mismatchedEmployeeId: ""
-                };
-                try {
-                    const resp = await fetch('/api/ScanDetails/CheckIn', {
-                        method: 'POST',
-                        headers: { 'Content-Type': 'application/json' },
-                        body: JSON.stringify(payload)
-                    });
-                    if (!resp.ok) {
-                        console.error('CheckIn request failed:', resp.statusText);
-                    }
-                } catch (err) {
-                    console.error("Error calling CheckIn:", err);
-                }
-            }
-
-            async function callCheckOut(data) {
-                const payload = {
-                    assetId: data.AssetId,
-                    employeeId: parseInt(data.EmployeeId || "0", 10),
-                    employeeName: data.EmployeeName || "",
-                    mismatchedEmployeeId: ""
-                };
-                try {
-                    const resp = await fetch('/api/ScanDetails/CheckOut', {
-                        method: 'POST',
-                        headers: { 'Content-Type': 'application/json' },
-                        body: JSON.stringify(payload)
-                    });
-                    if (!resp.ok) {
-                        console.error('CheckOut request failed:', resp.statusText);
-                    }
-                } catch (err) {
-                    console.error("Error calling CheckOut:", err);
-                }
-            }
-
-            function parseKeyValueString(input) {
-                const lines = input.split("\n");
-                const result = {};
-                for (const line of lines) {
-                    const idx = line.indexOf(":");
-                    if (idx < 0) continue;
-                    let key = line.substring(0, idx).trim().toLowerCase().replace(/\s+/g, '');
-                    let val = line.substring(idx + 1).trim();
-                    switch (key) {
-                        case "assetid":
-                            key = "AssetId";
-                            break;
-                        case "assetname":
-                            key = "AssetName";
-                            break;
-                        case "employeeid":
-                            key = "EmployeeId";
-                            break;
-                        case "employeename":
-                            key = "EmployeeName";
-                            break;
-                        default:
-                            key = key.replace(/\W/g, '');
-                            break;
-                    }
-                    result[key] = val;
-                }
-                return result;
-            }
-
-            // Initial load
-            loadHistory();
-        });
-    </script>
 </body>
 </html>

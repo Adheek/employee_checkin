@@ -5,373 +5,495 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-  <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
-  <title>@ViewData["Title"]</title>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>@ViewData["Title"]</title>
 
-  <!-- Your CSS files -->
-  <link rel="stylesheet" href="~/css/default.css" />
-  <link rel="stylesheet" href="~/css/default1.css" />
-  <link rel="stylesheet" href="~/css/default2.css" />
-  <link rel="stylesheet" href="~/css/site.css" />
-  <link rel="stylesheet" href="~/css/style.css" />
+    <!-- Your CSS files -->
+    <link rel="stylesheet" href="~/css/default.css" />
+    <link rel="stylesheet" href="~/css/default1.css" />
+    <link rel="stylesheet" href="~/css/default2.css" />
+    <link rel="stylesheet" href="~/css/site.css" />
+    <link rel="stylesheet" href="~/css/style.css" />
 
-  <!-- Google Fonts + FontAwesome + QRCode.js -->
-  <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600&display=swap" rel="stylesheet"/>
-  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css"/>
-  <script src="https://cdnjs.cloudflare.com/ajax/libs/qrcodejs/1.0.0/qrcode.min.js"></script>
+    <!-- Google Fonts + FontAwesome + QRCode.js -->
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600&display=swap" rel="stylesheet" />
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" />
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/qrcodejs/1.0.0/qrcode.min.js"></script>
 
-  <style>
-    .qr-preview canvas,
-    .qr-preview img {
-      width: 50mm !important;
-      height: 25mm !important;
-    }
-    .modal { display:block; position:fixed; top:0; left:0; width:100%; height:100%; background:rgba(244,241,234,0.95); z-index:1000; padding:0 1rem; }
-    .qr-generator-content { max-width:700px; margin:0 auto; padding:2rem; }
-    .qr-form .form-row { display:grid; grid-template-columns:repeat(auto-fit,minmax(200px,1fr)); gap:1.5rem; margin-bottom:1.5rem; }
-    @@media (max-width:768px) {
-      .qr-generator-content { width:90%; padding:1rem; }
-      .qr-form .form-row { grid-template-columns:1fr; gap:1rem; }
-      .qr-actions { flex-direction:column; gap:0.75rem; width:100%; }
-      .qr-action-btn { width:100%; justify-content:center; }
-      .qr-container { padding:1rem; margin:1rem 0; }
-      .qr-preview { width:100%; max-width:250px; height:auto; margin:0 auto; }
-    }
-    @@media (max-width:480px) {
-      .qr-tabs { flex-direction:column; gap:0.5rem; }
-      .qr-generator-content { padding:0.75rem; }
-    }
-    .multi-qr-preview { margin-top:1rem; }
-    .qr-item { display:inline-block; margin:10px; text-align:center; }
-  </style>
+    <style>
+        .qr-preview canvas,
+        .qr-preview img {
+            width: 50mm !important;
+            height: 25mm !important;
+        }
+
+        .modal {
+            display: block;
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(244,241,234,0.95);
+            z-index: 1000;
+            padding: 0 1rem;
+        }
+
+        .qr-generator-content {
+            max-width: 700px;
+            margin: 0 auto;
+            padding: 2rem;
+        }
+
+        .qr-form .form-row {
+            display: grid;
+            grid-template-columns: repeat(auto-fit,minmax(200px,1fr));
+            gap: 0.5rem;
+            margin-bottom: 1.5rem;
+        }
+
+        @@media (max-width:768px) {
+            .qr-generator-content {
+                width: 90%;
+                padding: 1rem;
+            }
+
+            .qr-form .form-row {
+                grid-template-columns: 1fr;
+                gap: 0.5rem;
+            }
+
+            .qr-actions {
+                flex-direction: column;
+                gap: 0.75rem;
+                width: 100%;
+            }
+
+            .qr-action-btn {
+                width: 100%;
+                justify-content: center;
+            }
+
+            .qr-container {
+                padding: 1rem;
+                margin: 1rem 0;
+            }
+
+            .qr-preview {
+                width: 100%;
+                max-width: 250px;
+                height: auto;
+                margin: 0 auto;
+            }
+        }
+
+        @@media (max-width:480px) {
+            .qr-tabs {
+                flex-direction: column;
+                gap: 0.5rem;
+            }
+
+            .qr-generator-content {
+                padding: 0.75rem;
+            }
+        }
+
+        .multi-qr-preview {
+            margin-top: 1rem;
+        }
+
+        .qr-item {
+            display: inline-block;
+            margin: 10px;
+            text-align: center;
+        }
+        
+        /* Search Styling for Multiple QR Tab */
+        .search-container {
+            margin-bottom: 20px;
+            position: relative;
+            width: 100%;
+        }
+
+        .search-box {
+            display: flex;
+            gap: 10px;
+            width: 100%;
+        }
+
+        .search-box input {
+            flex-grow: 1;
+            padding: 12px 20px;
+            border: 1px solid #e0e0e0;
+            border-radius: 30px;
+            font-size: 14px;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.08);
+            transition: all 0.3s ease;
+        }
+
+        .search-box input:focus {
+            outline: none;
+            border-color: #3498db;
+            box-shadow: 0 2px 12px rgba(52, 152, 219, 0.2);
+        }
+
+        .search-box button {
+            background: linear-gradient(to right, #3498db, #2980b9);
+            color: white;
+            border: none;
+            border-radius: 30px;
+            padding: 10px 25px;
+            font-weight: 500;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+        }
+
+        .search-box button:hover {
+            background: linear-gradient(to right, #2980b9, #1f6dad);
+            transform: translateY(-2px);
+            box-shadow: 0 4px 12px rgba(0,0,0,0.15);
+        }
+
+        .search-box button:active {
+            transform: translateY(0);
+        }
+
+        .search-results {
+            position: absolute;
+            width: 100%;
+            max-height: 250px;
+            overflow-y: auto;
+            background: white;
+            border-radius: 10px;
+            box-shadow: 0 5px 20px rgba(0,0,0,0.15);
+            z-index: 100;
+            margin-top: 8px;
+            display: none;
+        }
+
+        .search-results ul {
+            list-style: none;
+            padding: 0;
+            margin: 0;
+        }
+
+        .search-results li {
+            padding: 12px 18px;
+            border-bottom: 1px solid #eee;
+            cursor: pointer;
+            transition: background-color 0.2s ease;
+        }
+
+        .search-results li:hover {
+            background-color: #f0f7ff;
+        }
+
+        .search-results li:last-child {
+            border-bottom: none;
+        }
+    </style>
 </head>
 
 <body>
-  <div id="qrGeneratorModal" class="modal">
-    <div class="modal-content">
-      <div class="modal-header">
-        <h2><i class="fas fa-qrcode"></i> QR Code Generator</h2>
-        <button class="close-btn" id="closeQrModal">&times;</button>
-      </div>
-
-      <div class="tabs">
-        <button class="tab-button active" data-tab="singleQR">Single QR Generator</button>
-        <button class="tab-button" data-tab="multipleQR">Multiple QR Generator</button>
-      </div>
-
-      <!-- SINGLE QR GENERATOR -->
-      <div id="singleQR" class="tab-content active">
-        <div class="form-section qr-form">
-          <form id="qrGeneratorForm">
-            <div class="form-row">
-              <div class="form-group">
-                <label for="qrAssetId">Asset ID*</label>
-                <input type="text" id="qrAssetId" name="qrAssetId" required />
-              </div>
-              <div class="form-group">
-                <label for="qrAssetName">Asset Name*</label>
-                <input type="text" id="qrAssetName" name="qrAssetName" required />
-              </div>
-              <div class="form-group">
-                <label for="qrEmployeeId">Employee ID*</label>
-                <input type="text" id="qrEmployeeId" name="qrEmployeeId" required />
-              </div>
+    <div id="qrGeneratorModal" class="modal">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h2><i class="fas fa-qrcode"></i> QR Code Generator</h2>
+                <button class="close-btn" id="closeQrModal">&times;</button>
             </div>
 
-            <div class="qr-container">
-              <div id="qrPreview" class="qr-preview"></div>
-              <div class="qr-actions">
-                <button type="button" class="qr-action-btn download" id="downloadQr">
-                  <i class="fas fa-download"></i> Download
-                </button>
-                <button type="button" class="qr-action-btn print" id="printQr">
-                  <i class="fas fa-print"></i> Print
-                </button>
-              </div>
+            <div class="tabs">
+                <button class="tab-button active" data-tab="singleQR">Single QR Generator</button>
+                <button class="tab-button" data-tab="multipleQR">Multiple QR Generator</button>
             </div>
-          </form>
-        </div>
-      </div>
 
-      <!-- MULTIPLE QR GENERATOR -->
-      <div id="multipleQR" class="tab-content">
-        <div class="table-actions">
-          <div class="bulk-actions">
-            <button type="button" class="action-btn download" id="downloadSelected">
-              <i class="fas fa-download"></i> Download Selected
-            </button>
-            <button type="button" class="action-btn print" id="printSelected">
-              <i class="fas fa-print"></i> Print Selected
-            </button>
-          </div>
+            <!-- SINGLE QR GENERATOR -->
+            <div id="singleQR" class="tab-content active">
+                <div class="form-section qr-form">
+                    <form id="qrGeneratorForm">
+                        <div class="form-row">
+                            <div class="form-group">
+                                <label for="qrAssetId">Asset ID*</label>
+                                <input type="text" id="qrAssetId" name="qrAssetId" required />
+                            </div>
+                            <div class="form-group">
+                                <label for="qrAssetName">Asset Name*</label>
+                                <input type="text" id="qrAssetName" name="qrAssetName" required />
+                            </div>
+                            <div class="form-group">
+                                <label for="qrEmployeeId">Employee ID*</label>
+                                <input type="text" id="qrEmployeeId" name="qrEmployeeId" required />
+                            </div>
+                            <div class="form-group">
+                                <label for="qrEmployeeName">Employee Name</label>
+                                <input type="text" id="qrEmployeeName" name="qrEmployeeName" />
+                            </div>
+                        </div>
+
+                        <div class="qr-container">
+                            <div id="qrPreview" class="qr-preview"></div>
+                            <div class="qr-actions">
+                                <button type="button" class="qr-action-btn download" id="downloadQr">
+                                    <i class="fas fa-download"></i> Download
+                                </button>
+                                <button type="button" class="qr-action-btn print" id="printQr">
+                                    <i class="fas fa-print"></i> Print
+                                </button>
+                            </div>
+                        </div>
+                    </form>
+                </div>
+            </div>
+
+            <!-- MULTIPLE QR GENERATOR -->
+            <div id="multipleQR" class="tab-content">
+                <!-- Search Container - Only in Multiple QR tab -->
+                <div class="search-container">
+                    <div class="search-box">
+                        <input type="text" id="assetSearchInput" placeholder="    .........Search by asset name.........">
+                        <button id="searchAssetBtn" style="display: none;">
+    <i class="fas fa-search"></i> Search
+</button>
+
+                    </div>
+                    <div id="searchResults" class="search-results">
+                        <ul id="searchResultsList"></ul>
+                    </div>
+                </div>
+                
+                <div class="table-actions">
+                    <div class="bulk-actions">
+                        <button type="button" class="action-btn download" id="downloadSelected">
+                            <i class="fas fa-download"></i> Download Selected
+                        </button>
+                        <button type="button" class="action-btn print" id="printSelected">
+                            <i class="fas fa-print"></i> Print Selected
+                        </button>
+                    </div>
+                </div>
+                <div class="qr-table-container">
+                    <table class="qr-table">
+                        <thead>
+                            <tr>
+                                <th width="50px"><input type="checkbox" id="selectAll" /></th>
+                                <th>Asset ID</th>
+                                <th>Asset Name</th>
+                                
+                            </tr>
+                        </thead>
+                        <tbody id="assetTableBody"></tbody>
+                    </table>
+                </div>
+            </div>
         </div>
-        <div class="qr-table-container">
-          <table class="qr-table">
-            <thead>
-              <tr>
-                <th width="50px"><input type="checkbox" id="selectAll" /></th>
-                <th>Asset ID</th>
-                <th>Asset Name</th>
-                <th>Employee ID</th>
-                <th>Employee Name</th>
-                <th>Location</th>
-              </tr>
-            </thead>
-            <tbody id="assetTableBody"></tbody>
-          </table>
-        </div>
-      </div>
     </div>
-  </div>
 
-  <!-- Browser Print helper: must be installed & running on client -->
-  <script src="~/js/BrowserPrint-3.1.250.min.js"></script>
-
-  <script>
-    // ----------------------------
-    // 1) Single QR: generatePreview
-    // ----------------------------
-    function generateSingleQRCode() {
-      const id   = document.getElementById("qrAssetId").value.trim();
-      const name = document.getElementById("qrAssetName").value.trim();
-      const emp  = document.getElementById("qrEmployeeId").value.trim();
-      const preview = document.getElementById("qrPreview");
-
-      if (!id || !name || !emp) {
-        preview.innerHTML = "";
-        return false;
-      }
-
-      const text =
-        `Asset ID: ${id}\n` +
-        `Asset Name: ${name}\n` +
-        `Employee ID: ${emp}`;
-
-      preview.innerHTML = "";
-      new QRCode(preview, { text, width: 200, height: 200 });
-      return true;
-    }
-
-    // ----------------------------
-    // 2) Multiple QR: helpers
-    // ----------------------------
-    function getSelectedAssets() {
-      const sel = [];
-      document.querySelectorAll("#assetTableBody input[type='checkbox']:checked")
-        .forEach(cb => {
-          const cells = cb.closest("tr").getElementsByTagName("td");
-          sel.push({
-            assetId:      cells[1].textContent.trim(),
-            assetName:    cells[2].textContent.trim(),
-            employeeId:   cells[3].textContent.trim(),
-            employeeName: cells[4].textContent.trim(),
-            location:     cells[5].textContent.trim()
-          });
-        });
-      return sel;
-    }
-
-    function generateHiddenQRCodesForSelected(assets, cb) {
-      const container = document.createElement("div");
-      container.style.display = "none";
-      document.body.appendChild(container);
-
-      assets.forEach(a => {
-        const d = document.createElement("div");
-        container.appendChild(d);
-        const text =
-          `Asset ID: ${a.assetId}\n` +
-          `Asset Name: ${a.assetName}\n` +
-          `Employee ID: ${a.employeeId}\n` +
-          `Employee Name: ${a.employeeName}\n` +
-          `Location: ${a.location}`;
-        new QRCode(d, { text, width: 150, height: 150 });
+<script>
+document.addEventListener("DOMContentLoaded", () => {
+  // 1) Search
+  document.getElementById('assetSearchInput').addEventListener('input', async function () {
+    const q = this.value.trim(), tb = document.getElementById("assetTableBody");
+    if (!q) return loadAssetsTable();
+    try {
+      const res = await fetch(`/api/qrGenerator?name=${encodeURIComponent(q)}`);
+      const arr = await res.json();
+      tb.innerHTML = "";
+      arr.forEach(a => {
+        const r = document.createElement("tr");
+        r.innerHTML = `
+          <td><input type="checkbox"></td>
+          <td>${a.assetID}</td>
+          <td>${a.assetName}</td>
+          <td>${a.employeeId||''}</td>
+          <td>${a.employeeName||''}</td>
+        `;
+        tb.appendChild(r);
       });
+    } catch(e){ console.error(e); }
+  });
 
-      setTimeout(() => cb(container, assets), 300);
-    }
+  // 2) Single QR preview (raw ID)
+  function generateSingleQRCode() {
+    const id = document.getElementById("qrAssetId").value.trim();
+    const prev = document.getElementById("qrPreview");
+    if (!id) { prev.innerHTML=""; return false; }
+    prev.innerHTML = "";
+    new QRCode(prev, { text: id, width:200, height:200 });
+    return true;
+  }
 
-    async function loadAssetsTable() {
-      try {
-        const res = await fetch('/api/fullData/getAll');
-        if (!res.ok) throw new Error(res.statusText);
-        const data = await res.json();
-        const tbody = document.getElementById("assetTableBody");
-        tbody.innerHTML = "";
-        data.forEach(a => {
-          const tr = document.createElement("tr");
-          tr.innerHTML =
-            `<td><input type="checkbox"></td>
-             <td>${a.assetID}</td>
-             <td>${a.assetName}</td>
-             <td>${a.employeeId ?? ''}</td>
-             <td>${a.employeeName ?? ''}</td>
-             <td>${a.location ?? ''}</td>`;
-          tbody.appendChild(tr);
-        });
-      } catch (e) {
-        console.error("Could not load assets:", e);
-        alert("Could not load assets.");
+  // 3) Multiple QR helpers
+  function getSelectedAssets() {
+    return Array.from(document.querySelectorAll("#assetTableBody input:checked"))
+      .map(cb => {
+        const td = cb.closest("tr").getElementsByTagName("td");
+        return { assetId: td[1].textContent.trim(), assetName: td[2].textContent.trim() };
+      });
+  }
+  function generateHiddenQRCodesForSelected(assets, cb) {
+    const container=document.createElement("div");
+    container.style.display="none"; document.body.appendChild(container);
+    assets.forEach(a=>{
+      const d=document.createElement("div"); container.appendChild(d);
+      new QRCode(d,{ text: a.assetId, width:150, height:150 });
+    });
+    setTimeout(()=>cb(container, assets),300);
+  }
+
+  // 4) Load table
+  async function loadAssetsTable() {
+    try {
+      const r=await fetch("/api/fullData/getAll"), arr=await r.json(), tb=document.getElementById("assetTableBody");
+      tb.innerHTML="";
+      arr.forEach(a=>{
+        const tr=document.createElement("tr");
+        tr.innerHTML=`
+          <td><input type="checkbox"></td>
+          <td>${a.assetID}</td>
+          <td>${a.assetName}</td>
+          <td>${a.employeeId||""}</td>
+          <td>${a.employeeName||""}</td>
+        `;
+        tb.appendChild(tr);
+      });
+    } catch(e){ console.error(e); alert("Could not load assets."); }
+  }
+  loadAssetsTable();
+
+  // 5) Wiring
+
+  // Single preview
+  ["qrAssetId"].forEach(id=>
+    document.getElementById(id).addEventListener("input", generateSingleQRCode)
+  );
+
+  // Single Download: label = AssetName
+  document.getElementById("downloadQr").addEventListener("click", () => {
+    if (!generateSingleQRCode()) return alert("Enter an Asset ID");
+    const prev=document.getElementById("qrPreview");
+    let c=prev.querySelector("canvas");
+    if (!c) {
+      const img=prev.querySelector("img");
+      if (img) {
+        c=document.createElement("canvas");
+        c.width=img.width; c.height=img.height;
+        c.getContext("2d").drawImage(img,0,0);
       }
     }
+    if (!c) return alert("No QR to download.");
+    const id=document.getElementById("qrAssetId").value.trim();
+    const name=document.getElementById("qrAssetName").value.trim();
+    const m=20, lm=10, fs=16;
+    const w=c.width+2*m, h=c.height+m+lm+fs+m;
+    const out=document.createElement("canvas");
+    out.width=w; out.height=h;
+    const ctx=out.getContext("2d");
+    ctx.fillStyle="#fff"; ctx.fillRect(0,0,w,h);
+    ctx.drawImage(c,m,m);
+    ctx.font=`${fs}px Poppins, sans-serif`;
+    ctx.fillStyle="#000";
+    ctx.textAlign="center";
+    ctx.fillText(name, w/2, m+c.height+lm+fs*0.8);
+    const link=document.createElement("a");
+    link.href=out.toDataURL(); link.download=`qrcode_${id}.png`;
+    document.body.appendChild(link); link.click(); link.remove();
+  });
 
-    // ----------------------------
-    // 3) DOM Ready & event wiring
-    // ----------------------------
-    document.addEventListener("DOMContentLoaded", () => {
-      // Load table data
-      loadAssetsTable();
+  // Single Print: show same
+  document.getElementById("printQr").addEventListener("click",()=>{
+    if (!generateSingleQRCode()) return alert("Enter an Asset ID");
+    const c=document.querySelector("#qrPreview canvas");
+    if (!c) return alert("No QR to print.");
+    const data=c.toDataURL(), img=new Image();
+    img.src=data; img.style.display="block"; img.style.margin="0 auto"; img.style.width="50mm"; img.style.height="35mm";
+    const orig=document.body.innerHTML;
+    document.body.innerHTML=`<div style="text-align:center">${img.outerHTML}</div>`;
+    window.print(); document.body.innerHTML=orig;
+  });
 
-      // Single‑QR: auto‑preview on input
-      ["qrAssetId","qrAssetName","qrEmployeeId"].forEach(id => {
-        document.getElementById(id).addEventListener("input", generateSingleQRCode);
+  // Select-all
+  document.getElementById("selectAll").addEventListener("change",function(){
+    document.querySelectorAll("#assetTableBody input").forEach(cb=>cb.checked=this.checked);
+  });
+
+  // Tabs
+  document.querySelectorAll(".tab-button").forEach(b=>{
+    b.addEventListener("click",function(){
+      document.querySelectorAll(".tab-button").forEach(x=>x.classList.remove("active"));
+      document.querySelectorAll(".tab-content").forEach(x=>x.classList.remove("active"));
+      this.classList.add("active");
+      document.getElementById(this.dataset.tab).classList.add("active");
+    });
+  });
+
+  // Multiple Download: label = AssetName
+  document.getElementById("downloadSelected").addEventListener("click",()=>{
+    const sel=getSelectedAssets();
+    if(!sel.length) return alert("Select at least one asset.");
+    generateHiddenQRCodesForSelected(sel,(hc,arr)=>{
+      hc.querySelectorAll("div").forEach((div,i)=>{
+        const c=div.querySelector("canvas"); if(!c) return;
+        const id=arr[i].assetId, name=arr[i].assetName;
+        const m=20,lm=8,fs=14;
+        const w=c.width+2*m, h=c.height+m+lm+fs+m;
+        const out=document.createElement("canvas");
+        out.width=w; out.height=h;
+        const ctx=out.getContext("2d");
+        ctx.fillStyle="#fff"; ctx.fillRect(0,0,w,h);
+        ctx.drawImage(c,m,m);
+        ctx.font=`${fs}px Poppins, sans-serif`;
+        ctx.fillStyle="#000"; ctx.textAlign="center";
+        ctx.fillText(name, w/2, m+c.height+lm+fs*0.8);
+        const link=document.createElement("a");
+        link.href=out.toDataURL(); link.download=`qrcode_${id}.png`;
+        document.body.appendChild(link); link.click(); link.remove();
       });
+      hc.remove();
+    });
+  });
 
-      // Single‑QR: Download
-      document.getElementById("downloadQr").addEventListener("click", () => {
-        if (!generateSingleQRCode()) {
-          return alert("Fill out Asset ID, Asset Name, and Employee ID.");
-        }
-        const container = document.getElementById("qrPreview");
-        let canvas = container.querySelector("canvas");
-        if (!canvas) {
-          const img = container.querySelector("img");
-          if (img) {
-            canvas = document.createElement("canvas");
-            canvas.width  = img.width;
-            canvas.height = img.height;
-            canvas.getContext("2d").drawImage(img, 0, 0);
+  // Multiple Print
+  document.getElementById("printSelected").addEventListener("click",()=>{
+    const sel=getSelectedAssets();
+    if(!sel.length) return alert("Select at least one asset.");
+    const per=4, bc=Math.ceil(sel.length/per), orig=document.body.innerHTML;
+    let html=`<style>
+      @@media print{@@page{size:50mm 35mm landscape;margin:0}body{margin:0;padding:0}
+      .qr-page{width:50mm;height:35mm;display:grid;grid-template:1fr 1fr/1fr 1fr;page-break-after:always}
+      .qr-cell{display:flex;flex-direction:column;justify-content:center;align-items:center;padding-top:3mm}
+      .qr-image{width:16.5mm;height:16.5mm}
+      .qr-label{font-size:5pt;margin-top:0.5mm;text-align:left;font-weight:900;padding-left:8mm;width:100%}
+      }</style>`;
+    generateHiddenQRCodesForSelected(sel,(hc,arr)=>{
+      for(let b=0;b<bc;b++){
+        html+=`<div class="qr-page">`;
+        for(let i=0;i<per;i++){
+          const idx=b*per+i; if(idx>=arr.length) break;
+          const c=hc.children[idx].querySelector("canvas"), name=arr[idx].assetName;
+          if(c){
+            const data=c.toDataURL();
+            html+=`<div class="qr-cell">
+  <img class="qr-image" src="${data}" alt="QR">
+  <div class="qr-label"><strong>${name}</strong></div>
+</div>`;
           }
         }
-        if (!canvas) return alert("No QR to download.");
-        const link = document.createElement("a");
-        link.href     = canvas.toDataURL("image/png");
-        link.download = `qrcode_${document.getElementById("qrAssetId").value}.png`;
-        document.body.appendChild(link);
-        link.click();
-        document.body.removeChild(link);
-      });
-
-      // Single‑QR: Print
-      document.getElementById("printQr").addEventListener("click", () => {
-        if (!generateSingleQRCode()) {
-          return alert("Fill out Asset ID, Asset Name, and Employee ID.");
-        }
-        const canvas = document.querySelector("#qrPreview canvas");
-        if (!canvas) return alert("No QR to print.");
-        const dataURL = canvas.toDataURL("image/png");
-        const img = new Image();
-        img.src           = dataURL;
-        img.style.display = "block";
-        img.style.margin  = "0 auto";
-        img.style.width   = "50mm";
-        img.style.height  = "35mm";
-
-        const original = document.body.innerHTML;
-        document.body.innerHTML = `<div style="text-align:center">${img.outerHTML}</div>`;
-        window.print();
-        document.body.innerHTML = original;
-      });
-
-      // Select‑All
-      document.getElementById("selectAll").addEventListener("change", function(){
-        document.querySelectorAll("#assetTableBody input[type='checkbox']")
-                .forEach(cb => cb.checked = this.checked);
-      });
-
-      // Tab switching
-      document.querySelectorAll(".tab-button").forEach(btn => {
-        btn.addEventListener("click", function(){
-          document.querySelectorAll(".tab-button").forEach(b=>b.classList.remove("active"));
-          document.querySelectorAll(".tab-content").forEach(c=>c.classList.remove("active"));
-          this.classList.add("active");
-          document.getElementById(this.dataset.tab).classList.add("active");
-        });
-      });
-
-      // Download selected PNGs
-      document.getElementById("downloadSelected").addEventListener("click", () => {
-        const sel = getSelectedAssets();
-        if (!sel.length) return alert("Select at least one asset.");
-        generateHiddenQRCodesForSelected(sel, (hc) => {
-          hc.querySelectorAll("div").forEach((div,i) => {
-            const c = div.querySelector("canvas");
-            if (!c) return;
-            const link = document.createElement("a");
-            link.href     = c.toDataURL("image/png");
-            link.download = `qrcode_${i+1}.png`;
-            document.body.appendChild(link);
-            link.click();
-            document.body.removeChild(link);
-          });
-          document.body.removeChild(hc);
-        });
-      });
-
-      // ----------------------------
-      // 4) MULTIPLE‑QR: Print Selected via Browser Print
-      // ----------------------------
-      document.getElementById("printSelected").addEventListener("click", () => {
-        const sel = getSelectedAssets();
-        if (!sel.length) return alert("Select at least one asset.");
-
-        generateHiddenQRCodesForSelected(sel, (hc, assets) => {
-          //----------------------------------------
-          // TUNE THESE (all in mm)
-          //----------------------------------------
-          const labelW = 70,    // label width
-                labelH = 50,    // label height
-                qrSize = 15,    // QR edge length
-                gap    = 4;     // gutter between cells
-          const textY  = qrSize + 5;  // caption y‑offset
-          //----------------------------------------
-
-          BrowserPrint.getDefaultDevice("printer", printer => {
-            const cols = 2;
-            assets.forEach((asset, i) => {
-              const row = Math.floor(i/cols),
-                    col = i % cols;
-              // 2mm margin from top+left
-              const x = 2 + col*(qrSize + gap),
-                    y = 2 + row*(textY + gap);
-
-              // Build ZPL
-              const zpl = [
-                "^XA",
-                `^PW${labelW*8}`, 
-                `^LL${labelH*8}`,
-                `^FO${x*8},${y*8}`,
-                `^BQN,2,2^FDLA,${asset.assetId}^FS`,
-                `^FO${x*8},${(y+textY)*8}`,
-                `^A0N,30,30^FD${asset.assetId}^FS`,
-                "^XZ"
-              ].join("\n");
-
-              // Send to printer
-              printer.send(zpl,
-                () => console.log("Printed", asset.assetId),
-                err => console.error("Print failed:", err)
-              );
-            });
-
-            // cleanup
-            document.body.removeChild(hc);
-
-          }, err => {
-            alert("BrowserPrint helper not running. Please install & launch it.");
-            console.error(err);
-          });
-        });
-      });
-
-      // ----------------------------
-      // 5) Close modal
-      // ----------------------------
-      document.getElementById("closeQrModal").addEventListener("click", () => {
-        window.location.href = "/Home/Landing";
-      });
+        html+=`</div>`;
+      }
+      document.body.innerHTML=html; window.print(); document.body.innerHTML=orig; hc.remove();
     });
-  </script>
+  });
+
+  // Close
+  document.getElementById("closeQrModal").addEventListener("click",()=>{
+    window.location.href="/Home/Landing";
+  });
+});
+</script>
+
+
+
 </body>
 </html>

@@ -7,20 +7,19 @@ using Microsoft.EntityFrameworkCore;
 using System;
 using System.Text.Json;                       // for JsonNamingPolicy
 using AEET.Models;      // ApplicationDbContext, model classes
-using AEET.Code;        // ScanTransactionManager, plus your other managers
+using AEET.Code;        // ScanTransactionManager, QrGeneratorManager, plus your other managers
 
 var builder = WebApplication.CreateBuilder(args);
 
-// 1. Add MVC + runtime‐compilation + camelCase JSON
+// 1. Add MVC + runtime-compilation + camelCase JSON
 builder.Services
     .AddControllersWithViews()
-                  // see .cshtml updates live
     .AddJsonOptions(opts =>
     {
         opts.JsonSerializerOptions.PropertyNamingPolicy = JsonNamingPolicy.CamelCase;
     });
 
-// 2. Session (30‑minute idle timeout)
+// 2. Session (30-minute idle timeout)
 builder.Services.AddSession(options =>
 {
     options.IdleTimeout = TimeSpan.FromMinutes(30);
@@ -30,7 +29,10 @@ builder.Services.AddSession(options =>
 
 // 3. EF Core → SQL Server
 builder.Services.AddDbContext<ApplicationDbContext>(options =>
-    options.UseSqlServer(builder.Configuration.GetConnectionString("DefaultConnection")));
+    options.UseSqlServer(
+        builder.Configuration.GetConnectionString("DefaultConnection")
+    )
+);
 
 // 4. Your custom services
 builder.Services.AddSingleton<Sql>();
@@ -40,6 +42,9 @@ builder.Services.AddScoped<FullDataManager>();
 builder.Services.AddScoped<EmployeeManager>();
 builder.Services.AddScoped<EmployeeAssetMappingManager>();
 builder.Services.AddScoped<ScanTransactionManager>();
+
+// ★ New manager for “search by asset name” ★
+builder.Services.AddScoped<QrGeneratorManager>();
 
 // 5. CORS (for API calls, if needed)
 builder.Services.AddCors(options =>
@@ -77,14 +82,14 @@ app.UseStaticFiles();
 
 app.UseRouting();
 
-// 9. Move CORS here (after routing, before auth)
+// 9. CORS (after routing, before auth)
 app.UseCors("AllowAllOrigins");
 
 app.UseSession();
 app.UseAuthorization();
 
 // 10. Endpoints
-app.MapControllers();
+app.MapControllers();   // for [ApiController] endpoints
 app.MapControllerRoute(
     name: "default",
     pattern: "{controller=Account}/{action=Login}/{id?}"

@@ -1,9 +1,9 @@
+// EmployeeAssetMappingManager.cs
 using AEET.Models;
 using AEET.Models.DTOs;
 using Microsoft.EntityFrameworkCore;
 using System;
 using System.Collections.Generic;
-using System.Linq;
 using System.Threading.Tasks;
 
 namespace AEET.Code
@@ -18,7 +18,7 @@ namespace AEET.Code
         }
 
         /// <summary>
-        /// Creates a new mapping record using the provided EmployeeId and AssetId.
+        /// Creates a new mapping record.
         /// </summary>
         public async Task<EmployeeAssetMapping> CreateMappingAsync(int employeeId, string assetId, string createdBy)
         {
@@ -37,24 +37,47 @@ namespace AEET.Code
         }
 
         /// <summary>
-        /// Retrieves the list of mapped assets with related employee details.
+        /// Retrieves all mappings.
         /// </summary>
-        /// <returns>A list of mapped asset DTOs.</returns>
         public async Task<List<MappedAssetDto>> GetMappedAssetsAsync()
         {
             return await _context.EmployeeAssetMappings
-                .Include(mapping => mapping.Employee)  // Ensure navigation property Employee exists
-                .Include(mapping => mapping.Asset)       // Ensure navigation property Asset exists
-                .Select(mapping => new MappedAssetDto
+                .Include(m => m.Employee)
+                .Include(m => m.Asset)
+                .Select(m => new MappedAssetDto
                 {
-                    AssetId = mapping.AssetId,
-                    AssetName = mapping.Asset.AssetName,
-                    EmployeeId = mapping.EmployeeId,
-                    EmployeeName = mapping.Employee.EmployeeName,
-                    Department = mapping.Employee.Department,
-                    MappingDate = mapping.CreatedOn
+                    AssetId = m.AssetId,
+                    AssetName = m.Asset.AssetName,
+                    EmployeeId = m.EmployeeId,
+                    EmployeeName = m.Employee.EmployeeName,
+                    Department = m.Employee.Department,
+                    MappingDate = m.CreatedOn
                 })
                 .ToListAsync();
+        }
+
+        /// <summary>
+        /// Retrieves a single mapping by AssetId.
+        /// </summary>
+        public async Task<MappedAssetDto> GetMappingByAssetIdAsync(string assetId)
+        {
+            // Normalize to lower-case for translation in EF Core
+            var lookup = assetId?.ToLower() ?? string.Empty;
+
+            return await _context.EmployeeAssetMappings
+                .Include(m => m.Employee)
+                .Include(m => m.Asset)
+                .Where(m => m.AssetId.ToLower() == lookup)
+                .Select(m => new MappedAssetDto
+                {
+                    AssetId = m.AssetId,
+                    AssetName = m.Asset.AssetName,
+                    EmployeeId = m.EmployeeId,
+                    EmployeeName = m.Employee.EmployeeName,
+                    Department = m.Employee.Department,
+                    MappingDate = m.CreatedOn
+                })
+                .FirstOrDefaultAsync();
         }
     }
 }
